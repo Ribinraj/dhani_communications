@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
-import 'package:dhani_communications/presentation/screens/screen_otppage/screen_otppage.dart';
+
 import 'package:dhani_communications/widgets/custom_textfiield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

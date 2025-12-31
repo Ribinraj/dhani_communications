@@ -20,8 +20,10 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       create: (context) =>BottomNavigationBloc (),
       child: MaterialApp.router(
+         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
+         
           appBarTheme: const AppBarTheme(
             systemOverlayStyle: SystemUiOverlayStyle(
               statusBarColor: Colors.transparent,
