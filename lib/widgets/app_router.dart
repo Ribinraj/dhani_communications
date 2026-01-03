@@ -1,4 +1,7 @@
+import 'package:dhani_communications/presentation/screens/screen_attendence_detailpage/screen_attendencedetailpage.dart';
+import 'package:dhani_communications/presentation/screens/screen_attendencelist/screen_attendencelist.dart';
 import 'package:dhani_communications/presentation/screens/screen_bottombar/screen_bottombar.dart';
+import 'package:dhani_communications/presentation/screens/screen_editprofilepage/screen_editprofilepage.dart';
 import 'package:dhani_communications/presentation/screens/screen_loginpage/screen_loginpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_otppage/screen_otppage.dart';
 import 'package:dhani_communications/presentation/screens/splash_screen/screen_splashpage.dart';
@@ -28,7 +31,30 @@ class AppRouter {
     return OtpPage(phoneNumber: phone);
   },
 ),
-
+      ///editprofilepage
+ GoRoute(
+  path: '/editprofilepage',
+  builder: (context, state) {
+    final profiledata = state.extra as  Map<String, dynamic>;
+    return ScreenEditProfilePage(profileData: profiledata,);
+  },
+),
+      ///employeeatttendencepage
+ GoRoute(
+  path: '/employeeattendencepage',
+  builder: (context, state) {
+    
+    return ScreenEmployeeAttendancePage();
+  },
+),
+      ///employeeatttendencepage
+ GoRoute(
+  path: '/employeeattendencedetailpage',
+  builder: (context, state) {
+    
+    return ScreenAttendanceDetailsPage();
+  },
+),
       /// Main Page
       GoRoute(
         path: '/main',

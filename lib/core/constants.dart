@@ -1,6 +1,4 @@
-
 import 'package:dhani_communications/core/responsiveutils.dart';
-
 import 'package:flutter/material.dart';
 
 class ResponsiveText extends StatelessWidget {
@@ -8,8 +6,9 @@ class ResponsiveText extends StatelessWidget {
   final double? sizeFactor;
   final FontWeight? weight;
   final Color? color;
-  final TextOverflow? overflow; // 👈 new
-  final TextAlign? textAlign;   // 👈 optional but useful
+  final TextOverflow? overflow;
+  final TextAlign? textAlign;
+  final int? maxLines;
 
   const ResponsiveText(
     this.text, {
@@ -19,6 +18,7 @@ class ResponsiveText extends StatelessWidget {
     this.color,
     this.overflow,
     this.textAlign,
+    this.maxLines,
   });
 
   @override
@@ -29,7 +29,8 @@ class ResponsiveText extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign,
-      overflow: overflow ?? TextOverflow.ellipsis, // 👈 apply here
+      overflow: overflow ?? TextOverflow.ellipsis,
+      maxLines: maxLines,
       style: TextStyle(
         fontSize: sizeFactor != null ? baseSize * sizeFactor! : baseSize,
         fontWeight: weight ?? FontWeight.normal,
@@ -45,12 +46,18 @@ class TextStyles {
     String? text,
     FontWeight? weight,
     Color? color,
+    TextOverflow? overflow,
+    TextAlign? textAlign,
+    int? maxLines,
   }) {
     return ResponsiveText(
       text ?? '',
       sizeFactor: 1.5, // 50% larger than base size
       weight: weight ?? FontWeight.bold,
       color: color,
+      overflow: overflow,
+      textAlign: textAlign,
+      maxLines: maxLines,
     );
   }
 
@@ -58,21 +65,37 @@ class TextStyles {
     String? text,
     FontWeight? weight,
     Color? color,
+    TextOverflow? overflow,
+    TextAlign? textAlign,
+    int? maxLines,
   }) {
     return ResponsiveText(
       text ?? '',
       sizeFactor: 1.22,
       weight: weight ?? FontWeight.w600,
       color: color,
+      overflow: overflow,
+      textAlign: textAlign,
+      maxLines: maxLines,
     );
   }
 
-  static ResponsiveText body({String? text, FontWeight? weight, Color? color}) {
+  static ResponsiveText body({
+    String? text,
+    FontWeight? weight,
+    Color? color,
+    TextOverflow? overflow,
+    TextAlign? textAlign,
+    int? maxLines,
+  }) {
     return ResponsiveText(
       text ?? '',
       sizeFactor: .93, // base size
       weight: weight,
       color: color,
+      overflow: overflow,
+      textAlign: textAlign,
+      maxLines: maxLines,
     );
   }
 
@@ -80,12 +103,18 @@ class TextStyles {
     String? text,
     FontWeight? weight,
     Color? color,
+    TextOverflow? overflow,
+    TextAlign? textAlign,
+    int? maxLines,
   }) {
     return ResponsiveText(
       text ?? '',
       sizeFactor: .82, // base size
       weight: weight,
       color: color,
+      overflow: overflow,
+      textAlign: textAlign,
+      maxLines: maxLines,
     );
   }
 
@@ -93,15 +122,22 @@ class TextStyles {
     String? text,
     FontWeight? weight,
     Color? color,
+    TextOverflow? overflow,
+    TextAlign? textAlign,
+    int? maxLines,
   }) {
     return ResponsiveText(
       text ?? '',
       sizeFactor: 0.74, // 25% smaller than base size
       weight: weight,
       color: color ?? Colors.grey[600],
+      overflow: overflow,
+      textAlign: textAlign,
+      maxLines: maxLines,
     );
   }
 }
+
 ///////
 // Basic usage
 // ResponsiveText(
@@ -109,22 +145,34 @@ class TextStyles {
 //   sizeFactor: 1.5, // 50% larger than base size
 //   weight: FontWeight.bold,
 //   color: Colors.blue,
+//   overflow: TextOverflow.ellipsis,
+//   textAlign: TextAlign.center,
+//   maxLines: 2,
 // )
 
 // // Using predefined styles
-// TextStyles.headline(text: 'Main Title')
+// TextStyles.headline(
+//   text: 'Main Title',
+//   overflow: TextOverflow.fade,
+//   textAlign: TextAlign.left,
+// )
 
 // TextStyles.subheadline(
 //   text: 'Subtitle',
 //   color: Colors.grey,
+//   overflow: TextOverflow.ellipsis,
 // )
 
 // TextStyles.body(
 //   text: 'This is the body text.',
 //   weight: FontWeight.w300,
+//   maxLines: 3,
 // )
 
-// TextStyles.caption(text: 'Small caption text')
+// TextStyles.caption(
+//   text: 'Small caption text',
+//   textAlign: TextAlign.center,
+// )
 
 // // Custom sizing
 // ResponsiveText(
@@ -182,6 +230,7 @@ class BorderRadiusStyles {
     return ResponsiveBorderRadius(sizeFactor: sizeFactor).getBorderRadius();
   }
 }
+
 /////
 // Container(
 //   decoration: BoxDecoration(
