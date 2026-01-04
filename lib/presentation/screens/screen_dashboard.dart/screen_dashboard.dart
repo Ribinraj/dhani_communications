@@ -1250,7 +1250,17 @@ class _HomePageState extends State<ScreenDashboardpage>
           onTap: () {
              if (option['label'] == 'Attendance') {
             context.push('/employeeattendencepage');
-          } else {
+          } 
+          if (option['label'] ==  'Contract Labors') {
+             context.push('/labourattendencepage');
+          }
+                 if (option['label'] == 'Expenses') {
+             context.push('/expensespage');
+          }
+                       if (option['label'] == 'Machinery Hire') {
+             context.push('/machinehiringpage');
+          }
+          else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('${option['label']} tapped'),

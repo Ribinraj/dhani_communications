@@ -2,7 +2,12 @@ import 'package:dhani_communications/presentation/screens/screen_attendence_deta
 import 'package:dhani_communications/presentation/screens/screen_attendencelist/screen_attendencelist.dart';
 import 'package:dhani_communications/presentation/screens/screen_bottombar/screen_bottombar.dart';
 import 'package:dhani_communications/presentation/screens/screen_editprofilepage/screen_editprofilepage.dart';
+import 'package:dhani_communications/presentation/screens/screen_expensedetailspage/screen_expensedetailspage.dart';
+import 'package:dhani_communications/presentation/screens/screen_expenses/screen_expensespage.dart';
+import 'package:dhani_communications/presentation/screens/screen_labourattendence/screen_labourattendence.dart';
+import 'package:dhani_communications/presentation/screens/screen_labourattendence_details/screen_labour_attendencedetailpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_loginpage/screen_loginpage.dart';
+import 'package:dhani_communications/presentation/screens/screen_machinehiringpage/screen_machinehiringpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_otppage/screen_otppage.dart';
 import 'package:dhani_communications/presentation/screens/splash_screen/screen_splashpage.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +58,46 @@ class AppRouter {
   builder: (context, state) {
     
     return ScreenAttendanceDetailsPage();
+  },
+),
+      ///labourattendencepage
+ GoRoute(
+  path: '/labourattendencepage',
+  builder: (context, state) {
+    
+    return ScreenLabourAttendancePage();
+  },
+),
+      ///labourattendencedetailpage
+ GoRoute(
+  path: '/labourattendencepagedetailpage',
+  builder: (context, state) {
+    
+    return ScreenLabourAttendanceDetailsPage();
+  },
+),
+      ///expensespage
+ GoRoute(
+  path: '/expensespage',
+  builder: (context, state) {
+    
+    return ScreenEmployeeExpensesPage();
+  },
+),
+      ///expensedetailspage
+ GoRoute(
+  path: '/expensedetailspage',
+  builder: (context, state) {
+    
+    return ScreenExpenseDetailPage();
+  },
+),
+      ///machinehiringpage
+ GoRoute(
+  path: '/machinehiringpage',
+  builder: (context, state) {
+    
+    return ScreenMachineHiringPage();
   },
 ),
       /// Main Page
