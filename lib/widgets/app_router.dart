@@ -1,12 +1,15 @@
+import 'package:dhani_communications/presentation/screens/screen_assetspage/screen_assetspage.dart';
 import 'package:dhani_communications/presentation/screens/screen_attendence_detailpage/screen_attendencedetailpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_attendencelist/screen_attendencelist.dart';
 import 'package:dhani_communications/presentation/screens/screen_bottombar/screen_bottombar.dart';
 import 'package:dhani_communications/presentation/screens/screen_editprofilepage/screen_editprofilepage.dart';
+import 'package:dhani_communications/presentation/screens/screen_employeeleaves/screen_employeeleaves.dart';
 import 'package:dhani_communications/presentation/screens/screen_expensedetailspage/screen_expensedetailspage.dart';
 import 'package:dhani_communications/presentation/screens/screen_expenses/screen_expensespage.dart';
 import 'package:dhani_communications/presentation/screens/screen_labourattendence/screen_labourattendence.dart';
 import 'package:dhani_communications/presentation/screens/screen_labourattendence_details/screen_labour_attendencedetailpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_loginpage/screen_loginpage.dart';
+import 'package:dhani_communications/presentation/screens/screen_machinehire_detailspage/screen_machinehiredetails_page.dart';
 import 'package:dhani_communications/presentation/screens/screen_machinehiringpage/screen_machinehiringpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_otppage/screen_otppage.dart';
 import 'package:dhani_communications/presentation/screens/splash_screen/screen_splashpage.dart';
@@ -98,6 +101,30 @@ class AppRouter {
   builder: (context, state) {
     
     return ScreenMachineHiringPage();
+  },
+),
+      ///machinehiredetailpage
+ GoRoute(
+  path: '/machinehiredetailpage',
+  builder: (context, state) {
+    
+    return ScreenMachineHireDetailPage();
+  },
+),
+      ///leavespage
+ GoRoute(
+  path: '/leavespage',
+  builder: (context, state) {
+    
+    return ScreenEmployeeLeavesPage();
+  },
+),
+      ///assetspage
+ GoRoute(
+  path: '/assetspage',
+  builder: (context, state) {
+    
+    return ScreenAssetsPage();
   },
 ),
       /// Main Page

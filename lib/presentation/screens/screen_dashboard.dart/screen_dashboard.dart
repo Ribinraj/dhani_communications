@@ -1247,38 +1247,23 @@ class _HomePageState extends State<ScreenDashboardpage>
       itemBuilder: (context, index) {
         final option = gridOptions[index];
         return GestureDetector(
-          onTap: () {
-             if (option['label'] == 'Attendance') {
-            context.push('/employeeattendencepage');
-          } 
-          if (option['label'] ==  'Contract Labors') {
-             context.push('/labourattendencepage');
-          }
-                 if (option['label'] == 'Expenses') {
-             context.push('/expensespage');
-          }
-                       if (option['label'] == 'Machinery Hire') {
-             context.push('/machinehiringpage');
-          }
-          else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${option['label']} tapped'),
-                duration: const Duration(milliseconds: 800),
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: option['color'],
-                margin: EdgeInsets.only(
-                  bottom: ResponsiveUtils.hp(15),
-                  left: ResponsiveUtils.wp(4),
-                  right: ResponsiveUtils.wp(4),
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadiusStyles.kradius10(),
-                ),
-              ),
-            );
-          }
-          },
+   onTap: () {
+    if (option['label'] == 'Attendance') {
+      context.push('/employeeattendencepage');
+    } else if (option['label'] == 'Contract Labors') {
+      context.push('/labourattendencepage');
+    } else if (option['label'] == 'Expenses') {
+      context.push('/expensespage');
+    } else if (option['label'] == 'Machinery Hire') {
+      context.push('/machinehiringpage');
+    }
+     else if (option['label'] == 'Leaves') {
+      context.push( '/leavespage');
+    }
+     else if (option['label'] == 'Company Assets') {
+      context.push( '/assetspage');
+    }
+  },
           child: Container(
             decoration: BoxDecoration(
               color: Appcolors.kwhitecolor,

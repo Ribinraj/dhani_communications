@@ -5,67 +5,66 @@ import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 
-class ScreenMachineHiringPage extends StatefulWidget {
-  const ScreenMachineHiringPage({super.key});
+class ScreenAssetsPage extends StatefulWidget {
+  const ScreenAssetsPage({super.key});
 
   @override
-  State<ScreenMachineHiringPage> createState() =>
-      _ScreenMachineHiringPageState();
+  State<ScreenAssetsPage> createState() => _ScreenAssetsPageState();
 }
 
-class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
+class _ScreenAssetsPageState extends State<ScreenAssetsPage> {
   DateTime? _fromDate;
   DateTime? _toDate;
 
-  // Sample machine hiring data
-  final List<Map<String, dynamic>> hiringList = [
+  // Sample assets data
+  final List<Map<String, dynamic>> assetsList = [
     {
-      'toolName': 'Excavator',
-      'date': '03 Jan 2026',
-      'amount': '₹12,500',
-      'status': 'Approved',
+      'assetName': 'Dell Latitude 5520',
+      'model': 'LAT-5520-i7',
+      'lastUpdated': '03 Jan 2026',
+      'status': 'Active',
     },
     {
-      'toolName': 'Bulldozer',
-      'date': '03 Jan 2026',
-      'amount': '₹15,800',
-      'status': 'Rejected',
+      'assetName': 'iPhone 14 Pro',
+      'model': 'IPHONE14P-256GB',
+      'lastUpdated': '03 Jan 2026',
+      'status': 'Active',
     },
     {
-      'toolName': 'Crane',
-      'date': '02 Jan 2026',
-      'amount': '₹25,000',
-      'status': 'Approved',
+      'assetName': 'MacBook Pro M2',
+      'model': 'MBP-M2-16-512',
+      'lastUpdated': '02 Jan 2026',
+      'status': 'Active',
     },
     {
-      'toolName': 'Concrete Mixer',
-      'date': '02 Jan 2026',
-      'amount': '₹8,500',
-      'status': 'Approved',
+      'assetName': 'HP Monitor 27"',
+      'model': 'HP-E27-4K',
+      'lastUpdated': '02 Jan 2026',
+      'status': 'Maintenance',
     },
     {
-      'toolName': 'Forklift',
-      'date': '01 Jan 2026',
-      'amount': '₹6,200',
-      'status': 'Rejected',
+      'assetName': 'Logitech Keyboard',
+      'model': 'MX-KEYS-MINI',
+      'lastUpdated': '01 Jan 2026',
+      'status': 'Active',
     },
     {
-      'toolName': 'Loader',
-      'date': '01 Jan 2026',
-      'amount': '₹11,000',
-      'status': 'Approved',
+      'assetName': 'Sony Headphones',
+      'model': 'WH-1000XM5',
+      'lastUpdated': '01 Jan 2026',
+      'status': 'Inactive',
     },
     {
-      'toolName': 'Compactor',
-      'date': '31 Dec 2025',
-      'amount': '₹9,300',
-      'status': 'Approved',
+      'assetName': 'iPad Air',
+      'model': 'IPAD-AIR-5-256',
+      'lastUpdated': '31 Dec 2025',
+      'status': 'Active',
     },
     {
-      'toolName': 'Grader',
-      'date': '31 Dec 2025',
-      'amount': '₹18,700',
-      'status': 'Rejected',
+      'assetName': 'Dell Mouse',
+      'model': 'MS5120W',
+      'lastUpdated': '31 Dec 2025',
+      'status': 'Active',
     },
   ];
 
@@ -104,7 +103,7 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
                         ),
                         ResponsiveSizedBox.width(3),
                         TextStyles.headline(
-                          text: 'Filter Hiring',
+                          text: 'Filter Assets',
                           weight: FontWeight.bold,
                           color: Appcolors.kblackcolor,
                         ),
@@ -323,7 +322,7 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Machine Hiring',
+          text: 'Assets',
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -356,19 +355,19 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
           ),
         ],
       ),
-      body: hiringList.isEmpty
+      body: assetsList.isEmpty
           ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.construction_rounded,
+                    Icons.inventory_2_rounded,
                     size: ResponsiveUtils.sp(20),
                     color: Appcolors.kgreyColor.withOpacity(0.5),
                   ),
                   ResponsiveSizedBox.height20,
                   TextStyles.subheadline(
-                    text: 'No hiring records found',
+                    text: 'No asset records found',
                     color: Appcolors.kgreyColor,
                   ),
                 ],
@@ -376,22 +375,35 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
             )
           : ListView.builder(
               padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
-              itemCount: hiringList.length,
+              itemCount: assetsList.length,
               itemBuilder: (context, index) {
-                final hiring = hiringList[index];
+                final asset = assetsList[index];
                 return GestureDetector(
                   onTap: () {
-                    context.push('/machinehiredetailpage');
+                    context.push('/assetdetailspage');
                   },
-                  child: _buildHiringCard(hiring),
+                  child: _buildAssetCard(asset),
                 );
               },
             ),
     );
   }
 
-  Widget _buildHiringCard(Map<String, dynamic> hiring) {
-    final bool isApproved = hiring['status'] == 'Approved';
+  Widget _buildAssetCard(Map<String, dynamic> asset) {
+    final String status = asset['status'];
+
+    Color statusColor;
+    IconData statusIcon;
+    if (status == 'Active') {
+      statusColor = Colors.green;
+      statusIcon = Icons.check_circle;
+    } else if (status == 'Inactive') {
+      statusColor = Colors.red;
+      statusIcon = Icons.cancel;
+    } else {
+      statusColor = Colors.orange;
+      statusIcon = Icons.build_circle;
+    }
 
     return Container(
       margin: EdgeInsets.only(bottom: ResponsiveUtils.hp(2)),
@@ -410,90 +422,75 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
         padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
         child: Row(
           children: [
-            // Tool Icon
-            Container(
-              padding: EdgeInsets.all(ResponsiveUtils.wp(3)),
-              decoration: BoxDecoration(
-                color: Appcolors.kprimarycolor.withOpacity(0.1),
-                borderRadius: BorderRadiusStyles.kradius10(),
-              ),
-              child: Icon(
-                Icons.build_circle_rounded,
-                size: ResponsiveUtils.sp(10),
-                color: Appcolors.kprimarycolor,
-              ),
-            ),
-            ResponsiveSizedBox.width(3),
-            // Details
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Tool Name
+                  // Asset Name
                   TextStyles.subheadline(
-                    text: hiring['toolName'],
+                    text: asset['assetName'],
                     weight: FontWeight.bold,
-                    color: Appcolors.kblackcolor,
-                    overflow: TextOverflow.ellipsis,
+                    color: Appcolors.kprimarycolor,
                   ),
                   ResponsiveSizedBox.height5,
-                  // Date
+                  // Model
                   Row(
                     children: [
                       Icon(
-                        Icons.calendar_today,
+                        Icons.label_outline,
+                        size: ResponsiveUtils.sp(3.5),
+                        color: Appcolors.kgreyColor,
+                      ),
+                      ResponsiveSizedBox.width(1.5),
+                      Expanded(
+                        child: TextStyles.caption(
+                          text: asset['model'],
+                          color: Appcolors.kgreyColor,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                  ResponsiveSizedBox.height5,
+                  // Last Updated Date
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.update,
                         size: ResponsiveUtils.sp(3.5),
                         color: Appcolors.kgreyColor,
                       ),
                       ResponsiveSizedBox.width(1.5),
                       TextStyles.caption(
-                        text: hiring['date'],
+                        text: asset['lastUpdated'],
                         color: Appcolors.kgreyColor,
-                      ),
-                    ],
-                  ),
-                  ResponsiveSizedBox.height5,
-                  // Amount
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.currency_rupee,
-                        size: ResponsiveUtils.sp(3.5),
-                        color: Appcolors.kprimarycolor,
-                      ),
-                      ResponsiveSizedBox.width(1),
-                      TextStyles.medium(
-                        text: hiring['amount'],
-                        weight: FontWeight.w600,
-                        color: Appcolors.kprimarycolor,
                       ),
                     ],
                   ),
                 ],
               ),
             ),
+            ResponsiveSizedBox.width(2),
             // Status
             Column(
               children: [
                 Container(
                   padding: EdgeInsets.all(ResponsiveUtils.wp(2)),
                   decoration: BoxDecoration(
-                    color: isApproved
-                        ? Colors.green.withOpacity(0.1)
-                        : Colors.red.withOpacity(0.1),
+                    color: statusColor.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    isApproved ? Icons.check_circle : Icons.cancel,
-                    color: isApproved ? Colors.green : Colors.red,
+                    statusIcon,
+                    color: statusColor,
                     size: ResponsiveUtils.sp(6),
                   ),
                 ),
                 ResponsiveSizedBox.height5,
                 TextStyles.caption(
-                  text: hiring['status'],
+                  text: status,
                   weight: FontWeight.w600,
-                  color: isApproved ? Colors.green.shade700 : Colors.red.shade700,
                 ),
               ],
             ),
