@@ -1,3 +1,4 @@
+import 'package:dhani_communications/presentation/screens/screen_assets_detailspage/screen_assetsdetailspage.dart';
 import 'package:dhani_communications/presentation/screens/screen_assetspage/screen_assetspage.dart';
 import 'package:dhani_communications/presentation/screens/screen_attendence_detailpage/screen_attendencedetailpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_attendencelist/screen_attendencelist.dart';
@@ -6,12 +7,16 @@ import 'package:dhani_communications/presentation/screens/screen_editprofilepage
 import 'package:dhani_communications/presentation/screens/screen_employeeleaves/screen_employeeleaves.dart';
 import 'package:dhani_communications/presentation/screens/screen_expensedetailspage/screen_expensedetailspage.dart';
 import 'package:dhani_communications/presentation/screens/screen_expenses/screen_expensespage.dart';
+import 'package:dhani_communications/presentation/screens/screen_inventorydetailspage/screen_inventorydetailspage.dart';
+import 'package:dhani_communications/presentation/screens/screen_inventorypage/screen_inventorypage.dart';
 import 'package:dhani_communications/presentation/screens/screen_labourattendence/screen_labourattendence.dart';
 import 'package:dhani_communications/presentation/screens/screen_labourattendence_details/screen_labour_attendencedetailpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_loginpage/screen_loginpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_machinehire_detailspage/screen_machinehiredetails_page.dart';
 import 'package:dhani_communications/presentation/screens/screen_machinehiringpage/screen_machinehiringpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_otppage/screen_otppage.dart';
+import 'package:dhani_communications/presentation/screens/screen_requestdetailpage/screen_requestdetailpage.dart';
+import 'package:dhani_communications/presentation/screens/screen_requestspage/screen_requestspage.dart';
 import 'package:dhani_communications/presentation/screens/splash_screen/screen_splashpage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -127,7 +132,47 @@ class AppRouter {
     return ScreenAssetsPage();
   },
 ),
-      /// Main Page
+      ///assetsdetailspage
+ GoRoute(
+  path: '/assetdetailspage',
+  builder: (context, state) {
+    
+    return ScreenAssetDetailsPage();
+  },
+),
+      ///inventorypage
+ GoRoute(
+  path: '/inventorypage',
+  builder: (context, state) {
+    
+    return ScreenInventorypage();
+  },
+), 
+      ///inventorydetailspage
+ GoRoute(
+  path: '/inventorydetailspage',
+  builder: (context, state) {
+    
+    return ScreenInventoryDetailPage();
+  },
+), 
+      ///requestspage
+ GoRoute(
+  path: '/requestspage',
+  builder: (context, state) {
+    
+    return ScreenrequestsPage();
+  },
+), 
+      ///requestdetailspage
+ GoRoute(
+  path: '/requestdetailspage',
+  builder: (context, state) {
+    
+    return ScreenRequestDetailPage();
+  },
+), 
+/// Main Page
       GoRoute(
         path: '/main',
         pageBuilder: (context, state) {

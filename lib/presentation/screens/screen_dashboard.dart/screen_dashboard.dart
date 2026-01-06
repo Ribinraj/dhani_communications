@@ -706,6 +706,8 @@ import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/mdi.dart';
 
 class ScreenDashboardpage extends StatefulWidget {
   const ScreenDashboardpage({super.key});
@@ -845,27 +847,49 @@ class _HomePageState extends State<ScreenDashboardpage>
     },
   ];
 
-  // FAB options data
+// FAB options data with Iconify icons
   final List<Map<String, dynamic>> fabOptions = [
     {
-      'icon': Icons.person_add_rounded,
-      'label': 'Add Employee',
+      'iconify': Mdi.account_clock, // Daily Attendance
+      'label': 'Daily Attendance',
       'color': Color(0xFF6C63FF),
+      'useIconify': true,
     },
     {
-      'icon': Icons.assignment_rounded,
-      'label': 'New Request',
+      'iconify': Mdi.account_group, // Labour Attendance
+      'label': 'Labour Attendance',
       'color': Color(0xFF00D9FF),
+      'useIconify': true,
     },
     {
-      'icon': Icons.upload_file_rounded,
-      'label': 'Upload Document',
+      'icon': Icons.precision_manufacturing_rounded, // Machinery
+      'label': 'New Machinery Hire',
       'color': Color(0xFFFF6584),
+      'useIconify': false,
     },
     {
-      'icon': Icons.event_rounded,
-      'label': 'Create Event',
+      'iconify': Mdi.cash_register, // Daily Expenditure
+      'label': 'Daily Expenditure',
       'color': Color(0xFF4CAF50),
+      'useIconify': true,
+    },
+    {
+      'iconify': Mdi.calendar_remove, // Leave Application
+      'label': 'Leave Application',
+      'color': Color(0xFFFF9800),
+      'useIconify': true,
+    },
+    {
+      'iconify': Mdi.chart_line, // Daily Progress Report
+      'label': 'Daily Progress (DPR)',
+      'color': Color(0xFF9C27B0),
+      'useIconify': true,
+    },
+    {
+      'iconify': Mdi.file_document_edit, // Request
+      'label': 'Request',
+      'color': Color(0xFFE91E63),
+      'useIconify': true,
     },
   ];
 
@@ -948,36 +972,39 @@ class _HomePageState extends State<ScreenDashboardpage>
               ),
             ),
           // Multi-Action FAB Options with staggered animation
-          ...List.generate(fabOptions.length, (index) {
-            final option = fabOptions[index];
-            final reversedIndex = fabOptions.length - 1 - index;
-            return AnimatedPositioned(
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeOutCubic,
-              right: ResponsiveUtils.wp(4),
-              bottom: _isFabOpen
-                  ? ResponsiveUtils.hp(22.5) + (reversedIndex * ResponsiveUtils.hp(9))
-                  : ResponsiveUtils.hp(11.5),
-              child: ScaleTransition(
-                scale: CurvedAnimation(
-                  parent: _fabAnimation,
-                  curve: Interval(
-                    index * 0.15,
-                    1.0,
-                    curve: Curves.elasticOut,
-                  ),
-                ),
-                child: FadeTransition(
-                  opacity: _fabAnimation,
-                  child: _buildFabOption(
-                    icon: option['icon'],
-                    label: option['label'],
-                    color: option['color'],
-                  ),
-                ),
-              ),
-            );
-          }),
+        // Multi-Action FAB Options with staggered animation
+...List.generate(fabOptions.length, (index) {
+  final option = fabOptions[index];
+  final reversedIndex = fabOptions.length - 1 - index;
+  return AnimatedPositioned(
+    duration: const Duration(milliseconds: 250),
+    curve: Curves.easeOutCubic,
+    right: ResponsiveUtils.wp(4),
+    bottom: _isFabOpen
+        ? ResponsiveUtils.hp(22.5) + (reversedIndex * ResponsiveUtils.hp(9))
+        : ResponsiveUtils.hp(11.5),
+    child: ScaleTransition(
+      scale: CurvedAnimation(
+        parent: _fabAnimation,
+        curve: Interval(
+          index * 0.15,
+          1.0,
+          curve: Curves.elasticOut,
+        ),
+      ),
+      child: FadeTransition(
+        opacity: _fabAnimation,
+        child: _buildFabOption(
+          icon: option['icon'],
+          iconify: option['iconify'],
+          label: option['label'],
+          color: option['color'],
+          useIconify: option['useIconify'] ?? false,
+        ),
+      ),
+    ),
+  );
+}),
           // Main FAB
           Positioned(
             right: ResponsiveUtils.wp(4),
@@ -1010,86 +1037,94 @@ class _HomePageState extends State<ScreenDashboardpage>
     );
   }
 
-  Widget _buildFabOption({
-    required IconData icon,
-    required String label,
-    required Color color,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          _toggleFab();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(label),
-              duration: Duration(milliseconds: 1200),
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: color,
-              margin: EdgeInsets.only(
-                bottom: ResponsiveUtils.hp(15),
-                left: ResponsiveUtils.wp(4),
-                right: ResponsiveUtils.wp(4),
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadiusStyles.kradius10(),
-              ),
+Widget _buildFabOption({
+  IconData? icon,
+  String? iconify,
+  required String label,
+  required Color color,
+  bool useIconify = false,
+}) {
+  return Material(
+    color: Colors.transparent,
+    child: InkWell(
+      onTap: () {
+        _toggleFab();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(label),
+            duration: Duration(milliseconds: 1200),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: color,
+            margin: EdgeInsets.only(
+              bottom: ResponsiveUtils.hp(15),
+              left: ResponsiveUtils.wp(4),
+              right: ResponsiveUtils.wp(4),
             ),
-          );
-        },
-        borderRadius: BorderRadiusStyles.kradius15(),
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: ResponsiveUtils.wp(4),
-            vertical: ResponsiveUtils.hp(1.5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadiusStyles.kradius10(),
+            ),
           ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadiusStyles.kradius15(),
-            boxShadow: [
-              BoxShadow(
-                color: color.withOpacity(0.3),
-                blurRadius: 12,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Label
-              TextStyles.medium(
-                text: label,
-                weight: FontWeight.w600,
+        );
+      },
+      borderRadius: BorderRadiusStyles.kradius15(),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: ResponsiveUtils.wp(4),
+          vertical: ResponsiveUtils.hp(1.5),
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadiusStyles.kradius15(),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.3),
+              blurRadius: 12,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Label
+            TextStyles.medium(
+              text: label,
+              weight: FontWeight.w600,
+              color: color,
+            ),
+            ResponsiveSizedBox.width(3),
+            // Icon container
+            Container(
+              padding: EdgeInsets.all(ResponsiveUtils.wp(2.5)),
+              decoration: BoxDecoration(
                 color: color,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withOpacity(0.4),
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
-              ResponsiveSizedBox.width(3),
-              // Icon container
-              Container(
-                padding: EdgeInsets.all(ResponsiveUtils.wp(2.5)),
-                decoration: BoxDecoration(
-                  color: color,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: color.withOpacity(0.4),
-                      blurRadius: 8,
-                      offset: Offset(0, 2),
+              child: useIconify && iconify != null
+                  ? Iconify(
+                      iconify,
+                      color: Colors.white,
+                      size: ResponsiveUtils.sp(5),
+                    )
+                  : Icon(
+                      icon ?? Icons.add,
+                      color: Colors.white,
+                      size: ResponsiveUtils.sp(5),
                     ),
-                  ],
-                ),
-                child: Icon(
-                  icon,
-                  color: Colors.white,
-                  size: ResponsiveUtils.sp(5),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildAppBar() {
     return Container(
@@ -1262,6 +1297,12 @@ class _HomePageState extends State<ScreenDashboardpage>
     }
      else if (option['label'] == 'Company Assets') {
       context.push( '/assetspage');
+    }
+         else if (option['label'] == 'Project Inventory') {
+      context.push( '/inventorypage');
+    }
+             else if (option['label'] == 'Requests') {
+      context.push( '/requestspage');
     }
   },
           child: Container(
