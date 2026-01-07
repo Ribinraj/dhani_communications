@@ -1,3 +1,4 @@
+import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_newattendencepage/screen_newattendencepage.dart';
 import 'package:dhani_communications/presentation/screens/screen_assets_detailspage/screen_assetsdetailspage.dart';
 import 'package:dhani_communications/presentation/screens/screen_assetspage/screen_assetspage.dart';
 import 'package:dhani_communications/presentation/screens/screen_attendence_detailpage/screen_attendencedetailpage.dart';
@@ -170,6 +171,14 @@ class AppRouter {
   builder: (context, state) {
     
     return ScreenRequestDetailPage();
+  },
+), 
+      ///dialyattendencepage
+ GoRoute(
+  path: '/dailyattendencepage',
+  builder: (context, state) {
+    
+    return DailyAttendancePage();
   },
 ), 
 /// Main Page

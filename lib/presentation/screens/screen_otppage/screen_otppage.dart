@@ -78,13 +78,13 @@ class _OtpPageState extends State<OtpPage> {
 
   void _verifyOtp() {
     if (_otpController.text.length == 6) {
-      // Implement OTP verification logic here
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Verifying OTP: ${_otpController.text}'),
-          backgroundColor: Appcolors.kprimarycolor,
-        ),
-      );
+      // // Implement OTP verification logic here
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('Verifying OTP: ${_otpController.text}'),
+      //     backgroundColor: Appcolors.kprimarycolor,
+      //   ),
+      // );
       
       // Navigate to next screen on success
      context.push(
