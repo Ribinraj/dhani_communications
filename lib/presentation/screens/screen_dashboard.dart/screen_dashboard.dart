@@ -164,6 +164,7 @@ class _HomePageState extends State<ScreenDashboardpage>
       'label': 'Labour Attendance',
       'color': Color(0xFF00D9FF),
       'useIconify': true,
+      'route': '/labourAttendencemarkingpage',
     },
     {
       'icon': Icons.precision_manufacturing_rounded, // Machinery

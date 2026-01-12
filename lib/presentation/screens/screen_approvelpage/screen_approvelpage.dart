@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
+import 'package:go_router/go_router.dart';
 
 class ScreenApprovalsPage extends StatefulWidget {
   const ScreenApprovalsPage({super.key});
@@ -22,6 +23,7 @@ class _ScreenApprovalsPageState extends State<ScreenApprovalsPage> {
       'label': 'Approve Employee Attendance',
       'color': Color(0xFF9C27B0),
       'count': 12,
+       'route': '/approveemployeeattenedencepage',
     },
     {
       'iconPath': Appconstants.approveLabourAttendance,
@@ -167,22 +169,9 @@ class _ScreenApprovalsPageState extends State<ScreenApprovalsPage> {
   Widget _buildApprovalCard(Map<String, dynamic> option) {
     return GestureDetector(
       onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${option['label']} tapped'),
-            duration: const Duration(milliseconds: 800),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: option['color'],
-            margin: EdgeInsets.only(
-              bottom: ResponsiveUtils.hp(2),
-              left: ResponsiveUtils.wp(4),
-              right: ResponsiveUtils.wp(4),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadiusStyles.kradius10(),
-            ),
-          ),
-        );
+  if (option['route'] != null) {
+    context.push(option['route']);
+  }
       },
       child: Container(
         decoration: BoxDecoration(
