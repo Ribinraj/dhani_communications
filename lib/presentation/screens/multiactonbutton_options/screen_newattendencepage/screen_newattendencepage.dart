@@ -3,6 +3,7 @@ import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/constants.dart';
 import 'package:dhani_communications/widgets/custom_camera.dart';
 import 'package:dhani_communications/widgets/custom_dropdown.dart';
+import 'package:dhani_communications/widgets/custom_formtextfield.dart';
 import 'package:flutter/material.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 
@@ -143,55 +144,12 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
 
                 SizedBox(height: ResponsiveUtils.hp(3)),
 
-                // Remarks Field
-                TextFormField(
-                  controller: _remarksController,
-                  maxLines: 4,
-                  decoration: InputDecoration(
-                    hintText: 'Enter remarks (optional)',
-                    hintStyle: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: ResponsiveUtils.sp(3.5),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: ResponsiveUtils.wp(4),
-                      vertical: ResponsiveUtils.hp(2),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        ResponsiveUtils.borderRadius(2.5),
-                      ),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF59CBEF),
-                        width: 1.5,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        ResponsiveUtils.borderRadius(2.5),
-                      ),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF59CBEF),
-                        width: 1.5,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        ResponsiveUtils.borderRadius(2.5),
-                      ),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF4F8FDF),
-                        width: 2,
-                      ),
-                    ),
-                  ),
-                  style: TextStyle(
-                    fontSize: ResponsiveUtils.sp(3.5),
-                    color: Colors.black87,
-                  ),
-                ),
+               CustomFormtextfield(
+  controller: _remarksController,
+  hintText: 'Enter remarks (optional)',
+  maxLines: 4,
+),
+
 
                 SizedBox(height: ResponsiveUtils.hp(4)),
 

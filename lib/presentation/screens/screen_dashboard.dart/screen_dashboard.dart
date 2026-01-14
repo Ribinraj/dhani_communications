@@ -192,12 +192,14 @@ class _HomePageState extends State<ScreenDashboardpage>
       'label': 'Daily Progress (DPR)',
       'color': Color(0xFF9C27B0),
       'useIconify': true,
+      'route': '/dprprogress'
     },
     {
       'iconify': Mdi.file_document_edit, // Request
       'label': 'Request',
       'color': Color(0xFFE91E63),
       'useIconify': true,
+      'route': '/newrequestpage'
     },
   ];
 

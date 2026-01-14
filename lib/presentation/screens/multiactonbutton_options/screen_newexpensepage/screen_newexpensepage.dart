@@ -1,5 +1,7 @@
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/widgets/custom_formtextfield.dart';
+
 import 'package:flutter/material.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 
@@ -217,62 +219,23 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                   weight: FontWeight.w600,
                 ),
                 ResponsiveSizedBox.height10,
-                TextFormField(
-                  controller: expenseDateController,
-                  readOnly: true,
-                  onTap: () => _selectDate(context),
-                  decoration: InputDecoration(
-                    hintText: 'Select Expense Date',
-                    hintStyle: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: ResponsiveUtils.sp(3.5),
-                    ),
-                    filled: true,
-                    fillColor: Appcolors.kwhitecolor,
-                    suffixIcon: const Icon(
-                      Icons.calendar_today,
-                      color: Appcolors.kprimarycolor,
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: ResponsiveUtils.wp(4),
-                      vertical: ResponsiveUtils.hp(1.8),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
-                      borderSide: const BorderSide(
-                        color: Appcolors.kbordercolor,
-                        width: 1.5,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
-                      borderSide: const BorderSide(
-                        color: Appcolors.kbordercolor,
-                        width: 1.5,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
-                      borderSide: const BorderSide(
-                        color: Appcolors.kprimarycolor,
-                        width: 2,
-                      ),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
-                      borderSide: const BorderSide(
-                        color: Appcolors.kredcolor,
-                        width: 1.5,
-                      ),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please select expense date';
-                    }
-                    return null;
-                  },
-                ),
+     CustomFormtextfield(
+  controller: expenseDateController,
+  hintText: 'Select Expense Date',
+  readOnly: true,
+  onTap: () => _selectDate(context),
+  suffixIcon: const Icon(
+    Icons.calendar_today,
+    color: Appcolors.kprimarycolor,
+  ),
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Please select expense date';
+    }
+    return null;
+  },
+),
+
                 
                 ResponsiveSizedBox.height20,
                 
@@ -335,64 +298,25 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                   weight: FontWeight.w600,
                 ),
                 ResponsiveSizedBox.height10,
-                TextFormField(
-                  controller: expenseAmountController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: 'Enter Expense Amount',
-                    hintStyle: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: ResponsiveUtils.sp(3.5),
-                    ),
-                    filled: true,
-                    fillColor: Appcolors.kwhitecolor,
-                    prefixIcon: const Icon(
-                      Icons.currency_rupee,
-                      color: Appcolors.kprimarycolor,
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: ResponsiveUtils.wp(4),
-                      vertical: ResponsiveUtils.hp(1.8),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
-                      borderSide: const BorderSide(
-                        color: Appcolors.kbordercolor,
-                        width: 1.5,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
-                      borderSide: const BorderSide(
-                        color: Appcolors.kbordercolor,
-                        width: 1.5,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
-                      borderSide: const BorderSide(
-                        color: Appcolors.kprimarycolor,
-                        width: 2,
-                      ),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
-                      borderSide: const BorderSide(
-                        color: Appcolors.kredcolor,
-                        width: 1.5,
-                      ),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter expense amount';
-                    }
-                    if (double.tryParse(value) == null) {
-                      return 'Please enter a valid amount';
-                    }
-                    return null;
-                  },
-                ),
+         CustomFormtextfield(
+  controller: expenseAmountController,
+  hintText: 'Enter Expense Amount',
+  keyboardType: TextInputType.number,
+  prefixIcon: const Icon(
+    Icons.currency_rupee,
+    color: Appcolors.kprimarycolor,
+  ),
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter expense amount';
+    }
+    if (double.tryParse(value) == null) {
+      return 'Please enter a valid amount';
+    }
+    return null;
+  },
+),
+
                 
                 ResponsiveSizedBox.height20,
                 
@@ -403,44 +327,12 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                   weight: FontWeight.w600,
                 ),
                 ResponsiveSizedBox.height10,
-                TextFormField(
-                  controller: remarksController,
-                  maxLines: 4,
-                  decoration: InputDecoration(
-                    hintText: 'Enter any additional remarks',
-                    hintStyle: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: ResponsiveUtils.sp(3.5),
-                    ),
-                    filled: true,
-                    fillColor: Appcolors.kwhitecolor,
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: ResponsiveUtils.wp(4),
-                      vertical: ResponsiveUtils.hp(1.8),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
-                      borderSide: const BorderSide(
-                        color: Appcolors.kbordercolor,
-                        width: 1.5,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
-                      borderSide: const BorderSide(
-                        color: Appcolors.kbordercolor,
-                        width: 1.5,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
-                      borderSide: const BorderSide(
-                        color: Appcolors.kprimarycolor,
-                        width: 2,
-                      ),
-                    ),
-                  ),
-                ),
+       CustomFormtextfield(
+  controller: remarksController,
+  hintText: 'Enter any additional remarks',
+  maxLines: 4,
+),
+
                 
                 ResponsiveSizedBox.height20,
                 
