@@ -171,18 +171,21 @@ class _HomePageState extends State<ScreenDashboardpage>
       'label': 'New Machinery Hire',
       'color': Color(0xFFFF6584),
       'useIconify': false,
+      'route': '/newmachinehirepage',
     },
     {
       'iconify': Mdi.cash_register, // Daily Expenditure
       'label': 'Daily Expenditure',
       'color': Color(0xFF4CAF50),
       'useIconify': true,
+      'route': '/newexpensepage',
     },
     {
       'iconify': Mdi.calendar_remove, // Leave Application
       'label': 'Leave Application',
       'color': Color(0xFFFF9800),
       'useIconify': true,
+      'route':'/leaveapplicationpage',
     },
     {
       'iconify': Mdi.chart_line, // Daily Progress Report

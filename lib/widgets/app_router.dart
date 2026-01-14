@@ -1,7 +1,10 @@
 import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_labourattendencepage/labour_puchoutpage.dart';
 import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_labourattendencepage/labour_punchinpage.dart';
 import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_labourattendencepage/screen_labourattendence_markingpage.dart';
+import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_leaveapplicationpage/screen_leaveapplicationpage.dart';
 import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_newattendencepage/screen_newattendencepage.dart';
+import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_newexpensepage/screen_newexpensepage.dart';
+import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_newmachineryhire/screen_newmachineryhire.dart';
 import 'package:dhani_communications/presentation/screens/screen_approvelspage/screen_employee_attendenceapprovelpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_assets_detailspage/screen_assetsdetailspage.dart';
 import 'package:dhani_communications/presentation/screens/screen_assetspage/screen_assetspage.dart';
@@ -215,6 +218,30 @@ class AppRouter {
   builder: (context, state) {
     
     return ScreenApproveEmployeesAttendancePage();
+  },
+), 
+      ///newmachinehirepage
+ GoRoute(
+  path: '/newmachinehirepage',
+  builder: (context, state) {
+    
+    return ScreenNewmachineryhire();
+  },
+), 
+      ///newexpensepage
+ GoRoute(
+  path: '/newexpensepage',
+  builder: (context, state) {
+    
+    return ScreenNewexpensepage();
+  },
+), 
+      ///screenleaveapplicationpage
+ GoRoute(
+  path: '/leaveapplicationpage',
+  builder: (context, state) {
+    
+    return ScreenLeaveApplicationPage();
   },
 ), 
 /// Main Page
