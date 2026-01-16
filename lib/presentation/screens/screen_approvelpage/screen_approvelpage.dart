@@ -30,18 +30,21 @@ class _ScreenApprovalsPageState extends State<ScreenApprovalsPage> {
       'label': 'Approve Labour Attendance',
       'color': Color(0xFFFF6584),
       'count': 8,
+      'route': '/contractlaboursattendenceapprovelpage',
     },
     {
       'iconPath': Appconstants.approveEmployeeExpense,
       'label': 'Approve Employee Expenses',
       'color': Color(0xFF607D8B),
       'count': 5,
+      'route': '/expenseapprovelpage',
     },
     {
       'iconPath': Appconstants.approveEmployeeLeaves,
       'label': 'Approve Employee Leaves',
       'color': Color(0xFF00D9FF),
       'count': 3,
+      'route': '/screenleaveapprovelpage',
     },
     {
       'iconPath': Appconstants.dprreport,
@@ -54,6 +57,7 @@ class _ScreenApprovalsPageState extends State<ScreenApprovalsPage> {
       'label': 'Approve Machine Hire',
       'color': Color(0xFF795548),
       'count': 4,
+      'route': '/screenapprovemachinerypage',
     },
 
   ];

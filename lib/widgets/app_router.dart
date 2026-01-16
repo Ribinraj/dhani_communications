@@ -7,7 +7,11 @@ import 'package:dhani_communications/presentation/screens/multiactonbutton_optio
 import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_newexpensepage/screen_newexpensepage.dart';
 import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_newmachineryhire/screen_newmachineryhire.dart';
 import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_requestpage/screen_requestpage.dart';
+import 'package:dhani_communications/presentation/screens/screen_approvelspage/screen_approvelexpensepage.dart';
+import 'package:dhani_communications/presentation/screens/screen_approvelspage/screen_approvemachinerypage.dart';
+import 'package:dhani_communications/presentation/screens/screen_approvelspage/screen_contractlabours_attendenceapprovelpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_approvelspage/screen_employee_attendenceapprovelpage.dart';
+import 'package:dhani_communications/presentation/screens/screen_approvelspage/screen_leaveapprovelpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_assets_detailspage/screen_assetsdetailspage.dart';
 import 'package:dhani_communications/presentation/screens/screen_assetspage/screen_assetspage.dart';
 import 'package:dhani_communications/presentation/screens/screen_attendence_detailpage/screen_attendencedetailpage.dart';
@@ -24,6 +28,7 @@ import 'package:dhani_communications/presentation/screens/screen_labourattendenc
 import 'package:dhani_communications/presentation/screens/screen_loginpage/screen_loginpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_machinehire_detailspage/screen_machinehiredetails_page.dart';
 import 'package:dhani_communications/presentation/screens/screen_machinehiringpage/screen_machinehiringpage.dart';
+import 'package:dhani_communications/presentation/screens/screen_notificationpage/screen_notificationpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_otppage/screen_otppage.dart';
 import 'package:dhani_communications/presentation/screens/screen_requestdetailpage/screen_requestdetailpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_requestspage/screen_requestspage.dart';
@@ -262,6 +267,46 @@ class AppRouter {
     return ScreenNewRequestPage();
   },
 ),  
+      ///screenleaveapplicationpage
+ GoRoute(
+  path: '/notificationpage',
+  builder: (context, state) {
+    
+    return NotificationPage();
+  },
+), 
+      ///screenapprovecontractlaboursattendencepage
+ GoRoute(
+  path: '/contractlaboursattendenceapprovelpage',
+  builder: (context, state) {
+    
+    return ScreenContractlaboursAttendenceapprovelpage();
+  },
+), 
+      ///screenapprovecontractlaboursattendencepage
+ GoRoute(
+  path: '/expenseapprovelpage',
+  builder: (context, state) {
+    
+    return ScreenExpenseApprovalPage();
+  },
+), 
+      ///screenleaveapprovelpage
+ GoRoute(
+  path: '/screenleaveapprovelpage',
+  builder: (context, state) {
+    
+    return ScreenLeaveApprovalPage();
+  },
+), 
+      ///screenapprovemachinerypage
+ GoRoute(
+  path: '/screenapprovemachinerypage',
+  builder: (context, state) {
+    
+    return ScreenApproveMachineryPage();
+  },
+), 
 /// Main Page
       GoRoute(
         path: '/main',

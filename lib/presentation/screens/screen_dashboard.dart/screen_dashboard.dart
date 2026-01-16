@@ -467,7 +467,9 @@ Widget _buildFabOption({
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              context.push('/notificationpage');
+            },
             icon: const Icon(Icons.notifications_outlined),
             color: Appcolors.kprimarycolor,
             iconSize: ResponsiveUtils.sp(6.5),
