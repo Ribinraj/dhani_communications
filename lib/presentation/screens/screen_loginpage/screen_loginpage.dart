@@ -3,10 +3,11 @@ import 'dart:ui';
 import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
-
+import 'package:dhani_communications/presentation/blocs/send_otp_bloc/send_otp_bloc.dart';
 import 'package:dhani_communications/widgets/custom_textfiield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatefulWidget {
@@ -28,12 +29,9 @@ class _LoginPageState extends State<LoginPage> {
 
   void _handleSubmit() {
     if (_formKey.currentState!.validate()) {
-      // Handle login logic here
-context.push(
-  '/otppage',
-  extra: '+91 9876543210',
-);
-
+      context.read<SendOtpBloc>().add(
+            SendOtpButtonClickEvent(mobileNumber: _phoneController.text),
+          );
     }
   }
 
@@ -44,6 +42,9 @@ context.push(
     if (value.length != 10) {
       return 'Phone number must be 10 digits';
     }
+    if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+      return 'Phone number should contain only digits';
+    }
     return null;
   }
 
@@ -53,7 +54,6 @@ context.push(
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-   
       body: Stack(
         children: [
           // Custom Paint Background Design
@@ -74,12 +74,12 @@ context.push(
                     children: [
                       SizedBox(height: screenHeight * 0.08),
 
-               Center(
-                    child: Image.asset(
-                                Appconstants.applogo,
-                             height: ResponsiveUtils.hp(30),
-                              ),
-               ),
+                      Center(
+                        child: Image.asset(
+                          Appconstants.applogo,
+                          height: ResponsiveUtils.hp(30),
+                        ),
+                      ),
 
                       SizedBox(height: screenHeight * 0.005),
 
@@ -122,31 +122,70 @@ context.push(
 
                       SizedBox(height: screenHeight * 0.04),
 
-                      // Submit Button
-                      SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          onPressed: _handleSubmit,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Appcolors.kprimarycolor,
-                            foregroundColor: Appcolors.kwhitecolor,
-                            elevation: 3,
-                            shadowColor: Appcolors.kprimarycolor.withOpacity(0.4),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: const Text(
-                            'Submit',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ),
+                      // Submit Button with BLoC
+            // Submit Button with BLoC
+BlocConsumer<SendOtpBloc, SendOtpState>(
+  listener: (context, state) {
+    if (state is SendOtpSuccessState) {
+      context.push(
+        '/otppage',
+        extra: {
+          'phone': '+91 ${_phoneController.text}',
+          'userId': state.executiveId,
+        },
+      );
+    } else if (state is SendOtpErrorState) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.message),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  },
+  builder: (context, state) {
+    final isLoading = state is SendOtpLoadingState;
+
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: ElevatedButton(
+        onPressed: isLoading ? null : _handleSubmit,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Appcolors.kprimarycolor,
+          foregroundColor: Appcolors.kwhitecolor,
+          elevation: 3,
+          shadowColor: Appcolors.kprimarycolor.withOpacity(0.4),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          disabledBackgroundColor:
+              Appcolors.kprimarycolor.withOpacity(0.6),
+        ),
+        child: isLoading
+            ? const SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Appcolors.kwhitecolor,
+                  ),
+                ),
+              )
+            : const Text(
+                'Submit',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
+              ),
+      ),
+    );
+  },
+),
 
                       SizedBox(height: screenHeight * 0.03),
 
