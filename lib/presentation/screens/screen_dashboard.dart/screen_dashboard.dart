@@ -1,13 +1,17 @@
 
+import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/data/models/update_model.dart';
+import 'package:dhani_communications/presentation/blocs/updates_bloc/updates_bloc.dart';
 import 'package:dhani_communications/presentation/screens/screen_dashboard.dart/widgets/paint.dart';
 import 'package:flutter/material.dart';
 import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
@@ -31,6 +35,9 @@ class _HomePageState extends State<ScreenDashboardpage>
   @override
   void initState() {
     super.initState();
+    // Fetch updates when dashboard loads
+    context.read<UpdatesBloc>().add(FetchUpdatesEvent());
+    
     _fabAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 250),
@@ -72,24 +79,6 @@ class _HomePageState extends State<ScreenDashboardpage>
     });
   }
 
-  // Carousel items
-  final List<Map<String, dynamic>> carouselItems = [
-    {
-      'title': 'Welcome to Dhani',
-      'subtitle': 'Your trusted communication partner',
-      'color': Appcolors.kprimarycolor,
-    },
-    {
-      'title': 'Stay Connected',
-      'subtitle': 'Seamless communication experience',
-      'color': Appcolors.ksecondarycolor,
-    },
-    {
-      'title': 'Explore More',
-      'subtitle': 'Discover amazing features',
-      'color': Appcolors.kprimarycolor.withOpacity(0.8),
-    },
-  ];
 
   // Grid options
   final List<Map<String, dynamic>> gridOptions = [
@@ -480,6 +469,129 @@ Widget _buildFabOption({
   }
 
   Widget _buildCarouselSlider() {
+    return BlocBuilder<UpdatesBloc, UpdatesState>(
+      builder: (context, state) {
+        if (state is UpdatesLoadingState) {
+          return _buildCarouselShimmer();
+        } else if (state is UpdatesErrorState) {
+          return _buildCarouselError(state.message);
+        } else if (state is UpdatesSuccessState) {
+          if (state.updates.isEmpty) {
+            return _buildEmptyCarousel();
+          }
+          return _buildCarouselContent(state.updates);
+        }
+        return _buildCarouselShimmer();
+      },
+    );
+  }
+
+  Widget _buildCarouselShimmer() {
+    return Column(
+      children: [
+        Container(
+          height: ResponsiveUtils.hp(20),
+          margin: EdgeInsets.symmetric(horizontal: ResponsiveUtils.wp(4)),
+          decoration: BoxDecoration(
+            color: Appcolors.kgreyColor.withOpacity(0.2),
+            borderRadius: BorderRadiusStyles.kradius15(),
+          ),
+          child: Center(
+            child: CircularProgressIndicator(
+              color: Appcolors.kprimarycolor,
+            ),
+          ),
+        ),
+        ResponsiveSizedBox.height10,
+      ],
+    );
+  }
+
+  Widget _buildCarouselError(String message) {
+    return Column(
+      children: [
+        Container(
+          height: ResponsiveUtils.hp(20),
+          margin: EdgeInsets.symmetric(horizontal: ResponsiveUtils.wp(4)),
+          decoration: BoxDecoration(
+            color: Appcolors.kgreyColor.withOpacity(0.1),
+            borderRadius: BorderRadiusStyles.kradius15(),
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  color: Appcolors.kgreyColor,
+                  size: ResponsiveUtils.sp(8),
+                ),
+                ResponsiveSizedBox.height10,
+                TextStyles.caption(
+                  text: 'Failed to load updates',
+                  color: Appcolors.kgreyColor,
+                ),
+                ResponsiveSizedBox.height10,
+                TextButton(
+                  onPressed: () {
+                    context.read<UpdatesBloc>().add(FetchUpdatesEvent());
+                  },
+                  child: TextStyles.caption(
+                    text: 'Retry',
+                    color: Appcolors.kprimarycolor,
+                    weight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        ResponsiveSizedBox.height10,
+      ],
+    );
+  }
+
+  Widget _buildEmptyCarousel() {
+    return Column(
+      children: [
+        Container(
+          height: ResponsiveUtils.hp(20),
+          margin: EdgeInsets.symmetric(horizontal: ResponsiveUtils.wp(4)),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Appcolors.kprimarycolor,
+                Appcolors.kprimarycolor.withOpacity(0.7),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadiusStyles.kradius15(),
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextStyles.headline(
+                  text: 'Welcome to Dhani',
+                  weight: FontWeight.bold,
+                  color: Appcolors.kwhitecolor,
+                ),
+                ResponsiveSizedBox.height10,
+                TextStyles.medium(
+                  text: 'Your trusted communication partner',
+                  color: Appcolors.kwhitecolor.withOpacity(0.9),
+                ),
+              ],
+            ),
+          ),
+        ),
+        ResponsiveSizedBox.height10,
+      ],
+    );
+  }
+
+  Widget _buildCarouselContent(List<UpdateModel> updates) {
     return Column(
       children: [
         CarouselSlider(
@@ -495,7 +607,7 @@ Widget _buildFabOption({
               });
             },
           ),
-          items: carouselItems.map((item) {
+          items: updates.map((update) {
             return Builder(
               builder: (BuildContext context) {
                 return Container(
@@ -504,41 +616,18 @@ Widget _buildFabOption({
                     horizontal: ResponsiveUtils.wp(1.25),
                   ),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        item['color'],
-                        item['color'].withOpacity(0.7),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
                     borderRadius: BorderRadiusStyles.kradius15(),
                     boxShadow: [
                       BoxShadow(
-                        color: item['color'].withOpacity(0.3),
+                        color: Appcolors.kgreyColor.withOpacity(0.3),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
                     ],
                   ),
-                  child: Padding(
-                    padding: EdgeInsets.all(ResponsiveUtils.wp(5)),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextStyles.headline(
-                          text: item['title'],
-                          weight: FontWeight.bold,
-                          color: Appcolors.kwhitecolor,
-                        ),
-                        ResponsiveSizedBox.height10,
-                        TextStyles.medium(
-                          text: item['subtitle'],
-                          color: Appcolors.kwhitecolor.withOpacity(0.9),
-                        ),
-                      ],
-                    ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadiusStyles.kradius15(),
+                    child: _buildCarouselImage(update.picture),
                   ),
                 );
               },
@@ -548,7 +637,7 @@ Widget _buildFabOption({
         ResponsiveSizedBox.height10,
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: carouselItems.asMap().entries.map((entry) {
+          children: updates.asMap().entries.map((entry) {
             return AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               width: _currentCarouselIndex == entry.key
@@ -568,6 +657,80 @@ Widget _buildFabOption({
       ],
     );
   }
+
+  /// Helper method to build carousel image from base64 or URL
+  Widget _buildCarouselImage(String picture) {
+    // Check if it's a base64 encoded image
+    if (picture.startsWith('data:image') || _isBase64(picture)) {
+      try {
+        String base64String = picture;
+        // Remove data URI prefix if present
+        if (picture.contains(',')) {
+          base64String = picture.split(',').last;
+        }
+        final bytes = base64Decode(base64String);
+        return Image.memory(
+          bytes,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: double.infinity,
+          errorBuilder: (context, error, stackTrace) {
+            return _buildPlaceholderImage();
+          },
+        );
+      } catch (e) {
+        return _buildPlaceholderImage();
+      }
+    } else {
+      // It's a URL
+      return Image.network(
+        picture,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(
+              color: Appcolors.kprimarycolor,
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return _buildPlaceholderImage();
+        },
+      );
+    }
+  }
+
+  /// Check if string is base64 encoded
+  bool _isBase64(String str) {
+    try {
+      base64Decode(str);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Placeholder image for failed loads
+  Widget _buildPlaceholderImage() {
+    return Container(
+      color: Appcolors.kprimarycolor.withOpacity(0.1),
+      child: Center(
+        child: Icon(
+          Icons.image_not_supported_outlined,
+          color: Appcolors.kgreyColor,
+          size: ResponsiveUtils.sp(8),
+        ),
+      ),
+    );
+  }
+
 
   Widget _buildGridView() {
     return GridView.builder(

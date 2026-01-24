@@ -1,9 +1,28 @@
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/network_services.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
+import 'package:dhani_communications/domain/repositories/apprepo.dart';
 import 'package:dhani_communications/domain/repositories/authrepo.dart';
+import 'package:dhani_communications/presentation/blocs/attendance_check_bloc/attendance_check_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/attendance_list_bloc/attendance_list_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/bottom_navigation_bloc/bottom_navigation_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/create_attendance_bloc/create_attendance_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/create_expense_bloc/create_expense_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/create_labor_attendance_bloc/create_labor_attendance_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/create_leave_bloc/create_leave_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/dpr_details_bloc/dpr_details_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/dpr_list_bloc/dpr_list_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/dpr_submissions_bloc/dpr_submissions_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/expense_list_bloc/expense_list_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/labor_attendance_list_bloc/labor_attendance_list_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/leave_list_bloc/leave_list_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/notifications_bloc/notifications_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/projects_bloc/projects_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/punch_in_list_bloc/punch_in_list_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/send_otp_bloc/send_otp_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/update_dpr_bloc/update_dpr_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/updates_bloc/updates_bloc.dart';
+import 'package:dhani_communications/presentation/blocs/vehicles_bloc/vehicles_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/verify_otp_bloc/verify_otp_bloc.dart';
 import 'package:dhani_communications/widgets/app_router.dart';
 import 'package:dio/dio.dart';
@@ -23,12 +42,36 @@ class MyApp extends StatelessWidget {
     ResponsiveUtils().init(context);
         final dio = DioClient.create(context);
     final authrepo = Authrepo(dio);
+    final apprepo = Apprepo(dio);
 
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => BottomNavigationBloc()),
         BlocProvider(create: (context) => SendOtpBloc(repository: authrepo)),
-          BlocProvider(create: (context) =>VerifyOtpBloc(repository: authrepo)),
+        BlocProvider(create: (context) => VerifyOtpBloc(repository: authrepo)),
+        BlocProvider(create: (context) => UpdatesBloc(repository: apprepo)),
+        BlocProvider(create: (context) => ProjectsBloc(repository: apprepo)),
+        BlocProvider(create: (context) => VehiclesBloc(repository: apprepo)),
+        BlocProvider(create: (context) => NotificationsBloc(repository: apprepo)),
+        // Attendance BLoCs
+        BlocProvider(create: (context) => AttendanceCheckBloc(repository: apprepo)),
+        BlocProvider(create: (context) => CreateAttendanceBloc(repository: apprepo)),
+        BlocProvider(create: (context) => AttendanceListBloc(repository: apprepo)),
+        // Labor Attendance BLoCs
+        BlocProvider(create: (context) => LaborAttendanceListBloc(repository: apprepo)),
+        BlocProvider(create: (context) => CreateLaborAttendanceBloc(repository: apprepo)),
+        BlocProvider(create: (context) => PunchInListBloc(repository: apprepo)),
+        // Expenses BLoCs
+        BlocProvider(create: (context) => CreateExpenseBloc(repository: apprepo)),
+        BlocProvider(create: (context) => ExpenseListBloc(repository: apprepo)),
+        // Leaves BLoCs
+        BlocProvider(create: (context) => CreateLeaveBloc(repository: apprepo)),
+        BlocProvider(create: (context) => LeaveListBloc(repository: apprepo)),
+        // DPR BLoCs
+        BlocProvider(create: (context) => DprListBloc(repository: apprepo)),
+        BlocProvider(create: (context) => DprDetailsBloc(repository: apprepo)),
+        BlocProvider(create: (context) => UpdateDprBloc(repository: apprepo)),
+        BlocProvider(create: (context) => DprSubmissionsBloc(repository: apprepo)),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
