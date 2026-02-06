@@ -238,9 +238,10 @@ class _NotificationPageState extends State<NotificationPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: TextStyles.subheadline(
-                            text: notification.title,
+                          child: TextStyles.body(
+                            text: notification.message,
                             color: Appcolors.kblackcolor,
+                            maxLines: 3,
                           ),
                         ),
                         if (isLoading)
@@ -262,12 +263,6 @@ class _NotificationPageState extends State<NotificationPage> {
                             ),
                           ),
                       ],
-                    ),
-                    ResponsiveSizedBox.height5,
-                    TextStyles.body(
-                      text: notification.message,
-                      color: Appcolors.kgreyColor,
-                      maxLines: 2,
                     ),
                     ResponsiveSizedBox.height5,
                     TextStyles.caption(

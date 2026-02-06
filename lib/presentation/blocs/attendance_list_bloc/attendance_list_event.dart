@@ -4,13 +4,8 @@ part of 'attendance_list_bloc.dart';
 sealed class AttendanceListEvent {}
 
 class FetchAttendanceListEvent extends AttendanceListEvent {
-  final int projectId;
-  final String startDate;
-  final String endDate;
+  final String? startDate;
+  final String? endDate;
 
-  FetchAttendanceListEvent({
-    required this.projectId,
-    required this.startDate,
-    required this.endDate,
-  });
+  FetchAttendanceListEvent({this.startDate, this.endDate});
 }

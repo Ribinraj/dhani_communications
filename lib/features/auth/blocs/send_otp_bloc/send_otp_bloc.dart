@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:dhani_communications/domain/repositories/authrepo.dart';
+import 'package:dhani_communications/features/auth/repo/authrepo.dart';
 import 'package:meta/meta.dart';
 
 part 'send_otp_event.dart';

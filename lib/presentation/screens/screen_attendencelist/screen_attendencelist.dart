@@ -1,5 +1,11 @@
 import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/core/network_services.dart';
+import 'package:dhani_communications/data/models/attendance_model.dart';
+import 'package:dhani_communications/domain/repositories/apprepo.dart';
+import 'package:dhani_communications/presentation/blocs/attendance_list_bloc/attendance_list_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
@@ -17,74 +23,39 @@ class _ScreenEmployeeAttendancePageState
     extends State<ScreenEmployeeAttendancePage> {
   DateTime? _fromDate;
   DateTime? _toDate;
+  late AttendanceListBloc _attendanceListBloc;
 
-  // Sample attendance data
-  final List<Map<String, dynamic>> attendanceList = [
-    {
-      'employeeName': 'John Doe',
-      'date': '03 Jan 2026',
-      'session': 'Morning',
-      'km': '345 km',
-      'status': 'Present',
-      'approved': true,
-    },
-    {
-      'employeeName': 'Jane Smith',
-      'date': '03 Jan 2026',
-      'session': 'Afternoon',
-      'km': '234 km',
-      'status': 'Present',
-      'approved': false,
-    },
-    {
-      'employeeName': 'Mike Johnson',
-      'date': '02 Jan 2026',
-      'session': 'Morning',
-      'km': '187 km',
-      'status': 'Absent',
-      'approved': false,
-    },
-    {
-      'employeeName': 'Sarah Williams',
-      'date': '02 Jan 2026',
-      'session': 'Afternoon',
-      'km': '412 km',
-      'status': 'Present',
-      'approved': true,
-    },
-    {
-      'employeeName': 'David Brown',
-      'date': '01 Jan 2026',
-      'session': 'Morning',
-      'km': '298 km',
-      'status': 'Present',
-      'approved': true,
-    },
-    {
-      'employeeName': 'Emily Davis',
-      'date': '01 Jan 2026',
-      'session': 'Afternoon',
-      'km': '156 km',
-      'status': 'Present',
-      'approved': false,
-    },
-    {
-      'employeeName': 'Robert Miller',
-      'date': '31 Dec 2025',
-      'session': 'Morning',
-      'km': '0 km',
-      'status': 'Absent',
-      'approved': false,
-    },
-    {
-      'employeeName': 'Lisa Anderson',
-      'date': '31 Dec 2025',
-      'session': 'Afternoon',
-      'km': '523 km',
-      'status': 'Present',
-      'approved': true,
-    },
-  ];
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _attendanceListBloc = AttendanceListBloc(
+      repository: Apprepo(DioClient.create(context)),
+    );
+    // Fetch attendance list without filters initially
+    _attendanceListBloc.add(FetchAttendanceListEvent());
+  }
+
+  @override
+  void dispose() {
+    _attendanceListBloc.close();
+    super.dispose();
+  }
+
+  void _applyFilter() {
+    String? startDateStr;
+    String? endDateStr;
+
+    if (_fromDate != null) {
+      startDateStr = DateFormat('yyyy-MM-dd').format(_fromDate!);
+    }
+    if (_toDate != null) {
+      endDateStr = DateFormat('yyyy-MM-dd').format(_toDate!);
+    }
+
+    _attendanceListBloc.add(
+      FetchAttendanceListEvent(startDate: startDateStr, endDate: endDateStr),
+    );
+  }
 
   void _showFilterDialog() {
     showDialog(
@@ -177,6 +148,10 @@ class _ScreenEmployeeAttendancePageState
                                 _toDate = null;
                               });
                               Navigator.pop(context);
+                              // Fetch without filters
+                              _attendanceListBloc.add(
+                                FetchAttendanceListEvent(),
+                              );
                             },
                             style: OutlinedButton.styleFrom(
                               padding: EdgeInsets.symmetric(
@@ -206,6 +181,7 @@ class _ScreenEmployeeAttendancePageState
                                 _toDate = tempToDate;
                               });
                               Navigator.pop(context);
+                              _applyFilter();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text('Filter applied'),
@@ -218,7 +194,8 @@ class _ScreenEmployeeAttendancePageState
                                     right: ResponsiveUtils.wp(4),
                                   ),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadiusStyles.kradius10(),
+                                    borderRadius:
+                                        BorderRadiusStyles.kradius10(),
                                   ),
                                 ),
                               );
@@ -280,10 +257,7 @@ class _ScreenEmployeeAttendancePageState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextStyles.caption(
-                    text: label,
-                    color: Appcolors.kgreyColor,
-                  ),
+                  TextStyles.caption(text: label, color: Appcolors.kgreyColor),
                   ResponsiveSizedBox.height5,
                   TextStyles.medium(
                     text: date != null
@@ -316,65 +290,179 @@ class _ScreenEmployeeAttendancePageState
       'Sep',
       'Oct',
       'Nov',
-      'Dec'
+      'Dec',
     ];
     return months[month - 1];
   }
 
+  String _formatDate(String dateStr) {
+    try {
+      final date = DateTime.parse(dateStr);
+      return '${date.day.toString().padLeft(2, '0')} ${_getMonthName(date.month)} ${date.year}';
+    } catch (e) {
+      return dateStr;
+    }
+  }
+
+  String _getStatusFromAttendance(double attendance) {
+    // 1.0 = Present, 0.5 = Half Day, 0.0 = Absent
+    if (attendance >= 1.0) return 'Present';
+    if (attendance >= 0.5) return 'Half Day';
+    return 'Absent';
+  }
+
+  String _getSession(String attendanceType) {
+    // Use attendanceType from API: MORNING, AFTERNOON, etc.
+    if (attendanceType.toUpperCase() == 'MORNING') return 'Morning';
+    if (attendanceType.toUpperCase() == 'AFTERNOON') return 'Afternoon';
+    return attendanceType.isNotEmpty ? attendanceType : 'Morning';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Appcolors.kwhitecolor,
-      appBar: AppBar(
+    return BlocProvider.value(
+      value: _attendanceListBloc,
+      child: Scaffold(
         backgroundColor: Appcolors.kwhitecolor,
-        elevation: 2,
-        shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
-        leading: IconButton(
-          onPressed: () {
-           context.pop();
-          },
-          icon: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Appcolors.kprimarycolor,
-            size: ResponsiveUtils.sp(5),
-          ),
-        ),
-        title: TextStyles.subheadline(
-          text: 'Employee Attendance',
-          weight: FontWeight.bold,
-          color: Appcolors.kblackcolor,
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: _showFilterDialog,
-            icon: Stack(
-              children: [
-                Icon(
-                  Icons.filter_list_rounded,
-                  color: Appcolors.kprimarycolor,
-                  size: ResponsiveUtils.sp(6),
-                ),
-                if (_fromDate != null || _toDate != null)
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: Container(
-                      width: ResponsiveUtils.wp(2),
-                      height: ResponsiveUtils.wp(2),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-              ],
+        appBar: AppBar(
+          backgroundColor: Appcolors.kwhitecolor,
+          elevation: 2,
+          shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
+          leading: IconButton(
+            onPressed: () {
+              context.pop();
+            },
+            icon: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Appcolors.kprimarycolor,
+              size: ResponsiveUtils.sp(5),
             ),
           ),
-        ],
-      ),
-      body: attendanceList.isEmpty
-          ? Center(
+          title: TextStyles.subheadline(
+            text: 'Employee Attendance',
+            weight: FontWeight.bold,
+            color: Appcolors.kblackcolor,
+          ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              onPressed: _showFilterDialog,
+              icon: Stack(
+                children: [
+                  Icon(
+                    Icons.filter_list_rounded,
+                    color: Appcolors.kprimarycolor,
+                    size: ResponsiveUtils.sp(6),
+                  ),
+                  if (_fromDate != null || _toDate != null)
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        width: ResponsiveUtils.wp(2),
+                        height: ResponsiveUtils.wp(2),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        body: BlocBuilder<AttendanceListBloc, AttendanceListState>(
+          builder: (context, state) {
+            if (state is AttendanceListLoadingState) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: Appcolors.kprimarycolor,
+                ),
+              );
+            }
+
+            if (state is AttendanceListErrorState) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline_rounded,
+                      size: ResponsiveUtils.sp(20),
+                      color: Colors.red.withOpacity(0.5),
+                    ),
+                    ResponsiveSizedBox.height20,
+                    TextStyles.subheadline(
+                      text: state.message,
+                      color: Appcolors.kgreyColor,
+                    ),
+                    ResponsiveSizedBox.height20,
+                    ElevatedButton(
+                      onPressed: () {
+                        _attendanceListBloc.add(FetchAttendanceListEvent());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Appcolors.kprimarycolor,
+                      ),
+                      child: TextStyles.medium(
+                        text: 'Retry',
+                        color: Appcolors.kwhitecolor,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            if (state is AttendanceListSuccessState) {
+              final attendanceList = state.attendanceList;
+
+              if (attendanceList.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.event_busy_rounded,
+                        size: ResponsiveUtils.sp(20),
+                        color: Appcolors.kgreyColor.withOpacity(0.5),
+                      ),
+                      ResponsiveSizedBox.height20,
+                      TextStyles.subheadline(
+                        text: 'No attendance records found',
+                        color: Appcolors.kgreyColor,
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              return RefreshIndicator(
+                color: Appcolors.kprimarycolor,
+                onRefresh: () async {
+                  _applyFilter();
+                },
+                child: ListView.builder(
+                  padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
+                  itemCount: attendanceList.length,
+                  itemBuilder: (context, index) {
+                    final attendance = attendanceList[index];
+                    return GestureDetector(
+                      onTap: () {
+                        context.push(
+                          '/employeeattendencedetailpage',
+                          extra: attendance,
+                        );
+                      },
+                      child: _buildAttendanceCard(attendance),
+                    );
+                  },
+                ),
+              );
+            }
+
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -390,25 +478,18 @@ class _ScreenEmployeeAttendancePageState
                   ),
                 ],
               ),
-            )
-          : ListView.builder(
-              padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
-              itemCount: attendanceList.length,
-              itemBuilder: (context, index) {
-                final attendance = attendanceList[index];
-                return GestureDetector(
-                  onTap: () {
-                       context.push('/employeeattendencedetailpage');
-                  },
-                  child: _buildAttendanceCard(attendance));
-              },
-            ),
+            );
+          },
+        ),
+      ),
     );
   }
 
-  Widget _buildAttendanceCard(Map<String, dynamic> attendance) {
-    final bool isPresent = attendance['status'] == 'Present';
-    final bool isApproved = attendance['approved'] == true;
+  Widget _buildAttendanceCard(AttendanceModel attendance) {
+    final status = _getStatusFromAttendance(attendance.attendance);
+    final bool isPresent = status == 'Present' || status == 'Half Day';
+    final bool isApproved = attendance.status.toLowerCase() == 'approved';
+    final session = _getSession(attendance.attendanceType);
 
     return Container(
       margin: EdgeInsets.only(bottom: ResponsiveUtils.hp(2)),
@@ -427,7 +508,7 @@ class _ScreenEmployeeAttendancePageState
         padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
         child: Row(
           children: [
-            // Profile Image
+            // Profile Image or Picture
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
@@ -441,11 +522,16 @@ class _ScreenEmployeeAttendancePageState
               child: CircleAvatar(
                 radius: ResponsiveUtils.wp(8),
                 backgroundColor: Appcolors.kgreyColor.withOpacity(0.2),
-                child: Icon(
-                  Icons.person,
-                  size: ResponsiveUtils.sp(8),
-                  color: Appcolors.kprimarycolor,
-                ),
+                backgroundImage: attendance.picture.isNotEmpty
+                    ? NetworkImage(attendance.picture)
+                    : null,
+                child: attendance.picture.isEmpty
+                    ? Icon(
+                        Icons.person,
+                        size: ResponsiveUtils.sp(8),
+                        color: Appcolors.kprimarycolor,
+                      )
+                    : null,
               ),
             ),
             ResponsiveSizedBox.width(3),
@@ -454,9 +540,9 @@ class _ScreenEmployeeAttendancePageState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Name
+                  // Attendance ID
                   TextStyles.subheadline(
-                    text: attendance['employeeName'],
+                    text: 'Attendance #${attendance.attendanceId}',
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                     overflow: TextOverflow.ellipsis,
@@ -472,7 +558,7 @@ class _ScreenEmployeeAttendancePageState
                       ),
                       ResponsiveSizedBox.width(1.5),
                       TextStyles.caption(
-                        text: attendance['date'],
+                        text: _formatDate(attendance.attendanceDate),
                         color: Appcolors.kgreyColor,
                       ),
                       ResponsiveSizedBox.width(2),
@@ -482,15 +568,15 @@ class _ScreenEmployeeAttendancePageState
                           vertical: ResponsiveUtils.hp(0.3),
                         ),
                         decoration: BoxDecoration(
-                          color: attendance['session'] == 'Morning'
+                          color: session == 'Morning'
                               ? Colors.orange.withOpacity(0.1)
                               : Colors.blue.withOpacity(0.1),
                           borderRadius: BorderRadiusStyles.kradius5(),
                         ),
                         child: TextStyles.caption(
-                          text: attendance['session'],
+                          text: session,
                           weight: FontWeight.w600,
-                          color: attendance['session'] == 'Morning'
+                          color: session == 'Morning'
                               ? Colors.orange.shade700
                               : Colors.blue.shade700,
                         ),
@@ -498,17 +584,18 @@ class _ScreenEmployeeAttendancePageState
                     ],
                   ),
                   ResponsiveSizedBox.height5,
-                  // KM and Status
+                  // Distance and Status
                   Row(
                     children: [
                       Icon(
-                        Icons.location_on,
+                        Icons.directions_walk_rounded,
                         size: ResponsiveUtils.sp(3.5),
                         color: Appcolors.kprimarycolor,
                       ),
                       ResponsiveSizedBox.width(1.5),
                       TextStyles.caption(
-                        text: attendance['km'],
+                        text:
+                            '${(attendance.distanceFromHQ / 1000).toStringAsFixed(2)} km',
                         weight: FontWeight.w600,
                         color: Appcolors.kprimarycolor,
                       ),
@@ -526,9 +613,11 @@ class _ScreenEmployeeAttendancePageState
                           borderRadius: BorderRadiusStyles.kradius5(),
                         ),
                         child: TextStyles.caption(
-                          text: attendance['status'],
+                          text: status,
                           weight: FontWeight.w600,
-                          color: isPresent ? Colors.green.shade700 : Colors.red.shade700,
+                          color: isPresent
+                              ? Colors.green.shade700
+                              : Colors.red.shade700,
                         ),
                       ),
                     ],
@@ -557,7 +646,9 @@ class _ScreenEmployeeAttendancePageState
                 TextStyles.caption(
                   text: isApproved ? 'Approved' : 'Pending',
                   weight: FontWeight.w600,
-                  color: isApproved ? Colors.green.shade700 : Colors.orange.shade700,
+                  color: isApproved
+                      ? Colors.green.shade700
+                      : Colors.orange.shade700,
                 ),
               ],
             ),

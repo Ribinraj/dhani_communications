@@ -2,7 +2,7 @@ import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/network_services.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:dhani_communications/domain/repositories/apprepo.dart';
-import 'package:dhani_communications/domain/repositories/authrepo.dart';
+import 'package:dhani_communications/features/auth/repo/authrepo.dart';
 import 'package:dhani_communications/presentation/blocs/attendance_check_bloc/attendance_check_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/attendance_list_bloc/attendance_list_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/bottom_navigation_bloc/bottom_navigation_bloc.dart';
@@ -17,15 +17,17 @@ import 'package:dhani_communications/presentation/blocs/expense_list_bloc/expens
 import 'package:dhani_communications/presentation/blocs/labor_attendance_list_bloc/labor_attendance_list_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/leave_list_bloc/leave_list_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/notifications_bloc/notifications_bloc.dart';
+import 'package:dhani_communications/features/auth/blocs/profile_bloc/profile_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/projects_bloc/projects_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/punch_in_list_bloc/punch_in_list_bloc.dart';
-import 'package:dhani_communications/presentation/blocs/send_otp_bloc/send_otp_bloc.dart';
+import 'package:dhani_communications/features/auth/blocs/send_otp_bloc/send_otp_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/update_dpr_bloc/update_dpr_bloc.dart';
+import 'package:dhani_communications/features/auth/blocs/update_profile_bloc/update_profile_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/updates_bloc/updates_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/vehicles_bloc/vehicles_bloc.dart';
-import 'package:dhani_communications/presentation/blocs/verify_otp_bloc/verify_otp_bloc.dart';
+import 'package:dhani_communications/features/auth/blocs/verify_otp_bloc/verify_otp_bloc.dart';
 import 'package:dhani_communications/widgets/app_router.dart';
-import 'package:dio/dio.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,6 +51,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => BottomNavigationBloc()),
         BlocProvider(create: (context) => SendOtpBloc(repository: authrepo)),
         BlocProvider(create: (context) => VerifyOtpBloc(repository: authrepo)),
+        BlocProvider(create: (context) => ProfileBloc(repository: authrepo)),
+        BlocProvider(create: (context) => UpdateProfileBloc(repository: authrepo)),
         BlocProvider(create: (context) => UpdatesBloc(repository: apprepo)),
         BlocProvider(create: (context) => ProjectsBloc(repository: apprepo)),
         BlocProvider(create: (context) => VehiclesBloc(repository: apprepo)),

@@ -1,12 +1,15 @@
 import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/features/auth/models/profile_model.dart';
+import 'package:dhani_communications/features/auth/blocs/update_profile_bloc/update_profile_bloc.dart';
 import 'package:dhani_communications/presentation/screens/screen_dashboard.dart/widgets/paint.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 
 class ScreenEditProfilePage extends StatefulWidget {
-  final Map<String, dynamic>? profileData;
+  final ProfileData? profileData;
 
   const ScreenEditProfilePage({
     super.key,
@@ -20,16 +23,11 @@ class ScreenEditProfilePage extends StatefulWidget {
 class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
   final _formKey = GlobalKey<FormState>();
 
-  // Text Controllers
-  late TextEditingController _employeeNameController;
-  late TextEditingController _positionController;
-  late TextEditingController _employeeIdController;
-  late TextEditingController _mobileController;
-  late TextEditingController _dobController;
-  late TextEditingController _dojController;
-  late TextEditingController _bloodGroupController;
+  // Text Controllers - Editable fields only
   late TextEditingController _motherNameController;
   late TextEditingController _fatherNameController;
+  late TextEditingController _bloodGroupController;
+  late TextEditingController _dobController;
   late TextEditingController _qualificationController;
   late TextEditingController _maritalStatusController;
   late TextEditingController _childrenController;
@@ -37,19 +35,20 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
   late TextEditingController _weightController;
   late TextEditingController _aadharController;
   late TextEditingController _panController;
-  late TextEditingController _passportController;
-  late TextEditingController _uanController;
   late TextEditingController _dlController;
   late TextEditingController _esicController;
   late TextEditingController _personalInsuranceController;
   late TextEditingController _healthInsuranceController;
   late TextEditingController _accidentalInsuranceController;
+  late TextEditingController _pmjjInsuranceController;
   late TextEditingController _pmjjbyController;
+  late TextEditingController _pmsbiController;
   late TextEditingController _paiSbi1000Controller;
   late TextEditingController _paiSbi500Controller;
-  late TextEditingController _headquartersController;
   late TextEditingController _presentAddressController;
   late TextEditingController _permanentAddressController;
+
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -58,50 +57,39 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
   }
 
   void _initializeControllers() {
-    final data = widget.profileData ?? {};
+    final profile = widget.profileData?.profile;
 
-    _employeeNameController = TextEditingController(text: data['employeeName'] ?? '');
-    _positionController = TextEditingController(text: data['position'] ?? '');
-    _employeeIdController = TextEditingController(text: data['employeeId'] ?? '');
-    _mobileController = TextEditingController(text: data['mobile'] ?? '');
-    _dobController = TextEditingController(text: data['dob'] ?? '');
-    _dojController = TextEditingController(text: data['doj'] ?? '');
-    _bloodGroupController = TextEditingController(text: data['bloodGroup'] ?? '');
-    _motherNameController = TextEditingController(text: data['motherName'] ?? '');
-    _fatherNameController = TextEditingController(text: data['fatherName'] ?? '');
-    _qualificationController = TextEditingController(text: data['qualification'] ?? '');
-    _maritalStatusController = TextEditingController(text: data['maritalStatus'] ?? '');
-    _childrenController = TextEditingController(text: data['children'] ?? '');
-    _heightController = TextEditingController(text: data['height'] ?? '');
-    _weightController = TextEditingController(text: data['weight'] ?? '');
-    _aadharController = TextEditingController(text: data['aadhar'] ?? '');
-    _panController = TextEditingController(text: data['pan'] ?? '');
-    _passportController = TextEditingController(text: data['passport'] ?? '');
-    _uanController = TextEditingController(text: data['uan'] ?? '');
-    _dlController = TextEditingController(text: data['dl'] ?? '');
-    _esicController = TextEditingController(text: data['esic'] ?? '');
-    _personalInsuranceController = TextEditingController(text: data['personalInsurance'] ?? '');
-    _healthInsuranceController = TextEditingController(text: data['healthInsurance'] ?? '');
-    _accidentalInsuranceController = TextEditingController(text: data['accidentalInsurance'] ?? '');
-    _pmjjbyController = TextEditingController(text: data['pmjjby'] ?? '');
-    _paiSbi1000Controller = TextEditingController(text: data['paiSbi1000'] ?? '');
-    _paiSbi500Controller = TextEditingController(text: data['paiSbi500'] ?? '');
-    _headquartersController = TextEditingController(text: data['headquarters'] ?? '');
-    _presentAddressController = TextEditingController(text: data['presentAddress'] ?? '');
-    _permanentAddressController = TextEditingController(text: data['permanentAddress'] ?? '');
+    _motherNameController = TextEditingController(text: profile?.motherName ?? '');
+    _fatherNameController = TextEditingController(text: profile?.fatherName ?? '');
+    _bloodGroupController = TextEditingController(text: profile?.bloodGroup ?? '');
+    _dobController = TextEditingController(text: profile?.dateOfBirth ?? '');
+    _qualificationController = TextEditingController(text: profile?.highestQualification ?? '');
+    _maritalStatusController = TextEditingController(text: profile?.martialStatus ?? '');
+    _childrenController = TextEditingController(text: profile?.noOfChildren ?? '');
+    _heightController = TextEditingController(text: profile?.height ?? '');
+    _weightController = TextEditingController(text: profile?.weight ?? '');
+    _aadharController = TextEditingController(text: profile?.adhaarNumber ?? '');
+    _panController = TextEditingController(text: profile?.panNumber ?? '');
+    _dlController = TextEditingController(text: profile?.drivingLicenseNumber ?? '');
+    _esicController = TextEditingController(text: profile?.esicNumber ?? '');
+    _personalInsuranceController = TextEditingController(text: profile?.personalInsurance ?? '');
+    _healthInsuranceController = TextEditingController(text: profile?.healthInsurance ?? '');
+    _accidentalInsuranceController = TextEditingController(text: profile?.accidentalInsurance ?? '');
+    _pmjjInsuranceController = TextEditingController(text: profile?.pmjjInsurance ?? '');
+    _pmjjbyController = TextEditingController(text: profile?.pmjjby436 ?? '');
+    _pmsbiController = TextEditingController(text: profile?.pmsbi20 ?? '');
+    _paiSbi1000Controller = TextEditingController(text: profile?.paiSbi1000 ?? '');
+    _paiSbi500Controller = TextEditingController(text: profile?.paiSbi500 ?? '');
+    _presentAddressController = TextEditingController(text: profile?.presentAddress ?? '');
+    _permanentAddressController = TextEditingController(text: profile?.permanentAddess ?? '');
   }
 
   @override
   void dispose() {
-    _employeeNameController.dispose();
-    _positionController.dispose();
-    _employeeIdController.dispose();
-    _mobileController.dispose();
-    _dobController.dispose();
-    _dojController.dispose();
-    _bloodGroupController.dispose();
     _motherNameController.dispose();
     _fatherNameController.dispose();
+    _bloodGroupController.dispose();
+    _dobController.dispose();
     _qualificationController.dispose();
     _maritalStatusController.dispose();
     _childrenController.dispose();
@@ -109,17 +97,16 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
     _weightController.dispose();
     _aadharController.dispose();
     _panController.dispose();
-    _passportController.dispose();
-    _uanController.dispose();
     _dlController.dispose();
     _esicController.dispose();
     _personalInsuranceController.dispose();
     _healthInsuranceController.dispose();
     _accidentalInsuranceController.dispose();
+    _pmjjInsuranceController.dispose();
     _pmjjbyController.dispose();
+    _pmsbiController.dispose();
     _paiSbi1000Controller.dispose();
     _paiSbi500Controller.dispose();
-    _headquartersController.dispose();
     _presentAddressController.dispose();
     _permanentAddressController.dispose();
     super.dispose();
@@ -128,56 +115,36 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
   void _saveProfile() {
     if (_formKey.currentState!.validate()) {
       final updatedData = {
-        'employeeName': _employeeNameController.text,
-        'position': _positionController.text,
-        'employeeId': _employeeIdController.text,
-        'mobile': _mobileController.text,
-        'dob': _dobController.text,
-        'doj': _dojController.text,
-        'bloodGroup': _bloodGroupController.text,
         'motherName': _motherNameController.text,
         'fatherName': _fatherNameController.text,
-        'qualification': _qualificationController.text,
-        'maritalStatus': _maritalStatusController.text,
-        'children': _childrenController.text,
+        'bloodGroup': _bloodGroupController.text,
+        'dateOfBirth': _dobController.text,
+        'highestQualification': _qualificationController.text,
+        'martialStatus': _maritalStatusController.text,
+        'noOfChildren': _childrenController.text.isNotEmpty 
+            ? int.tryParse(_childrenController.text) ?? 0 
+            : 0,
         'height': _heightController.text,
         'weight': _weightController.text,
-        'aadhar': _aadharController.text,
-        'pan': _panController.text,
-        'passport': _passportController.text,
-        'uan': _uanController.text,
-        'dl': _dlController.text,
-        'esic': _esicController.text,
+        'adhaarNumber': _aadharController.text,
+        'panNumber': _panController.text,
+        'drivingLicenseNumber': _dlController.text,
+        'esicNumber': _esicController.text,
         'personalInsurance': _personalInsuranceController.text,
         'healthInsurance': _healthInsuranceController.text,
         'accidentalInsurance': _accidentalInsuranceController.text,
-        'pmjjby': _pmjjbyController.text,
-        'paiSbi1000': _paiSbi1000Controller.text,
-        'paiSbi500': _paiSbi500Controller.text,
-        'headquarters': _headquartersController.text,
+        'pmjj_insurance': _pmjjInsuranceController.text,
+        'pmjjby_436': _pmjjbyController.text,
+        'pmsbi_20': _pmsbiController.text,
+        'pai_sbi_1000': _paiSbi1000Controller.text,
+        'pai_sbi_500': _paiSbi500Controller.text,
         'presentAddress': _presentAddressController.text,
-        'permanentAddress': _permanentAddressController.text,
+        'permanentAddess': _permanentAddressController.text,
       };
 
-      // Return updated data to previous screen
-      Navigator.pop(context, updatedData);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Profile updated successfully'),
-          duration: Duration(milliseconds: 1500),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.green,
-          margin: EdgeInsets.only(
-            bottom: ResponsiveUtils.hp(2),
-            left: ResponsiveUtils.wp(4),
-            right: ResponsiveUtils.wp(4),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadiusStyles.kradius10(),
-          ),
-        ),
-      );
+      context.read<UpdateProfileBloc>().add(
+            SubmitUpdateProfileEvent(profileData: updatedData),
+          );
     }
   }
 
@@ -186,66 +153,138 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Custom Paint Background
-          CustomPaint(
-            painter: HomeBackgroundPainter(),
-            size: Size(screenWidth, screenHeight),
-          ),
-          // Main Content
-          CustomScrollView(
-            slivers: [
-              // App Bar
-              SliverAppBar(
-                expandedHeight: 0,
-                floating: false,
-                pinned: true,
-                automaticallyImplyLeading: false,
-                backgroundColor: Appcolors.kwhitecolor.withOpacity(0.95),
-                elevation: 2,
-                shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
-                flexibleSpace: _buildAppBar(),
+    return BlocListener<UpdateProfileBloc, UpdateProfileState>(
+      listener: (context, state) {
+        if (state is UpdateProfileLoadingState) {
+          setState(() {
+            _isLoading = true;
+          });
+        } else if (state is UpdateProfileSuccessState) {
+          setState(() {
+            _isLoading = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              duration: Duration(milliseconds: 1500),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.green,
+              margin: EdgeInsets.only(
+                bottom: ResponsiveUtils.hp(2),
+                left: ResponsiveUtils.wp(4),
+                right: ResponsiveUtils.wp(4),
               ),
-              // Form Content
-              SliverToBoxAdapter(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      ResponsiveSizedBox.height20,
-                      // Profile Picture Editor
-                      _buildProfilePictureEditor(),
-                      ResponsiveSizedBox.height30,
-                      // Basic Info Section
-                      _buildBasicInfoSection(),
-                      ResponsiveSizedBox.height20,
-                      // Personal Info Section
-                      _buildPersonalInfoSection(),
-                      ResponsiveSizedBox.height20,
-                      // Identification Section
-                      _buildIdentificationSection(),
-                      ResponsiveSizedBox.height20,
-                      // Insurance Section
-                      _buildInsuranceSection(),
-                      ResponsiveSizedBox.height20,
-                      // Other Details Section
-                      _buildOtherDetailsSection(),
-                      ResponsiveSizedBox.height20,
-                      // Address Section
-                      _buildAddressSection(),
-                      ResponsiveSizedBox.height20,
-                      // Save Button
-                      _buildSaveButton(),
-                      ResponsiveSizedBox.height(15),
-                    ],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusStyles.kradius10(),
+              ),
+            ),
+          );
+          // Return true to indicate profile was updated
+          Navigator.pop(context, true);
+        } else if (state is UpdateProfileErrorState) {
+          setState(() {
+            _isLoading = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              duration: Duration(milliseconds: 2000),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.red,
+              margin: EdgeInsets.only(
+                bottom: ResponsiveUtils.hp(2),
+                left: ResponsiveUtils.wp(4),
+                right: ResponsiveUtils.wp(4),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusStyles.kradius10(),
+              ),
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            // Custom Paint Background
+            CustomPaint(
+              painter: HomeBackgroundPainter(),
+              size: Size(screenWidth, screenHeight),
+            ),
+            // Main Content
+            CustomScrollView(
+              slivers: [
+                // App Bar
+                SliverAppBar(
+                  expandedHeight: 0,
+                  floating: false,
+                  pinned: true,
+                  automaticallyImplyLeading: false,
+                  backgroundColor: Appcolors.kwhitecolor.withOpacity(0.95),
+                  elevation: 2,
+                  shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
+                  flexibleSpace: _buildAppBar(),
+                ),
+                // Form Content
+                SliverToBoxAdapter(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        ResponsiveSizedBox.height20,
+                        // Profile Picture Editor
+                        _buildProfilePictureEditor(),
+                        ResponsiveSizedBox.height30,
+                        // Personal Info Section
+                        _buildPersonalInfoSection(),
+                        ResponsiveSizedBox.height20,
+                        // Identification Section
+                        _buildIdentificationSection(),
+                        ResponsiveSizedBox.height20,
+                        // Insurance Section
+                        _buildInsuranceSection(),
+                        ResponsiveSizedBox.height20,
+                        // Address Section
+                        _buildAddressSection(),
+                        ResponsiveSizedBox.height20,
+                        // Save Button
+                        _buildSaveButton(),
+                        ResponsiveSizedBox.height(15),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            // Loading Overlay
+            if (_isLoading)
+              Container(
+                color: Colors.black.withOpacity(0.3),
+                child: Center(
+                  child: Container(
+                    padding: EdgeInsets.all(ResponsiveUtils.wp(6)),
+                    decoration: BoxDecoration(
+                      color: Appcolors.kwhitecolor,
+                      borderRadius: BorderRadiusStyles.kradius15(),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(
+                          color: Appcolors.kprimarycolor,
+                        ),
+                        ResponsiveSizedBox.height15,
+                        TextStyles.medium(
+                          text: 'Updating profile...',
+                          color: Appcolors.kblackcolor,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -291,9 +330,7 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
             ),
           ),
           IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
+            onPressed: _isLoading ? null : () => Navigator.pop(context),
             icon: const Icon(Icons.close_rounded),
             color: Appcolors.kprimarycolor,
             iconSize: ResponsiveUtils.sp(6.5),
@@ -304,6 +341,7 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
   }
 
   Widget _buildProfilePictureEditor() {
+    final profile = widget.profileData?.profile;
     return Container(
       margin: EdgeInsets.symmetric(horizontal: ResponsiveUtils.wp(4)),
       padding: EdgeInsets.all(ResponsiveUtils.wp(6)),
@@ -333,11 +371,18 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
                 child: CircleAvatar(
                   radius: ResponsiveUtils.wp(15),
                   backgroundColor: Appcolors.kgreyColor.withOpacity(0.2),
-                  child: Icon(
-                    Icons.person,
-                    size: ResponsiveUtils.wp(15),
-                    color: Appcolors.kprimarycolor,
-                  ),
+                  backgroundImage: profile?.profilePicture != null &&
+                          profile!.profilePicture!.isNotEmpty
+                      ? NetworkImage(profile.profilePicture!)
+                      : null,
+                  child: profile?.profilePicture == null ||
+                          profile!.profilePicture!.isEmpty
+                      ? Icon(
+                          Icons.person,
+                          size: ResponsiveUtils.wp(15),
+                          color: Appcolors.kprimarycolor,
+                        )
+                      : null,
                 ),
               ),
               Positioned(
@@ -384,23 +429,17 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
           ),
           ResponsiveSizedBox.height15,
           TextStyles.body(
-            text: 'Tap to change profile picture',
+            text: widget.profileData?.employeeName ?? 'User',
+            weight: FontWeight.bold,
+            color: Appcolors.kblackcolor,
+          ),
+          ResponsiveSizedBox.height5,
+          TextStyles.caption(
+            text: 'EMP ID: #${widget.profileData?.employeeId ?? '-'}',
             color: Appcolors.kgreyColor,
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildBasicInfoSection() {
-    return _buildSection(
-      title: 'Basic Information',
-      icon: Icons.info_outline_rounded,
-      children: [
-        _buildTextField('Employee Name', _employeeNameController, Icons.person_outline),
-        _buildTextField('Position', _positionController, Icons.work_outline),
-        _buildTextField('Employee ID', _employeeIdController, Icons.badge_outlined, enabled: false),
-      ],
     );
   }
 
@@ -409,9 +448,7 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
       title: 'Personal Information',
       icon: Icons.person_outline_rounded,
       children: [
-        _buildTextField('Mobile Number', _mobileController, Icons.phone_outlined, keyboardType: TextInputType.phone),
         _buildTextField('Date of Birth', _dobController, Icons.calendar_today_outlined, isDateField: true),
-        _buildTextField('Date of Joining', _dojController, Icons.calendar_today_outlined, isDateField: true),
         _buildTextField('Blood Group', _bloodGroupController, Icons.bloodtype_outlined),
         _buildTextField('Mother\'s Name', _motherNameController, Icons.person_outline),
         _buildTextField('Father\'s Name', _fatherNameController, Icons.person_outline),
@@ -431,8 +468,6 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
       children: [
         _buildTextField('Aadhar Number', _aadharController, Icons.credit_card_outlined),
         _buildTextField('PAN Number', _panController, Icons.credit_card_outlined),
-        _buildTextField('Passport Number', _passportController, Icons.description_outlined),
-        _buildTextField('UAN/EPF Number', _uanController, Icons.numbers_outlined),
         _buildTextField('DL Number', _dlController, Icons.directions_car_outlined),
         _buildTextField('ESIC Number', _esicController, Icons.medical_services_outlined),
       ],
@@ -447,19 +482,11 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
         _buildTextField('Personal Insurance', _personalInsuranceController, Icons.security_outlined),
         _buildTextField('Health Insurance', _healthInsuranceController, Icons.health_and_safety_outlined),
         _buildTextField('Accidental Insurance', _accidentalInsuranceController, Icons.local_hospital_outlined),
-        _buildTextField('PMJJBY @₹20', _pmjjbyController, Icons.account_balance_outlined),
+        _buildTextField('PMJJ Insurance', _pmjjInsuranceController, Icons.account_balance_outlined),
+        _buildTextField('PMJJBY @₹436', _pmjjbyController, Icons.account_balance_outlined),
+        _buildTextField('PMSBI @₹20', _pmsbiController, Icons.account_balance_outlined),
         _buildTextField('PAI_SBI @₹1000', _paiSbi1000Controller, Icons.account_balance_outlined),
         _buildTextField('PAI_SBI @₹500', _paiSbi500Controller, Icons.account_balance_outlined),
-      ],
-    );
-  }
-
-  Widget _buildOtherDetailsSection() {
-    return _buildSection(
-      title: 'Other Details',
-      icon: Icons.info_outline_rounded,
-      children: [
-        _buildTextField('Headquarters', _headquartersController, Icons.location_city_outlined),
       ],
     );
   }
@@ -554,7 +581,7 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
       padding: EdgeInsets.only(bottom: ResponsiveUtils.hp(2)),
       child: TextFormField(
         controller: controller,
-        enabled: enabled,
+        enabled: enabled && !_isLoading,
         keyboardType: keyboardType,
         maxLines: maxLines,
         readOnly: isDateField,
@@ -567,7 +594,8 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
                   lastDate: DateTime(2100),
                 );
                 if (date != null) {
-                  controller.text = '${date.day.toString().padLeft(2, '0')} ${_getMonthName(date.month)} ${date.year}';
+                  controller.text =
+                      '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
                 }
               }
             : null,
@@ -625,9 +653,10 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: ResponsiveUtils.wp(4)),
       child: ElevatedButton(
-        onPressed: _saveProfile,
+        onPressed: _isLoading ? null : _saveProfile,
         style: ElevatedButton.styleFrom(
           backgroundColor: Appcolors.kprimarycolor,
+          disabledBackgroundColor: Appcolors.kprimarycolor.withOpacity(0.5),
           minimumSize: Size(double.infinity, ResponsiveUtils.hp(6)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadiusStyles.kradius15(),
@@ -654,10 +683,4 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
       ),
     );
   }
-
-  String _getMonthName(int month) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return months[month - 1];
-  }
 }
-

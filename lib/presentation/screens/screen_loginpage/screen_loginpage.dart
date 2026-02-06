@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
-import 'package:dhani_communications/presentation/blocs/send_otp_bloc/send_otp_bloc.dart';
+import 'package:dhani_communications/features/auth/blocs/send_otp_bloc/send_otp_bloc.dart';
 import 'package:dhani_communications/widgets/custom_textfiield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

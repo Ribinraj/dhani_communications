@@ -4,13 +4,8 @@ part of 'leave_list_bloc.dart';
 sealed class LeaveListEvent {}
 
 class FetchLeaveListEvent extends LeaveListEvent {
-  final int projectId;
-  final String startDate;
-  final String endDate;
+  final String? startDate;
+  final String? endDate;
 
-  FetchLeaveListEvent({
-    required this.projectId,
-    required this.startDate,
-    required this.endDate,
-  });
+  FetchLeaveListEvent({this.startDate, this.endDate});
 }

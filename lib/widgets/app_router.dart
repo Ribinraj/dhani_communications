@@ -1,3 +1,8 @@
+import 'package:dhani_communications/data/models/attendance_model.dart';
+import 'package:dhani_communications/data/models/expense_model.dart';
+import 'package:dhani_communications/data/models/labor_attendance_model.dart';
+import 'package:dhani_communications/data/models/leave_model.dart';
+import 'package:dhani_communications/presentation/screens/screen_leavedetailspage/screen_leavedetailspage.dart';
 import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_dprprogresspage/screen_dprprogresspage.dart';
 import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_labourattendencepage/labour_puchoutpage.dart';
 import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_labourattendencepage/labour_punchinpage.dart';
@@ -17,6 +22,7 @@ import 'package:dhani_communications/presentation/screens/screen_assetspage/scre
 import 'package:dhani_communications/presentation/screens/screen_attendence_detailpage/screen_attendencedetailpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_attendencelist/screen_attendencelist.dart';
 import 'package:dhani_communications/presentation/screens/screen_bottombar/screen_bottombar.dart';
+import 'package:dhani_communications/features/auth/models/profile_model.dart';
 import 'package:dhani_communications/presentation/screens/screen_editprofilepage/screen_editprofilepage.dart';
 import 'package:dhani_communications/presentation/screens/screen_employeeleaves/screen_employeeleaves.dart';
 import 'package:dhani_communications/presentation/screens/screen_expensedetailspage/screen_expensedetailspage.dart';
@@ -33,8 +39,8 @@ import 'package:dhani_communications/presentation/screens/screen_otppage/screen_
 import 'package:dhani_communications/presentation/screens/screen_requestdetailpage/screen_requestdetailpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_requestspage/screen_requestspage.dart';
 import 'package:dhani_communications/presentation/screens/splash_screen/screen_splashpage.dart';
-import 'package:dhani_communications/presentation/blocs/verify_otp_bloc/verify_otp_bloc.dart';
-import 'package:dhani_communications/domain/repositories/authrepo.dart';
+import 'package:dhani_communications/features/auth/blocs/verify_otp_bloc/verify_otp_bloc.dart';
+import 'package:dhani_communications/features/auth/repo/authrepo.dart';
 import 'package:dhani_communications/core/network_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -55,27 +61,26 @@ class AppRouter {
       GoRoute(path: '/login', builder: (context, state) => LoginPage()),
 
       ///otppage
-GoRoute(
-  path: '/otppage',
-  builder: (context, state) {
-    final data = state.extra as Map<String, String>;
-    final phone = data['phone'] ?? '';
-    final userId = data['userId'] ?? '';
-    return BlocProvider(
-      create: (context) => VerifyOtpBloc(
-        repository: Authrepo(DioClient.create(context)),
+      GoRoute(
+        path: '/otppage',
+        builder: (context, state) {
+          final data = state.extra as Map<String, String>;
+          final phone = data['phone'] ?? '';
+          final userId = data['userId'] ?? '';
+          return BlocProvider(
+            create: (context) =>
+                VerifyOtpBloc(repository: Authrepo(DioClient.create(context))),
+            child: OtpPage(phoneNumber: phone, userId: userId),
+          );
+        },
       ),
-      child: OtpPage(phoneNumber: phone, userId: userId),
-    );
-  },
-),
 
       ///editprofilepage
       GoRoute(
         path: '/editprofilepage',
         builder: (context, state) {
-          final profiledata = state.extra as Map<String, dynamic>;
-          return ScreenEditProfilePage(profileData: profiledata);
+          final profileData = state.extra as ProfileData?;
+          return ScreenEditProfilePage(profileData: profileData);
         },
       ),
 
@@ -91,7 +96,8 @@ GoRoute(
       GoRoute(
         path: '/employeeattendencedetailpage',
         builder: (context, state) {
-          return ScreenAttendanceDetailsPage();
+          final attendance = state.extra as AttendanceModel?;
+          return ScreenAttendanceDetailsPage(attendance: attendance);
         },
       ),
 
@@ -107,7 +113,8 @@ GoRoute(
       GoRoute(
         path: '/labourattendencepagedetailpage',
         builder: (context, state) {
-          return ScreenLabourAttendanceDetailsPage();
+          final attendance = state.extra as LaborAttendanceModel?;
+          return ScreenLabourAttendanceDetailsPage(attendance: attendance);
         },
       ),
 
@@ -123,7 +130,8 @@ GoRoute(
       GoRoute(
         path: '/expensedetailspage',
         builder: (context, state) {
-          return ScreenExpenseDetailPage();
+          final expense = state.extra as ExpenseModel?;
+          return ScreenExpenseDetailPage(expense: expense);
         },
       ),
 
@@ -148,6 +156,15 @@ GoRoute(
         path: '/leavespage',
         builder: (context, state) {
           return ScreenEmployeeLeavesPage();
+        },
+      ),
+
+      ///leavedetailspage
+      GoRoute(
+        path: '/leavedetailspage',
+        builder: (context, state) {
+          final leave = state.extra as LeaveModel?;
+          return ScreenLeaveDetailPage(leave: leave);
         },
       ),
 

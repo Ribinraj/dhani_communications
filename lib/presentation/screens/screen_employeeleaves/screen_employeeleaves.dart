@@ -1,5 +1,11 @@
 import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/core/network_services.dart';
+import 'package:dhani_communications/data/models/leave_model.dart';
+import 'package:dhani_communications/domain/repositories/apprepo.dart';
+import 'package:dhani_communications/presentation/blocs/leave_list_bloc/leave_list_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
@@ -16,58 +22,39 @@ class ScreenEmployeeLeavesPage extends StatefulWidget {
 class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
   DateTime? _fromDate;
   DateTime? _toDate;
+  late LeaveListBloc _leaveListBloc;
 
-  // Sample leaves data
-  final List<Map<String, dynamic>> leavesList = [
-    {
-      'fromDate': '03 Jan 2026',
-      'toDate': '03 Jan 2026',
-      'leaveType': 'Casual Leave',
-      'status': 'Approved',
-    },
-    {
-      'fromDate': '05 Jan 2026',
-      'toDate': '07 Jan 2026',
-      'leaveType': 'Sick Leave',
-      'status': 'Pending',
-    },
-    {
-      'fromDate': '10 Jan 2026',
-      'toDate': '12 Jan 2026',
-      'leaveType': 'Casual Leave',
-      'status': 'Rejected',
-    },
-    {
-      'fromDate': '15 Jan 2026',
-      'toDate': '15 Jan 2026',
-      'leaveType': 'Privilege Leave',
-      'status': 'Approved',
-    },
-    {
-      'fromDate': '20 Jan 2026',
-      'toDate': '22 Jan 2026',
-      'leaveType': 'Sick Leave',
-      'status': 'Pending',
-    },
-    {
-      'fromDate': '25 Jan 2026',
-      'toDate': '26 Jan 2026',
-      'leaveType': 'Casual Leave',
-      'status': 'Approved',
-    },
-    {
-      'fromDate': '28 Jan 2026',
-      'toDate': '30 Jan 2026',
-      'leaveType': 'Privilege Leave',
-      'status': 'Rejected',
-    },
-    {
-      'fromDate': '02 Feb 2026',
-      'toDate': '04 Feb 2026',
-      'leaveType': 'Sick Leave',
-      'status': 'Approved',
-    },
-  ];
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _leaveListBloc = LeaveListBloc(
+      repository: Apprepo(DioClient.create(context)),
+    );
+    // Fetch leave list without filters initially
+    _leaveListBloc.add(FetchLeaveListEvent());
+  }
+
+  @override
+  void dispose() {
+    _leaveListBloc.close();
+    super.dispose();
+  }
+
+  void _applyFilter() {
+    String? startDateStr;
+    String? endDateStr;
+
+    if (_fromDate != null) {
+      startDateStr = DateFormat('yyyy-MM-dd').format(_fromDate!);
+    }
+    if (_toDate != null) {
+      endDateStr = DateFormat('yyyy-MM-dd').format(_toDate!);
+    }
+
+    _leaveListBloc.add(
+      FetchLeaveListEvent(startDate: startDateStr, endDate: endDateStr),
+    );
+  }
 
   void _showFilterDialog() {
     showDialog(
@@ -160,6 +147,7 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
                                 _toDate = null;
                               });
                               Navigator.pop(context);
+                              _leaveListBloc.add(FetchLeaveListEvent());
                             },
                             style: OutlinedButton.styleFrom(
                               padding: EdgeInsets.symmetric(
@@ -189,6 +177,7 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
                                 _toDate = tempToDate;
                               });
                               Navigator.pop(context);
+                              _applyFilter();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text('Filter applied'),
@@ -201,7 +190,8 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
                                     right: ResponsiveUtils.wp(4),
                                   ),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadiusStyles.kradius10(),
+                                    borderRadius:
+                                        BorderRadiusStyles.kradius10(),
                                   ),
                                 ),
                               );
@@ -263,10 +253,7 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextStyles.caption(
-                    text: label,
-                    color: Appcolors.kgreyColor,
-                  ),
+                  TextStyles.caption(text: label, color: Appcolors.kgreyColor),
                   ResponsiveSizedBox.height5,
                   TextStyles.medium(
                     text: date != null
@@ -299,47 +286,49 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
       'Sep',
       'Oct',
       'Nov',
-      'Dec'
+      'Dec',
     ];
     return months[month - 1];
   }
 
-  Color _getLeaveTypeColor(String leaveType) {
-    switch (leaveType) {
-      case 'Casual Leave':
-        return Colors.blue;
-      case 'Sick Leave':
-        return Colors.orange;
-      case 'Privilege Leave':
-        return Colors.purple;
-      case 'Earned Leave':
-        return Colors.teal;
-      case 'Maternity Leave':
-        return Colors.pink;
-      case 'Paternity Leave':
-        return Colors.indigo;
-      default:
-        return Appcolors.kprimarycolor;
+  String _formatDate(String dateStr) {
+    try {
+      final date = DateTime.parse(dateStr);
+      return '${date.day.toString().padLeft(2, '0')} ${_getMonthName(date.month)} ${date.year}';
+    } catch (e) {
+      return dateStr;
     }
   }
 
+  String _getStatusDisplay(String status) {
+    if (status.toUpperCase() == 'APPROVED') return 'Approved';
+    if (status.toUpperCase() == 'REJECTED') return 'Rejected';
+    return 'Pending';
+  }
+
+  bool _isApproved(String status) => status.toUpperCase() == 'APPROVED';
+  bool _isRejected(String status) => status.toUpperCase() == 'REJECTED';
+
+  Color _getLeaveTypeColor(String leaveType) {
+    final type = leaveType.toLowerCase();
+    if (type.contains('casual')) return Colors.blue;
+    if (type.contains('sick')) return Colors.orange;
+    if (type.contains('privilege')) return Colors.purple;
+    if (type.contains('earned')) return Colors.teal;
+    if (type.contains('maternity')) return Colors.pink;
+    if (type.contains('paternity')) return Colors.indigo;
+    return Appcolors.kprimarycolor;
+  }
+
   IconData _getLeaveTypeIcon(String leaveType) {
-    switch (leaveType) {
-      case 'Casual Leave':
-        return Icons.event_available;
-      case 'Sick Leave':
-        return Icons.sick;
-      case 'Privilege Leave':
-        return Icons.stars;
-      case 'Earned Leave':
-        return Icons.card_giftcard;
-      case 'Maternity Leave':
-        return Icons.child_care;
-      case 'Paternity Leave':
-        return Icons.family_restroom;
-      default:
-        return Icons.event_note;
-    }
+    final type = leaveType.toLowerCase();
+    if (type.contains('casual')) return Icons.event_available;
+    if (type.contains('sick')) return Icons.sick;
+    if (type.contains('privilege')) return Icons.stars;
+    if (type.contains('earned')) return Icons.card_giftcard;
+    if (type.contains('maternity')) return Icons.child_care;
+    if (type.contains('paternity')) return Icons.family_restroom;
+    return Icons.event_note;
   }
 
   @override
@@ -394,8 +383,98 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
           ),
         ],
       ),
-      body: leavesList.isEmpty
-          ? Center(
+      body: BlocProvider(
+        create: (context) => _leaveListBloc,
+        child: BlocBuilder<LeaveListBloc, LeaveListState>(
+          bloc: _leaveListBloc,
+          builder: (context, state) {
+            if (state is LeaveListLoadingState) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: Appcolors.kprimarycolor,
+                ),
+              );
+            }
+
+            if (state is LeaveListErrorState) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline_rounded,
+                      size: ResponsiveUtils.sp(15),
+                      color: Colors.red.withOpacity(0.7),
+                    ),
+                    ResponsiveSizedBox.height20,
+                    TextStyles.subheadline(
+                      text: state.message,
+                      color: Appcolors.kgreyColor,
+                    ),
+                    ResponsiveSizedBox.height20,
+                    ElevatedButton(
+                      onPressed: () {
+                        _leaveListBloc.add(FetchLeaveListEvent());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Appcolors.kprimarycolor,
+                      ),
+                      child: TextStyles.medium(
+                        text: 'Retry',
+                        color: Appcolors.kwhitecolor,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            if (state is LeaveListSuccessState) {
+              final leavesList = state.leavesList;
+
+              if (leavesList.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.event_busy_rounded,
+                        size: ResponsiveUtils.sp(20),
+                        color: Appcolors.kgreyColor.withOpacity(0.5),
+                      ),
+                      ResponsiveSizedBox.height20,
+                      TextStyles.subheadline(
+                        text: 'No leave records found',
+                        color: Appcolors.kgreyColor,
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              return RefreshIndicator(
+                color: Appcolors.kprimarycolor,
+                onRefresh: () async {
+                  _applyFilter();
+                },
+                child: ListView.builder(
+                  padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
+                  itemCount: leavesList.length,
+                  itemBuilder: (context, index) {
+                    final leave = leavesList[index];
+                    return GestureDetector(
+                      onTap: () {
+                        context.push('/leavedetailspage', extra: leave);
+                      },
+                      child: _buildLeaveCard(leave),
+                    );
+                  },
+                ),
+              );
+            }
+
+            // Initial state
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -411,34 +490,26 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
                   ),
                 ],
               ),
-            )
-          : ListView.builder(
-              padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
-              itemCount: leavesList.length,
-              itemBuilder: (context, index) {
-                final leave = leavesList[index];
-                return GestureDetector(
-                  onTap: () {
-                    context.push('/leavedetailspage');
-                  },
-                  child: _buildLeaveCard(leave),
-                );
-              },
-            ),
+            );
+          },
+        ),
+      ),
     );
   }
 
-  Widget _buildLeaveCard(Map<String, dynamic> leave) {
-    final String status = leave['status'];
-    final String leaveType = leave['leaveType'];
+  Widget _buildLeaveCard(LeaveModel leave) {
+    final bool isApproved = _isApproved(leave.status);
+    final bool isRejected = _isRejected(leave.status);
+    final String statusDisplay = _getStatusDisplay(leave.status);
+    final String leaveType = leave.leaveCategoryName;
     final Color leaveTypeColor = _getLeaveTypeColor(leaveType);
 
     Color statusColor;
     IconData statusIcon;
-    if (status == 'Approved') {
+    if (isApproved) {
       statusColor = Colors.green;
       statusIcon = Icons.check_circle;
-    } else if (status == 'Rejected') {
+    } else if (isRejected) {
       statusColor = Colors.red;
       statusIcon = Icons.cancel;
     } else {
@@ -492,7 +563,7 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
                       borderRadius: BorderRadiusStyles.kradius5(),
                     ),
                     child: TextStyles.medium(
-                      text: leaveType,
+                      text: leaveType.isNotEmpty ? leaveType : 'Leave',
                       weight: FontWeight.w600,
                       color: leaveTypeColor,
                     ),
@@ -508,7 +579,7 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
                       ),
                       ResponsiveSizedBox.width(1.5),
                       TextStyles.caption(
-                        text: 'From: ${leave['fromDate']}',
+                        text: 'From: ${_formatDate(leave.fromDate)}',
                         color: Appcolors.kgreyColor,
                       ),
                     ],
@@ -524,8 +595,25 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
                       ),
                       ResponsiveSizedBox.width(1.5),
                       TextStyles.caption(
-                        text: 'To: ${leave['toDate']}',
+                        text: 'To: ${_formatDate(leave.toDate)}',
                         color: Appcolors.kgreyColor,
+                      ),
+                    ],
+                  ),
+                  ResponsiveSizedBox.height5,
+                  // Total Days
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.schedule,
+                        size: ResponsiveUtils.sp(3.5),
+                        color: Appcolors.kprimarycolor,
+                      ),
+                      ResponsiveSizedBox.width(1.5),
+                      TextStyles.caption(
+                        text: '${leave.total} day${leave.total > 1 ? 's' : ''}',
+                        weight: FontWeight.w600,
+                        color: Appcolors.kprimarycolor,
                       ),
                     ],
                   ),
@@ -550,7 +638,7 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
                 ),
                 ResponsiveSizedBox.height5,
                 TextStyles.caption(
-                  text: status,
+                  text: statusDisplay,
                   weight: FontWeight.w600,
                   color: statusColor,
                 ),

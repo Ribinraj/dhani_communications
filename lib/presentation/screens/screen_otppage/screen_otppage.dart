@@ -1,7 +1,7 @@
 import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
-import 'package:dhani_communications/presentation/blocs/verify_otp_bloc/verify_otp_bloc.dart';
+import 'package:dhani_communications/features/auth/blocs/verify_otp_bloc/verify_otp_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -70,7 +70,7 @@ class _OtpPageState extends State<OtpPage> {
   }
 
   void _verifyOtp() {
-    if (_otpController.text.length == 6) {
+    if (_otpController.text.length == 4) {
       context.read<VerifyOtpBloc>().add(
             VerifyOtpButtonClickEvent(
               userId: widget.userId,
@@ -224,7 +224,7 @@ class _OtpPageState extends State<OtpPage> {
 
                       // Subtitle with phone number
                       Text(
-                        'Enter the 6-digit code sent to',
+                        'Enter the 4-digit code sent to',
                         style: TextStyle(
                           fontSize: 15,
                           color: Appcolors.kgreyColor.withOpacity(0.8),
@@ -246,7 +246,7 @@ class _OtpPageState extends State<OtpPage> {
                       Pinput(
                         controller: _otpController,
                         focusNode: _otpFocusNode,
-                        length: 6,
+                        length: 4,
                         defaultPinTheme: defaultPinTheme,
                         focusedPinTheme: focusedPinTheme,
                         submittedPinTheme: submittedPinTheme,

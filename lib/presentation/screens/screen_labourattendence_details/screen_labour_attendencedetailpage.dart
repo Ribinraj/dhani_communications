@@ -1,36 +1,166 @@
 import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/data/models/labor_attendance_model.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 
 class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
-  const ScreenLabourAttendanceDetailsPage({super.key});
+  final LaborAttendanceModel? attendance;
+
+  const ScreenLabourAttendanceDetailsPage({super.key, this.attendance});
+
+  String _formatDate(String dateStr) {
+    try {
+      final date = DateTime.parse(dateStr);
+      const months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
+      return '${date.day.toString().padLeft(2, '0')} ${months[date.month - 1]} ${date.year}';
+    } catch (e) {
+      return dateStr;
+    }
+  }
+
+  String _getStatusDisplay(String status) {
+    if (status.toUpperCase() == 'APPROVED') return 'Approved';
+    if (status.toUpperCase() == 'REJECTED') return 'Rejected';
+    return 'Pending';
+  }
+
+  bool _isApproved(String status) => status.toUpperCase() == 'APPROVED';
+  bool _isRejected(String status) => status.toUpperCase() == 'REJECTED';
+
+  Future<void> _openGoogleMaps(
+    BuildContext context,
+    double lat,
+    double lng,
+  ) async {
+    final googleMapsUrl = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=$lat,$lng',
+    );
+
+    final googleMapsAppUrl = Uri.parse('geo:$lat,$lng?q=$lat,$lng');
+
+    try {
+      if (await canLaunchUrl(googleMapsAppUrl)) {
+        await launchUrl(googleMapsAppUrl);
+      } else if (await canLaunchUrl(googleMapsUrl)) {
+        await launchUrl(googleMapsUrl, mode: LaunchMode.externalApplication);
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Could not open maps'),
+              duration: Duration(milliseconds: 1500),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.red,
+              margin: EdgeInsets.only(
+                bottom: ResponsiveUtils.hp(2),
+                left: ResponsiveUtils.wp(4),
+                right: ResponsiveUtils.wp(4),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusStyles.kradius10(),
+              ),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error opening maps: $e'),
+            duration: Duration(milliseconds: 1500),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.red,
+            margin: EdgeInsets.only(
+              bottom: ResponsiveUtils.hp(2),
+              left: ResponsiveUtils.wp(4),
+              right: ResponsiveUtils.wp(4),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadiusStyles.kradius10(),
+            ),
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Sample labour attendance data
-    final Map<String, dynamic> labourAttendanceData = {
-      'attendance': 'ATT-2026-001',
-      'type': 'Contract',
-      'contractorName': 'ABC Contractors Pvt Ltd',
-      'totalLabours': '25',
-      'hireDate': '15 Dec 2025',
-      'punchIn': '09:00 AM',
-      'punchOut': '06:00 PM',
-      'totalHours': '9 hours',
-      'totalWages': '₹22,500',
-      'distanceFromHQ': '12.5 km',
-      'status': 'Approved', // Can be: Approved, Rejected, Pending
-      'userRemarks': 'All labours present and worked full shift',
-      'approverRemarks': 'Verified and approved for payment',
-      'loginImageUrl': 'https://via.placeholder.com/400x300', // Replace with actual image
-      'logoutImageUrl': 'https://via.placeholder.com/400x300', // Replace with actual image
-    };
+    final attendanceData = attendance;
 
-    final String status = labourAttendanceData['status'] ?? 'Pending';
-    final bool isApproved = status == 'Approved';
-    final bool isRejected = status == 'Rejected';
+    if (attendanceData == null) {
+      return Scaffold(
+        backgroundColor: Appcolors.kwhitecolor,
+        appBar: AppBar(
+          backgroundColor: Appcolors.kwhitecolor,
+          elevation: 2,
+          shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Appcolors.kprimarycolor,
+              size: ResponsiveUtils.sp(5),
+            ),
+          ),
+          title: TextStyles.subheadline(
+            text: 'Attendance Detail',
+            weight: FontWeight.bold,
+            color: Appcolors.kblackcolor,
+          ),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline_rounded,
+                size: ResponsiveUtils.sp(20),
+                color: Appcolors.kgreyColor.withOpacity(0.5),
+              ),
+              ResponsiveSizedBox.height20,
+              TextStyles.subheadline(
+                text: 'No attendance data available',
+                color: Appcolors.kgreyColor,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final String status = _getStatusDisplay(attendanceData.status);
+    final bool isApproved = _isApproved(attendanceData.status);
+    final bool isRejected = _isRejected(attendanceData.status);
+    final bool isContract =
+        attendanceData.laborType.toUpperCase() == 'CONTRACT';
+    final String displayName = isContract
+        ? (attendanceData.contractorName.isNotEmpty
+              ? attendanceData.contractorName
+              : 'Contractor')
+        : (attendanceData.laborName.isNotEmpty
+              ? attendanceData.laborName
+              : 'Casual Labour');
 
     return Scaffold(
       backgroundColor: Appcolors.kwhitecolor,
@@ -103,14 +233,35 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                                 borderRadius: BorderRadiusStyles.kradius10(),
                                 child: Stack(
                                   children: [
-                                    // Replace with actual network image
-                                    Center(
-                                      child: Icon(
-                                        Icons.image,
-                                        size: ResponsiveUtils.sp(15),
-                                        color: Appcolors.kgreyColor.withOpacity(0.5),
-                                      ),
-                                    ),
+                                    attendanceData.picture.isNotEmpty
+                                        ? Image.network(
+                                            attendanceData.picture,
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) =>
+                                                    Center(
+                                                      child: Icon(
+                                                        Icons.image,
+                                                        size:
+                                                            ResponsiveUtils.sp(
+                                                              15,
+                                                            ),
+                                                        color: Appcolors
+                                                            .kgreyColor
+                                                            .withOpacity(0.5),
+                                                      ),
+                                                    ),
+                                          )
+                                        : Center(
+                                            child: Icon(
+                                              Icons.image,
+                                              size: ResponsiveUtils.sp(15),
+                                              color: Appcolors.kgreyColor
+                                                  .withOpacity(0.5),
+                                            ),
+                                          ),
                                     Positioned(
                                       top: ResponsiveUtils.hp(1),
                                       left: ResponsiveUtils.wp(2),
@@ -121,7 +272,8 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.green,
-                                          borderRadius: BorderRadiusStyles.kradius5(),
+                                          borderRadius:
+                                              BorderRadiusStyles.kradius5(),
                                         ),
                                         child: TextStyles.caption(
                                           text: 'LOGIN',
@@ -136,7 +288,9 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                             ),
                             ResponsiveSizedBox.height10,
                             TextStyles.medium(
-                              text: labourAttendanceData['punchIn'] ?? 'N/A',
+                              text: attendanceData.punchIn.isNotEmpty
+                                  ? attendanceData.punchIn
+                                  : 'N/A',
                               weight: FontWeight.w600,
                               color: Colors.green.shade700,
                             ),
@@ -162,14 +316,35 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                                 borderRadius: BorderRadiusStyles.kradius10(),
                                 child: Stack(
                                   children: [
-                                    // Replace with actual network image
-                                    Center(
-                                      child: Icon(
-                                        Icons.image,
-                                        size: ResponsiveUtils.sp(15),
-                                        color: Appcolors.kgreyColor.withOpacity(0.5),
-                                      ),
-                                    ),
+                                    attendanceData.punchOutPicture.isNotEmpty
+                                        ? Image.network(
+                                            attendanceData.punchOutPicture,
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) =>
+                                                    Center(
+                                                      child: Icon(
+                                                        Icons.image,
+                                                        size:
+                                                            ResponsiveUtils.sp(
+                                                              15,
+                                                            ),
+                                                        color: Appcolors
+                                                            .kgreyColor
+                                                            .withOpacity(0.5),
+                                                      ),
+                                                    ),
+                                          )
+                                        : Center(
+                                            child: Icon(
+                                              Icons.image,
+                                              size: ResponsiveUtils.sp(15),
+                                              color: Appcolors.kgreyColor
+                                                  .withOpacity(0.5),
+                                            ),
+                                          ),
                                     Positioned(
                                       top: ResponsiveUtils.hp(1),
                                       left: ResponsiveUtils.wp(2),
@@ -180,7 +355,8 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.red,
-                                          borderRadius: BorderRadiusStyles.kradius5(),
+                                          borderRadius:
+                                              BorderRadiusStyles.kradius5(),
                                         ),
                                         child: TextStyles.caption(
                                           text: 'LOGOUT',
@@ -195,7 +371,9 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                             ),
                             ResponsiveSizedBox.height10,
                             TextStyles.medium(
-                              text: labourAttendanceData['punchOut'] ?? 'N/A',
+                              text: attendanceData.punchOut.isNotEmpty
+                                  ? attendanceData.punchOut
+                                  : 'N/A',
                               weight: FontWeight.w600,
                               color: Colors.red.shade700,
                             ),
@@ -236,8 +414,8 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                   // Attendance ID
                   _buildDetailRow(
                     icon: Icons.badge_rounded,
-                    label: 'Attendance',
-                    value: labourAttendanceData['attendance'] ?? 'N/A',
+                    label: 'Attendance ID',
+                    value: '#${attendanceData.attendanceId}',
                     iconColor: Appcolors.kprimarycolor,
                   ),
                   ResponsiveSizedBox.height15,
@@ -248,21 +426,27 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                   _buildDetailRow(
                     icon: Icons.work_rounded,
                     label: 'Type',
-                    value: labourAttendanceData['type'] ?? 'N/A',
-                    iconColor: Colors.purple.shade700,
+                    value: isContract ? 'Contract' : 'Casual',
+                    iconColor: isContract
+                        ? Colors.purple.shade700
+                        : Colors.teal.shade700,
                     valueWidget: Container(
                       padding: EdgeInsets.symmetric(
                         horizontal: ResponsiveUtils.wp(3),
                         vertical: ResponsiveUtils.hp(0.5),
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.purple.withOpacity(0.1),
+                        color: isContract
+                            ? Colors.purple.withOpacity(0.1)
+                            : Colors.teal.withOpacity(0.1),
                         borderRadius: BorderRadiusStyles.kradius5(),
                       ),
                       child: TextStyles.medium(
-                        text: labourAttendanceData['type'] ?? 'N/A',
+                        text: isContract ? 'Contract' : 'Casual',
                         weight: FontWeight.w600,
-                        color: Colors.purple.shade700,
+                        color: isContract
+                            ? Colors.purple.shade700
+                            : Colors.teal.shade700,
                       ),
                     ),
                   ),
@@ -270,24 +454,38 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                   _buildDivider(),
                   ResponsiveSizedBox.height15,
 
-                  // Contractor Name
+                  // Name (Contractor or Labour)
                   _buildDetailRow(
-                    icon: Icons.business_rounded,
-                    label: 'Contractor Name',
-                    value: labourAttendanceData['contractorName'] ?? 'N/A',
+                    icon: isContract
+                        ? Icons.business_rounded
+                        : Icons.person_rounded,
+                    label: isContract ? 'Contractor Name' : 'Labour Name',
+                    value: displayName,
                     iconColor: Colors.blue.shade700,
                   ),
-                  ResponsiveSizedBox.height15,
-                  _buildDivider(),
-                  ResponsiveSizedBox.height15,
-
-                  // Total Labours
-                  _buildDetailRow(
-                    icon: Icons.groups_rounded,
-                    label: 'Total Labours',
-                    value: labourAttendanceData['totalLabours'] ?? 'N/A',
-                    iconColor: Colors.orange.shade700,
-                  ),
+                  if (!isContract && attendanceData.laborMobile.isNotEmpty) ...[
+                    ResponsiveSizedBox.height15,
+                    _buildDivider(),
+                    ResponsiveSizedBox.height15,
+                    _buildDetailRow(
+                      icon: Icons.phone_rounded,
+                      label: 'Mobile',
+                      value: attendanceData.laborMobile,
+                      iconColor: Colors.green.shade700,
+                    ),
+                  ],
+                  if (isContract) ...[
+                    ResponsiveSizedBox.height15,
+                    _buildDivider(),
+                    ResponsiveSizedBox.height15,
+                    // Total Labours
+                    _buildDetailRow(
+                      icon: Icons.groups_rounded,
+                      label: 'Total Labours',
+                      value: attendanceData.totalLabours.toString(),
+                      iconColor: Colors.orange.shade700,
+                    ),
+                  ],
                   ResponsiveSizedBox.height15,
                   _buildDivider(),
                   ResponsiveSizedBox.height15,
@@ -296,7 +494,7 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                   _buildDetailRow(
                     icon: Icons.calendar_today_rounded,
                     label: 'Hire Date',
-                    value: labourAttendanceData['hireDate'] ?? 'N/A',
+                    value: _formatDate(attendanceData.hireDate),
                     iconColor: Appcolors.kprimarycolor,
                   ),
                   ResponsiveSizedBox.height15,
@@ -310,7 +508,9 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                         child: _buildDetailRow(
                           icon: Icons.login_rounded,
                           label: 'Punch In',
-                          value: labourAttendanceData['punchIn'] ?? 'N/A',
+                          value: attendanceData.punchIn.isNotEmpty
+                              ? attendanceData.punchIn
+                              : 'N/A',
                           iconColor: Colors.green,
                         ),
                       ),
@@ -319,7 +519,9 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                         child: _buildDetailRow(
                           icon: Icons.logout_rounded,
                           label: 'Punch Out',
-                          value: labourAttendanceData['punchOut'] ?? 'N/A',
+                          value: attendanceData.punchOut.isNotEmpty
+                              ? attendanceData.punchOut
+                              : 'N/A',
                           iconColor: Colors.red,
                         ),
                       ),
@@ -333,7 +535,9 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                   _buildDetailRow(
                     icon: Icons.access_time_rounded,
                     label: 'Total Hours',
-                    value: labourAttendanceData['totalHours'] ?? 'N/A',
+                    value: attendanceData.totalHours.isNotEmpty
+                        ? attendanceData.totalHours
+                        : 'N/A',
                     iconColor: Colors.indigo.shade700,
                   ),
                   ResponsiveSizedBox.height15,
@@ -343,11 +547,11 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                   // Total Wages
                   _buildDetailRow(
                     icon: Icons.currency_rupee_rounded,
-                    label: 'Total Wages',
-                    value: labourAttendanceData['totalWages'] ?? 'N/A',
+                    label: 'Wages',
+                    value: '₹${attendanceData.wages.toStringAsFixed(2)}',
                     iconColor: Colors.green.shade700,
                     valueWidget: TextStyles.medium(
-                      text: labourAttendanceData['totalWages'] ?? 'N/A',
+                      text: '₹${attendanceData.wages.toStringAsFixed(2)}',
                       weight: FontWeight.bold,
                       color: Colors.green.shade700,
                     ),
@@ -358,9 +562,10 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
 
                   // Distance from HQ
                   _buildDetailRow(
-                    icon: Icons.location_on_rounded,
+                    icon: Icons.directions_walk_rounded,
                     label: 'Distance from HQ',
-                    value: labourAttendanceData['distanceFromHQ'] ?? 'N/A',
+                    value:
+                        '${(attendanceData.distanceFromHQ / 1000).toStringAsFixed(2)} km',
                     iconColor: Appcolors.kprimarycolor,
                   ),
                   ResponsiveSizedBox.height15,
@@ -372,15 +577,15 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                     icon: isApproved
                         ? Icons.check_circle_rounded
                         : isRejected
-                            ? Icons.cancel_rounded
-                            : Icons.pending_rounded,
+                        ? Icons.cancel_rounded
+                        : Icons.pending_rounded,
                     label: 'Status',
                     value: status,
                     iconColor: isApproved
                         ? Colors.green
                         : isRejected
-                            ? Colors.red
-                            : Colors.orange,
+                        ? Colors.red
+                        : Colors.orange,
                     valueWidget: Container(
                       padding: EdgeInsets.symmetric(
                         horizontal: ResponsiveUtils.wp(3),
@@ -390,8 +595,8 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                         color: isApproved
                             ? Colors.green.withOpacity(0.1)
                             : isRejected
-                                ? Colors.red.withOpacity(0.1)
-                                : Colors.orange.withOpacity(0.1),
+                            ? Colors.red.withOpacity(0.1)
+                            : Colors.orange.withOpacity(0.1),
                         borderRadius: BorderRadiusStyles.kradius5(),
                       ),
                       child: TextStyles.medium(
@@ -400,8 +605,8 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                         color: isApproved
                             ? Colors.green.shade700
                             : isRejected
-                                ? Colors.red.shade700
-                                : Colors.orange.shade700,
+                            ? Colors.red.shade700
+                            : Colors.orange.shade700,
                       ),
                     ),
                   ),
@@ -438,18 +643,22 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                   _buildRemarksBox(
                     icon: Icons.person_rounded,
                     label: 'User Remarks',
-                    remarks: labourAttendanceData['userRemarks'] ?? 'No remarks',
+                    remarks: attendanceData.userRemarks.isNotEmpty
+                        ? attendanceData.userRemarks
+                        : 'No remarks',
                     iconColor: Colors.blue.shade700,
                   ),
-                  ResponsiveSizedBox.height15,
-
-                  // Approver Remarks
-                  _buildRemarksBox(
-                    icon: Icons.verified_user_rounded,
-                    label: 'Approver Remarks',
-                    remarks: labourAttendanceData['approverRemarks'] ?? 'No remarks',
-                    iconColor: Colors.green.shade700,
-                  ),
+                  if (attendanceData.approverRemarks != null &&
+                      attendanceData.approverRemarks!.isNotEmpty) ...[
+                    ResponsiveSizedBox.height15,
+                    // Approver Remarks
+                    _buildRemarksBox(
+                      icon: Icons.verified_user_rounded,
+                      label: 'Approver Remarks',
+                      remarks: attendanceData.approverRemarks!,
+                      iconColor: Colors.green.shade700,
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -460,21 +669,10 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Opening location on map...'),
-                      duration: Duration(milliseconds: 1500),
-                      behavior: SnackBarBehavior.floating,
-                      backgroundColor: Appcolors.kprimarycolor,
-                      margin: EdgeInsets.only(
-                        bottom: ResponsiveUtils.hp(2),
-                        left: ResponsiveUtils.wp(4),
-                        right: ResponsiveUtils.wp(4),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadiusStyles.kradius10(),
-                      ),
-                    ),
+                  _openGoogleMaps(
+                    context,
+                    attendanceData.attendanceLatt,
+                    attendanceData.attendanceLong,
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -528,21 +726,14 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
             color: iconColor.withOpacity(0.1),
             borderRadius: BorderRadiusStyles.kradius10(),
           ),
-          child: Icon(
-            icon,
-            color: iconColor,
-            size: ResponsiveUtils.sp(5),
-          ),
+          child: Icon(icon, color: iconColor, size: ResponsiveUtils.sp(5)),
         ),
         ResponsiveSizedBox.width(3),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextStyles.caption(
-                text: label,
-                color: Appcolors.kgreyColor,
-              ),
+              TextStyles.caption(text: label, color: Appcolors.kgreyColor),
               ResponsiveSizedBox.height5,
               valueWidget ??
                   TextStyles.medium(
@@ -568,21 +759,14 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: iconColor.withOpacity(0.05),
         borderRadius: BorderRadiusStyles.kradius10(),
-        border: Border.all(
-          color: iconColor.withOpacity(0.2),
-          width: 1,
-        ),
+        border: Border.all(color: iconColor.withOpacity(0.2), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(
-                icon,
-                color: iconColor,
-                size: ResponsiveUtils.sp(4.5),
-              ),
+              Icon(icon, color: iconColor, size: ResponsiveUtils.sp(4.5)),
               ResponsiveSizedBox.width(2),
               TextStyles.medium(
                 text: label,
@@ -592,19 +776,13 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
             ],
           ),
           ResponsiveSizedBox.height10,
-          TextStyles.medium(
-            text: remarks,
-            color: Appcolors.kblackcolor,
-          ),
+          TextStyles.medium(text: remarks, color: Appcolors.kblackcolor),
         ],
       ),
     );
   }
 
   Widget _buildDivider() {
-    return Divider(
-      color: Appcolors.kgreyColor.withOpacity(0.2),
-      height: 1,
-    );
+    return Divider(color: Appcolors.kgreyColor.withOpacity(0.2), height: 1);
   }
 }

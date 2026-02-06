@@ -19,7 +19,7 @@ class DioClient {
         onRequest: (options, handler) async {
           final token = await LocalStorage.getToken();
           if (token.isNotEmpty) {
-            options.headers['Authorization'] = 'Bearer $token';
+            options.headers['Authorization'] = token;
           }
           handler.next(options);
         },

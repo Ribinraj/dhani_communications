@@ -17,20 +17,18 @@ import 'package:dhani_communications/data/models/vehicle_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-
-
-
 class ApiResponse<T> {
   final T? data;
   final String message;
   final bool error;
   final int status;
 
-  ApiResponse(
-      {this.data,
-      required this.message,
-      required this.error,
-      required this.status});
+  ApiResponse({
+    this.data,
+    required this.message,
+    required this.error,
+    required this.status,
+  });
 }
 
 class Apprepo {
@@ -45,11 +43,7 @@ class Apprepo {
       final token = await LocalStorage.getToken();
       Response response = await dio.get(
         Endpoints.getUpdates,
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('getUpdates response: $responseData');
@@ -91,11 +85,7 @@ class Apprepo {
       final token = await LocalStorage.getToken();
       Response response = await dio.get(
         Endpoints.getProjects,
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('getProjects response: $responseData');
@@ -138,11 +128,7 @@ class Apprepo {
       Response response = await dio.post(
         Endpoints.getVehicles,
         data: {},
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('getVehicles response: $responseData');
@@ -179,16 +165,13 @@ class Apprepo {
   }
 
   /// Get headquarters vehicles list
-  Future<ApiResponse<List<HeadquarterVehicleModel>>> getHeadquarterVehicles() async {
+  Future<ApiResponse<List<HeadquarterVehicleModel>>>
+  getHeadquarterVehicles() async {
     try {
       final token = await LocalStorage.getToken();
       Response response = await dio.get(
         Endpoints.getHeadquarterVehicles,
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('getHeadquarterVehicles response: $responseData');
@@ -196,7 +179,11 @@ class Apprepo {
       if (responseData["status"] == 200) {
         final List<dynamic> dataList = responseData["data"] ?? [];
         final vehicles = dataList
-            .map((item) => HeadquarterVehicleModel.fromJson(item as Map<String, dynamic>))
+            .map(
+              (item) => HeadquarterVehicleModel.fromJson(
+                item as Map<String, dynamic>,
+              ),
+            )
             .toList();
         return ApiResponse(
           data: vehicles,
@@ -239,11 +226,7 @@ class Apprepo {
           'meterReading': meterReading,
           'vehicleNumber': vehicleNumber,
         },
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('updateVehicle response: $responseData');
@@ -282,11 +265,7 @@ class Apprepo {
       Response response = await dio.post(
         Endpoints.getNotifications,
         data: {},
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('getNotifications response: $responseData');
@@ -294,7 +273,10 @@ class Apprepo {
       if (responseData["status"] == 200) {
         final List<dynamic> dataList = responseData["data"] ?? [];
         final notifications = dataList
-            .map((item) => NotificationModel.fromJson(item as Map<String, dynamic>))
+            .map(
+              (item) =>
+                  NotificationModel.fromJson(item as Map<String, dynamic>),
+            )
             .toList();
         return ApiResponse(
           data: notifications,
@@ -330,14 +312,8 @@ class Apprepo {
       final token = await LocalStorage.getToken();
       Response response = await dio.post(
         Endpoints.updateNotification,
-        data: {
-          'notificationId': notificationId,
-        },
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        data: {'notificationId': notificationId},
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('updateNotification response: $responseData');
@@ -345,7 +321,8 @@ class Apprepo {
       if (responseData["status"] == 200) {
         return ApiResponse(
           data: null,
-          message: responseData['message'] ?? 'Notification updated successfully',
+          message:
+              responseData['message'] ?? 'Notification updated successfully',
           error: false,
           status: responseData["status"],
         );
@@ -377,18 +354,15 @@ class Apprepo {
       final token = await LocalStorage.getToken();
       Response response = await dio.get(
         Endpoints.checkAttendance,
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('checkAttendance response: $responseData');
 
       if (responseData["status"] == 200) {
         final checkData = AttendanceCheckModel.fromJson(
-            responseData["data"] as Map<String, dynamic>);
+          responseData["data"] as Map<String, dynamic>,
+        );
         return ApiResponse(
           data: checkData,
           message: responseData['message'] ?? 'Success',
@@ -436,11 +410,7 @@ class Apprepo {
           if (userRemarks != null) 'userRemarks': userRemarks,
           if (picture != null) 'picture': picture,
         },
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('createAttendance response: $responseData');
@@ -448,7 +418,8 @@ class Apprepo {
       if (responseData["status"] == 200) {
         return ApiResponse(
           data: responseData["data"] as int?,
-          message: responseData['message'] ?? 'Attendance recorded successfully',
+          message:
+              responseData['message'] ?? 'Attendance recorded successfully',
           error: false,
           status: responseData["status"],
         );
@@ -474,24 +445,21 @@ class Apprepo {
 
   /// Get attendance list
   Future<ApiResponse<List<AttendanceModel>>> getAttendanceList({
-    required int projectId,
-    required String startDate,
-    required String endDate,
+    String? startDate,
+    String? endDate,
   }) async {
     try {
       final token = await LocalStorage.getToken();
+      final requestData = {
+        if (startDate != null) 'startDate': startDate,
+        if (endDate != null) 'endDate': endDate,
+      };
+      log('getAttendanceList request data: $requestData');
+
       Response response = await dio.post(
         Endpoints.getAttendanceList,
-        data: {
-          'projectId': projectId,
-          'startDate': startDate,
-          'endDate': endDate,
-        },
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        data: requestData,
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('getAttendanceList response: $responseData');
@@ -499,7 +467,9 @@ class Apprepo {
       if (responseData["status"] == 200) {
         final List<dynamic> dataList = responseData["data"] ?? [];
         final attendanceList = dataList
-            .map((item) => AttendanceModel.fromJson(item as Map<String, dynamic>))
+            .map(
+              (item) => AttendanceModel.fromJson(item as Map<String, dynamic>),
+            )
             .toList();
         return ApiResponse(
           data: attendanceList,
@@ -531,24 +501,21 @@ class Apprepo {
 
   /// Get labor attendance list
   Future<ApiResponse<List<LaborAttendanceModel>>> getLaborAttendanceList({
-    required int projectId,
-    required String startDate,
-    required String endDate,
+    String? startDate,
+    String? endDate,
   }) async {
     try {
       final token = await LocalStorage.getToken();
+      final requestData = {
+        if (startDate != null) 'startDate': startDate,
+        if (endDate != null) 'endDate': endDate,
+      };
+      log('getLaborAttendanceList request data: $requestData');
+
       Response response = await dio.post(
         Endpoints.getLaborAttendanceList,
-        data: {
-          'projectId': projectId,
-          'startDate': startDate,
-          'endDate': endDate,
-        },
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        data: requestData,
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('getLaborAttendanceList response: $responseData');
@@ -556,7 +523,10 @@ class Apprepo {
       if (responseData["status"] == 200) {
         final List<dynamic> dataList = responseData["data"] ?? [];
         final laborAttendanceList = dataList
-            .map((item) => LaborAttendanceModel.fromJson(item as Map<String, dynamic>))
+            .map(
+              (item) =>
+                  LaborAttendanceModel.fromJson(item as Map<String, dynamic>),
+            )
             .toList();
         return ApiResponse(
           data: laborAttendanceList,
@@ -613,11 +583,7 @@ class Apprepo {
           if (userRemarks != null) 'userRemarks': userRemarks,
           if (picture != null) 'picture': picture,
         },
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('createLaborAttendance response: $responseData');
@@ -625,7 +591,9 @@ class Apprepo {
       if (responseData["status"] == 200) {
         return ApiResponse(
           data: responseData["data"] as int?,
-          message: responseData['message'] ?? 'Labor attendance recorded successfully',
+          message:
+              responseData['message'] ??
+              'Labor attendance recorded successfully',
           error: false,
           status: responseData["status"],
         );
@@ -655,11 +623,7 @@ class Apprepo {
       final token = await LocalStorage.getToken();
       Response response = await dio.get(
         Endpoints.getPunchInList,
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('getPunchInList response: $responseData');
@@ -667,7 +631,9 @@ class Apprepo {
       if (responseData["status"] == 200) {
         final List<dynamic> dataList = responseData["data"] ?? [];
         final punchInList = dataList
-            .map((item) => PunchInListModel.fromJson(item as Map<String, dynamic>))
+            .map(
+              (item) => PunchInListModel.fromJson(item as Map<String, dynamic>),
+            )
             .toList();
         return ApiResponse(
           data: punchInList,
@@ -723,11 +689,7 @@ class Apprepo {
           if (attachements != null)
             'attachements': attachements.map((a) => a.toJson()).toList(),
         },
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('createExpense response: $responseData');
@@ -761,24 +723,21 @@ class Apprepo {
 
   /// Get expenses list
   Future<ApiResponse<List<ExpenseModel>>> getExpensesList({
-    required int projectId,
-    required String startDate,
-    required String endDate,
+    String? startDate,
+    String? endDate,
   }) async {
     try {
       final token = await LocalStorage.getToken();
+      final requestData = {
+        if (startDate != null) 'startDate': startDate,
+        if (endDate != null) 'endDate': endDate,
+      };
+      log('getExpensesList request data: $requestData');
+
       Response response = await dio.post(
         Endpoints.getExpensesList,
-        data: {
-          'projectId': projectId,
-          'startDate': startDate,
-          'endDate': endDate,
-        },
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        data: requestData,
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('getExpensesList response: $responseData');
@@ -841,11 +800,7 @@ class Apprepo {
           if (leaveLong != null) 'leaveLong': leaveLong,
           if (picture != null) 'picture': picture,
         },
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('createLeave response: $responseData');
@@ -853,7 +808,9 @@ class Apprepo {
       if (responseData["status"] == 200) {
         return ApiResponse(
           data: responseData["data"] as int?,
-          message: responseData['message'] ?? 'Leave application submitted successfully',
+          message:
+              responseData['message'] ??
+              'Leave application submitted successfully',
           error: false,
           status: responseData["status"],
         );
@@ -879,24 +836,21 @@ class Apprepo {
 
   /// Get leaves list
   Future<ApiResponse<List<LeaveModel>>> getLeavesList({
-    required int projectId,
-    required String startDate,
-    required String endDate,
+    String? startDate,
+    String? endDate,
   }) async {
     try {
       final token = await LocalStorage.getToken();
+      final requestData = {
+        if (startDate != null) 'startDate': startDate,
+        if (endDate != null) 'endDate': endDate,
+      };
+      log('getLeavesList request data: $requestData');
+
       Response response = await dio.post(
         Endpoints.getLeavesList,
-        data: {
-          'projectId': projectId,
-          'startDate': startDate,
-          'endDate': endDate,
-        },
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        data: requestData,
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('getLeavesList response: $responseData');
@@ -949,11 +903,7 @@ class Apprepo {
           'startDate': startDate,
           'endDate': endDate,
         },
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('getDprList response: $responseData');
@@ -997,21 +947,16 @@ class Apprepo {
       final token = await LocalStorage.getToken();
       Response response = await dio.post(
         Endpoints.getDprDetails,
-        data: {
-          'dprId': dprId,
-        },
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        data: {'dprId': dprId},
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('getDprDetails response: $responseData');
 
       if (responseData["status"] == 200) {
         final dprDetails = DprDetailsModel.fromJson(
-            responseData["data"] as Map<String, dynamic>);
+          responseData["data"] as Map<String, dynamic>,
+        );
         return ApiResponse(
           data: dprDetails,
           message: responseData['message'] ?? 'Success',
@@ -1057,11 +1002,7 @@ class Apprepo {
           'progress': progress,
           if (userRemarks != null) 'userRemarks': userRemarks,
         },
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('updateDpr response: $responseData');
@@ -1108,11 +1049,7 @@ class Apprepo {
           'startDate': startDate,
           'endDate': endDate,
         },
-        options: Options(
-          headers: {
-            'Authorization': token,
-          },
-        ),
+        options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
       log('getMyDprSubmissions response: $responseData');
@@ -1120,7 +1057,10 @@ class Apprepo {
       if (responseData["status"] == 200) {
         final List<dynamic> dataList = responseData["data"] ?? [];
         final submissions = dataList
-            .map((item) => DprSubmissionModel.fromJson(item as Map<String, dynamic>))
+            .map(
+              (item) =>
+                  DprSubmissionModel.fromJson(item as Map<String, dynamic>),
+            )
             .toList();
         return ApiResponse(
           data: submissions,

@@ -29,7 +29,7 @@
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>NSCameraUsageDescription</key>
-   <string>This app needs camera access for attendance</string>
+	<string>This app needs camera access for attendance</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -47,5 +47,13 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- URL Schemes for url_launcher -->
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
+		<string>http</string>
+		<string>comgooglemaps</string>
+		<string>maps</string>
+	</array>
 </dict>
 </plist>

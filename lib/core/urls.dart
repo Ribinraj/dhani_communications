@@ -4,6 +4,8 @@ class Endpoints {
   static const verifyOtp = 'login/verify';
   static const resendOtp = 'login/resend';
   static const getUpdates = 'login/updates';
+  static const getProfile = 'login/profile';
+  static const updateProfile = 'login/updateprofile';
   static const getProjects = 'login/projects';
   static const getVehicles = 'login/vehicles';
   static const getHeadquarterVehicles = 'login/headquartervehicles';

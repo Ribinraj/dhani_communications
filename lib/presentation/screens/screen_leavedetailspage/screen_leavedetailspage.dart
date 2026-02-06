@@ -1,5 +1,5 @@
 import 'package:dhani_communications/core/constants.dart';
-import 'package:dhani_communications/data/models/expense_model.dart';
+import 'package:dhani_communications/data/models/leave_model.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -7,10 +7,10 @@ import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 
-class ScreenExpenseDetailPage extends StatelessWidget {
-  final ExpenseModel? expense;
+class ScreenLeaveDetailPage extends StatelessWidget {
+  final LeaveModel? leave;
 
-  const ScreenExpenseDetailPage({super.key, this.expense});
+  const ScreenLeaveDetailPage({super.key, this.leave});
 
   String _formatDate(String dateStr) {
     try {
@@ -43,6 +43,86 @@ class ScreenExpenseDetailPage extends StatelessWidget {
 
   bool _isApproved(String status) => status.toUpperCase() == 'APPROVED';
   bool _isRejected(String status) => status.toUpperCase() == 'REJECTED';
+
+  Color _getLeaveTypeColor(String leaveType) {
+    final type = leaveType.toLowerCase();
+    if (type.contains('casual')) return Colors.blue;
+    if (type.contains('sick')) return Colors.orange;
+    if (type.contains('privilege')) return Colors.purple;
+    if (type.contains('earned')) return Colors.teal;
+    if (type.contains('maternity')) return Colors.pink;
+    if (type.contains('paternity')) return Colors.indigo;
+    return Appcolors.kprimarycolor;
+  }
+
+  IconData _getLeaveTypeIcon(String leaveType) {
+    final type = leaveType.toLowerCase();
+    if (type.contains('casual')) return Icons.event_available;
+    if (type.contains('sick')) return Icons.sick;
+    if (type.contains('privilege')) return Icons.stars;
+    if (type.contains('earned')) return Icons.card_giftcard;
+    if (type.contains('maternity')) return Icons.child_care;
+    if (type.contains('paternity')) return Icons.family_restroom;
+    return Icons.event_note;
+  }
+
+  Future<void> _openGoogleMaps(
+    BuildContext context,
+    double lat,
+    double lng,
+  ) async {
+    final googleMapsUrl = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=$lat,$lng',
+    );
+
+    final googleMapsAppUrl = Uri.parse('geo:$lat,$lng?q=$lat,$lng');
+
+    try {
+      if (await canLaunchUrl(googleMapsAppUrl)) {
+        await launchUrl(googleMapsAppUrl);
+      } else if (await canLaunchUrl(googleMapsUrl)) {
+        await launchUrl(googleMapsUrl, mode: LaunchMode.externalApplication);
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Could not open maps'),
+              duration: Duration(milliseconds: 1500),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.red,
+              margin: EdgeInsets.only(
+                bottom: ResponsiveUtils.hp(2),
+                left: ResponsiveUtils.wp(4),
+                right: ResponsiveUtils.wp(4),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusStyles.kradius10(),
+              ),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error opening maps: $e'),
+            duration: Duration(milliseconds: 1500),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.red,
+            margin: EdgeInsets.only(
+              bottom: ResponsiveUtils.hp(2),
+              left: ResponsiveUtils.wp(4),
+              right: ResponsiveUtils.wp(4),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadiusStyles.kradius10(),
+            ),
+          ),
+        );
+      }
+    }
+  }
 
   Future<void> _openDocument(BuildContext context, String url) async {
     final uri = Uri.parse(url);
@@ -130,9 +210,9 @@ class ScreenExpenseDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final expenseData = expense;
+    final leaveData = leave;
 
-    if (expenseData == null) {
+    if (leaveData == null) {
       return Scaffold(
         backgroundColor: Appcolors.kwhitecolor,
         appBar: AppBar(
@@ -150,7 +230,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
             ),
           ),
           title: TextStyles.subheadline(
-            text: 'Expense Details',
+            text: 'Leave Details',
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -167,7 +247,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
               ),
               ResponsiveSizedBox.height20,
               TextStyles.subheadline(
-                text: 'No expense data available',
+                text: 'No leave data available',
                 color: Appcolors.kgreyColor,
               ),
             ],
@@ -176,9 +256,12 @@ class ScreenExpenseDetailPage extends StatelessWidget {
       );
     }
 
-    final String status = _getStatusDisplay(expenseData.status);
-    final bool isApproved = _isApproved(expenseData.status);
-    final bool isRejected = _isRejected(expenseData.status);
+    final String status = _getStatusDisplay(leaveData.status);
+    final bool isApproved = _isApproved(leaveData.status);
+    final bool isRejected = _isRejected(leaveData.status);
+    final Color leaveTypeColor = _getLeaveTypeColor(
+      leaveData.leaveCategoryName,
+    );
 
     Color statusColor;
     IconData statusIcon;
@@ -210,7 +293,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Expense Details',
+          text: 'Leave Details',
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -221,23 +304,20 @@ class ScreenExpenseDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Amount Card
+            // Leave Type Card
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(ResponsiveUtils.wp(6)),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [
-                    Appcolors.kprimarycolor,
-                    Appcolors.kprimarycolor.withOpacity(0.8),
-                  ],
+                  colors: [leaveTypeColor, leaveTypeColor.withOpacity(0.8)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadiusStyles.kradius15(),
                 boxShadow: [
                   BoxShadow(
-                    color: Appcolors.kprimarycolor.withOpacity(0.3),
+                    color: leaveTypeColor.withOpacity(0.3),
                     blurRadius: 15,
                     offset: const Offset(0, 5),
                   ),
@@ -245,17 +325,29 @@ class ScreenExpenseDetailPage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  TextStyles.caption(
-                    text: 'Total Amount',
-                    color: Appcolors.kwhitecolor.withOpacity(0.9),
+                  Icon(
+                    _getLeaveTypeIcon(leaveData.leaveCategoryName),
+                    color: Appcolors.kwhitecolor,
+                    size: ResponsiveUtils.sp(12),
                   ),
                   ResponsiveSizedBox.height10,
                   Text(
-                    '₹${expenseData.expenseAmount.toStringAsFixed(2)}',
+                    leaveData.leaveCategoryName.isNotEmpty
+                        ? leaveData.leaveCategoryName
+                        : 'Leave',
                     style: TextStyle(
-                      fontSize: ResponsiveUtils.sp(12),
+                      fontSize: ResponsiveUtils.sp(6),
                       fontWeight: FontWeight.bold,
                       color: Appcolors.kwhitecolor,
+                    ),
+                  ),
+                  ResponsiveSizedBox.height5,
+                  Text(
+                    '${leaveData.total} day${leaveData.total > 1 ? 's' : ''}',
+                    style: TextStyle(
+                      fontSize: ResponsiveUtils.sp(5),
+                      fontWeight: FontWeight.w600,
+                      color: Appcolors.kwhitecolor.withOpacity(0.9),
                     ),
                   ),
                   ResponsiveSizedBox.height10,
@@ -291,6 +383,56 @@ class ScreenExpenseDetailPage extends StatelessWidget {
             ),
             ResponsiveSizedBox.height(3),
 
+            // Date Details Card
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
+              decoration: BoxDecoration(
+                color: Appcolors.kwhitecolor,
+                borderRadius: BorderRadiusStyles.kradius15(),
+                boxShadow: [
+                  BoxShadow(
+                    color: Appcolors.kgreyColor.withOpacity(0.15),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextStyles.subheadline(
+                    text: 'Leave Period',
+                    weight: FontWeight.bold,
+                    color: Appcolors.kblackcolor,
+                  ),
+                  ResponsiveSizedBox.height20,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildDateCard(
+                          label: 'From',
+                          date: _formatDate(leaveData.fromDate),
+                          icon: Icons.login_rounded,
+                          color: Colors.green,
+                        ),
+                      ),
+                      ResponsiveSizedBox.width(3),
+                      Expanded(
+                        child: _buildDateCard(
+                          label: 'To',
+                          date: _formatDate(leaveData.toDate),
+                          icon: Icons.logout_rounded,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            ResponsiveSizedBox.height(3),
+
             // Details Card
             Container(
               width: double.infinity,
@@ -310,164 +452,108 @@ class ScreenExpenseDetailPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextStyles.subheadline(
-                    text: 'Expense Information',
+                    text: 'Leave Information',
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
                   ResponsiveSizedBox.height20,
 
-                  // Expense ID
+                  // Leave ID
                   _buildDetailRow(
                     icon: Icons.badge_rounded,
                     iconColor: Appcolors.kprimarycolor,
-                    label: 'Expense ID',
-                    value: '#${expenseData.expenseId}',
+                    label: 'Leave ID',
+                    value: '#${leaveData.leaveId}',
                   ),
                   ResponsiveSizedBox.height20,
-
-                  // Date
-                  _buildDetailRow(
-                    icon: Icons.calendar_today,
-                    iconColor: Appcolors.kprimarycolor,
-                    label: 'Date',
-                    value: _formatDate(expenseData.expenseDate),
-                  ),
-                  ResponsiveSizedBox.height20,
-
-                  // Category
-                  if (expenseData.expenseCategoryName.isNotEmpty &&
-                      expenseData.expenseCategoryName != '-')
-                    Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(ResponsiveUtils.wp(2)),
-                              decoration: BoxDecoration(
-                                color: Colors.purple.withOpacity(0.1),
-                                borderRadius: BorderRadiusStyles.kradius10(),
-                              ),
-                              child: Icon(
-                                Icons.category_rounded,
-                                color: Colors.purple,
-                                size: ResponsiveUtils.sp(5),
-                              ),
-                            ),
-                            ResponsiveSizedBox.width(3),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextStyles.caption(
-                                    text: 'Category',
-                                    color: Appcolors.kgreyColor,
-                                  ),
-                                  ResponsiveSizedBox.height5,
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: ResponsiveUtils.wp(3),
-                                      vertical: ResponsiveUtils.hp(0.6),
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.purple.withOpacity(0.1),
-                                      borderRadius:
-                                          BorderRadiusStyles.kradius5(),
-                                    ),
-                                    child: TextStyles.medium(
-                                      text: expenseData.expenseCategoryName,
-                                      weight: FontWeight.w600,
-                                      color: Colors.purple.shade700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        ResponsiveSizedBox.height20,
-                      ],
-                    ),
 
                   // Approver
-                  if (expenseData.approver.isNotEmpty)
-                    Column(
-                      children: [
-                        _buildDetailRow(
-                          icon: Icons.person_outline,
-                          iconColor: Colors.teal,
-                          label: 'Approver',
-                          value: expenseData.approver,
-                        ),
-                        ResponsiveSizedBox.height20,
-                      ],
+                  if (leaveData.approver.isNotEmpty) ...[
+                    _buildDetailRow(
+                      icon: Icons.person_outline,
+                      iconColor: Colors.teal,
+                      label: 'Approver',
+                      value: leaveData.approver,
                     ),
+                    ResponsiveSizedBox.height20,
+                  ],
+
+                  // Distance from HQ
+                  _buildDetailRow(
+                    icon: Icons.directions_walk_rounded,
+                    iconColor: Appcolors.kprimarycolor,
+                    label: 'Distance from HQ',
+                    value:
+                        '${(leaveData.distanceFromHQ / 1000).toStringAsFixed(2)} km',
+                  ),
+                  ResponsiveSizedBox.height20,
 
                   // Created Date
                   _buildDetailRow(
                     icon: Icons.access_time_rounded,
                     iconColor: Colors.indigo,
                     label: 'Created',
-                    value: _formatDate(expenseData.createdDate),
+                    value: _formatDate(leaveData.createdDate),
                   ),
                 ],
               ),
             ),
-            ResponsiveSizedBox.height(3),
 
             // User Remarks Card
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
-              decoration: BoxDecoration(
-                color: Appcolors.kwhitecolor,
-                borderRadius: BorderRadiusStyles.kradius15(),
-                boxShadow: [
-                  BoxShadow(
-                    color: Appcolors.kgreyColor.withOpacity(0.15),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(ResponsiveUtils.wp(2)),
-                        decoration: BoxDecoration(
-                          color: Colors.amber.withOpacity(0.1),
-                          borderRadius: BorderRadiusStyles.kradius10(),
+            if (leaveData.userRemarks.isNotEmpty) ...[
+              ResponsiveSizedBox.height(3),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
+                decoration: BoxDecoration(
+                  color: Appcolors.kwhitecolor,
+                  borderRadius: BorderRadiusStyles.kradius15(),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Appcolors.kgreyColor.withOpacity(0.15),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(ResponsiveUtils.wp(2)),
+                          decoration: BoxDecoration(
+                            color: Colors.amber.withOpacity(0.1),
+                            borderRadius: BorderRadiusStyles.kradius10(),
+                          ),
+                          child: Icon(
+                            Icons.comment,
+                            color: Colors.amber.shade700,
+                            size: ResponsiveUtils.sp(5),
+                          ),
                         ),
-                        child: Icon(
-                          Icons.comment,
-                          color: Colors.amber.shade700,
-                          size: ResponsiveUtils.sp(5),
+                        ResponsiveSizedBox.width(2),
+                        TextStyles.subheadline(
+                          text: 'User Remarks',
+                          weight: FontWeight.bold,
+                          color: Appcolors.kblackcolor,
                         ),
-                      ),
-                      ResponsiveSizedBox.width(2),
-                      TextStyles.subheadline(
-                        text: 'User Remarks',
-                        weight: FontWeight.bold,
-                        color: Appcolors.kblackcolor,
-                      ),
-                    ],
-                  ),
-                  ResponsiveSizedBox.height15,
-                  TextStyles.medium(
-                    text: expenseData.userRemarks.isNotEmpty
-                        ? expenseData.userRemarks
-                        : 'No remarks provided',
-                    color: Appcolors.kgreyColor,
-                  ),
-                ],
+                      ],
+                    ),
+                    ResponsiveSizedBox.height15,
+                    TextStyles.medium(
+                      text: leaveData.userRemarks,
+                      color: Appcolors.kgreyColor,
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ],
 
             // Approver Remarks Card (if available)
-            if (expenseData.approverRemarks != null &&
-                expenseData.approverRemarks!.isNotEmpty) ...[
+            if (leaveData.approverRemarks != null &&
+                leaveData.approverRemarks!.isNotEmpty) ...[
               ResponsiveSizedBox.height(3),
               Container(
                 width: double.infinity,
@@ -510,7 +596,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
                     ),
                     ResponsiveSizedBox.height15,
                     TextStyles.medium(
-                      text: expenseData.approverRemarks!,
+                      text: leaveData.approverRemarks!,
                       color: Appcolors.kgreyColor,
                     ),
                   ],
@@ -519,7 +605,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
             ],
 
             // Documents Card
-            if (expenseData.expenseDocuments.isNotEmpty) ...[
+            if (leaveData.leaveDocuments.isNotEmpty) ...[
               ResponsiveSizedBox.height(3),
               Container(
                 width: double.infinity,
@@ -569,8 +655,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
                             borderRadius: BorderRadiusStyles.kradius20(),
                           ),
                           child: TextStyles.caption(
-                            text:
-                                '${expenseData.expenseDocuments.length} files',
+                            text: '${leaveData.leaveDocuments.length} files',
                             weight: FontWeight.w600,
                             color: Appcolors.kprimarycolor,
                           ),
@@ -579,24 +664,94 @@ class ScreenExpenseDetailPage extends StatelessWidget {
                     ),
                     ResponsiveSizedBox.height15,
                     // Documents List
-                    ...List.generate(expenseData.expenseDocuments.length, (
-                      index,
-                    ) {
-                      final document = expenseData.expenseDocuments[index];
+                    ...List.generate(leaveData.leaveDocuments.length, (index) {
+                      final document = leaveData.leaveDocuments[index];
                       return _buildDocumentItem(
                         context,
                         document,
                         index,
-                        expenseData.expenseDocuments.length,
+                        leaveData.leaveDocuments.length,
                       );
                     }),
                   ],
                 ),
               ),
             ],
+
+            ResponsiveSizedBox.height(3),
+
+            // Locate on Map Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  _openGoogleMaps(
+                    context,
+                    leaveData.leavesLatt,
+                    leaveData.leavesLong,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Appcolors.kprimarycolor,
+                  padding: EdgeInsets.symmetric(
+                    vertical: ResponsiveUtils.hp(2),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadiusStyles.kradius15(),
+                  ),
+                  elevation: 5,
+                  shadowColor: Appcolors.kprimarycolor.withOpacity(0.4),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.map_rounded,
+                      color: Appcolors.kwhitecolor,
+                      size: ResponsiveUtils.sp(5),
+                    ),
+                    ResponsiveSizedBox.width(2),
+                    TextStyles.body(
+                      text: 'Locate on Map',
+                      weight: FontWeight.bold,
+                      color: Appcolors.kwhitecolor,
+                    ),
+                  ],
+                ),
+              ),
+            ),
             ResponsiveSizedBox.height(3),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildDateCard({
+    required String label,
+    required String date,
+    required IconData icon,
+    required Color color,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(ResponsiveUtils.wp(3)),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadiusStyles.kradius10(),
+        border: Border.all(color: color.withOpacity(0.3), width: 1),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: ResponsiveUtils.sp(6)),
+          ResponsiveSizedBox.height10,
+          TextStyles.caption(text: label, color: Appcolors.kgreyColor),
+          ResponsiveSizedBox.height5,
+          TextStyles.medium(
+            text: date,
+            weight: FontWeight.bold,
+            color: Appcolors.kblackcolor,
+          ),
+        ],
       ),
     );
   }
@@ -638,7 +793,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
 
   Widget _buildDocumentItem(
     BuildContext context,
-    ExpenseDocument document,
+    LeaveDocument document,
     int index,
     int totalCount,
   ) {
