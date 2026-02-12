@@ -1,48 +1,135 @@
 import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/data/models/company_asset_model.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 
-class ScreenAssetDetailsPage extends StatefulWidget {
-  const ScreenAssetDetailsPage({super.key});
+class ScreenAssetDetailsPage extends StatelessWidget {
+  final CompanyAssetModel? asset;
 
-  @override
-  State<ScreenAssetDetailsPage> createState() => _ScreenAssetDetailsPageState();
-}
+  const ScreenAssetDetailsPage({super.key, this.asset});
 
-class _ScreenAssetDetailsPageState extends State<ScreenAssetDetailsPage> {
-  // Sample asset detail data
-  final Map<String, dynamic> assetDetail = {
-    'assetImage': 'https://via.placeholder.com/400x300', // Replace with actual asset image
-    'assetGroup': 'Electronics',
-    'assetName': 'Dell Latitude 7420',
-    'make': 'Dell',
-    'model': 'Latitude 7420',
-    'yearOfPurchase': '2024',
-    'quantity': '5',
-    'unit': 'Pieces',
-    'transactionDate': '15 Dec 2024',
-    'approximateCost': '₹85,000',
-    'headquarters': 'Bangalore Office',
-    'status': 'Active',
-  };
+  String _formatDate(String dateStr) {
+    try {
+      final date = DateTime.parse(dateStr);
+      const months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
+      return '${date.day.toString().padLeft(2, '0')} ${months[date.month - 1]} ${date.year}';
+    } catch (e) {
+      return dateStr;
+    }
+  }
 
+  String _formatCurrency(double amount) {
+    if (amount >= 10000000) {
+      return '₹${(amount / 10000000).toStringAsFixed(2)} Cr';
+    } else if (amount >= 100000) {
+      return '₹${(amount / 100000).toStringAsFixed(2)} L';
+    } else if (amount >= 1000) {
+      return '₹${(amount / 1000).toStringAsFixed(2)} K';
+    } else {
+      return '₹${amount.toStringAsFixed(0)}';
+    }
+  }
+
+  Color _getAssetGroupColor(String assetGroupName) {
+    final group = assetGroupName.toLowerCase();
+    if (group.contains('laptop')) return Colors.blue;
+    if (group.contains('phone') || group.contains('mobile')) return Colors.teal;
+    if (group.contains('vehicle') || group.contains('car'))
+      return Colors.orange;
+    if (group.contains('furniture')) return Colors.brown;
+    if (group.contains('electronic')) return Colors.purple;
+    return Appcolors.kprimarycolor;
+  }
+
+  IconData _getAssetGroupIcon(String assetGroupName) {
+    final group = assetGroupName.toLowerCase();
+    if (group.contains('laptop')) return Icons.laptop_mac;
+    if (group.contains('phone') || group.contains('mobile'))
+      return Icons.phone_android;
+    if (group.contains('vehicle') || group.contains('car'))
+      return Icons.directions_car;
+    if (group.contains('furniture')) return Icons.chair;
+    if (group.contains('electronic')) return Icons.electrical_services;
+    return Icons.inventory_2_rounded;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final String status = assetDetail['status'];
+    final assetData = asset;
+
+    if (assetData == null) {
+      return Scaffold(
+        backgroundColor: Appcolors.kwhitecolor,
+        appBar: AppBar(
+          backgroundColor: Appcolors.kwhitecolor,
+          elevation: 2,
+          shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
+          leading: IconButton(
+            onPressed: () {
+              context.pop();
+            },
+            icon: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Appcolors.kprimarycolor,
+              size: ResponsiveUtils.sp(5),
+            ),
+          ),
+          title: TextStyles.subheadline(
+            text: 'Asset Details',
+            weight: FontWeight.bold,
+            color: Appcolors.kblackcolor,
+          ),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline_rounded,
+                size: ResponsiveUtils.sp(20),
+                color: Appcolors.kgreyColor.withOpacity(0.5),
+              ),
+              ResponsiveSizedBox.height20,
+              TextStyles.subheadline(
+                text: 'No asset data available',
+                color: Appcolors.kgreyColor,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final String status = assetData.status;
+    final Color assetGroupColor = _getAssetGroupColor(assetData.assetGroupName);
 
     Color statusColor;
     IconData statusIcon;
-    if (status == 'Active') {
+    if (status.toUpperCase() == 'ACTIVE') {
       statusColor = Colors.green;
       statusIcon = Icons.check_circle;
-    } else if (status == 'Inactive') {
+    } else if (status.toUpperCase() == 'INACTIVE') {
       statusColor = Colors.red;
       statusIcon = Icons.cancel;
-    } else if (status == 'Under Maintenance') {
+    } else if (status.toUpperCase() == 'UNDER MAINTENANCE' ||
+        status.toUpperCase() == 'MAINTENANCE') {
       statusColor = Colors.orange;
       statusIcon = Icons.build_circle;
     } else {
@@ -98,16 +185,59 @@ class _ScreenAssetDetailsPageState extends State<ScreenAssetDetailsPage> {
                 child: Stack(
                   children: [
                     // Asset Image
-                    Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      color: Appcolors.kgreyColor.withOpacity(0.1),
-                      child: Icon(
-                        Icons.laptop_mac,
-                        size: ResponsiveUtils.sp(25),
-                        color: Appcolors.kgreyColor.withOpacity(0.3),
-                      ),
-                    ),
+                    assetData.picture.isNotEmpty
+                        ? Image.network(
+                            assetData.picture,
+                            width: double.infinity,
+                            height: double.infinity,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                width: double.infinity,
+                                height: double.infinity,
+                                color: Appcolors.kgreyColor.withOpacity(0.1),
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    color: Appcolors.kprimarycolor,
+                                    value:
+                                        loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                  .cumulativeBytesLoaded /
+                                              loadingProgress
+                                                  .expectedTotalBytes!
+                                        : null,
+                                  ),
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  color: Appcolors.kgreyColor.withOpacity(0.1),
+                                  child: Icon(
+                                    _getAssetGroupIcon(
+                                      assetData.assetGroupName,
+                                    ),
+                                    size: ResponsiveUtils.sp(25),
+                                    color: Appcolors.kgreyColor.withOpacity(
+                                      0.3,
+                                    ),
+                                  ),
+                                ),
+                          )
+                        : Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            color: Appcolors.kgreyColor.withOpacity(0.1),
+                            child: Icon(
+                              _getAssetGroupIcon(assetData.assetGroupName),
+                              size: ResponsiveUtils.sp(25),
+                              color: Appcolors.kgreyColor.withOpacity(0.3),
+                            ),
+                          ),
                     // Status Badge
                     Positioned(
                       top: ResponsiveUtils.hp(2),
@@ -141,6 +271,37 @@ class _ScreenAssetDetailsPageState extends State<ScreenAssetDetailsPage> {
                               text: status,
                               weight: FontWeight.w600,
                               color: statusColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    // Asset Group Badge
+                    Positioned(
+                      top: ResponsiveUtils.hp(2),
+                      left: ResponsiveUtils.wp(4),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: ResponsiveUtils.wp(3),
+                          vertical: ResponsiveUtils.hp(0.8),
+                        ),
+                        decoration: BoxDecoration(
+                          color: assetGroupColor.withOpacity(0.9),
+                          borderRadius: BorderRadiusStyles.kradius20(),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              _getAssetGroupIcon(assetData.assetGroupName),
+                              color: Appcolors.kwhitecolor,
+                              size: ResponsiveUtils.sp(4),
+                            ),
+                            ResponsiveSizedBox.width(1.5),
+                            TextStyles.medium(
+                              text: assetData.assetGroupName.trim(),
+                              weight: FontWeight.w600,
+                              color: Appcolors.kwhitecolor,
                             ),
                           ],
                         ),
@@ -182,7 +343,7 @@ class _ScreenAssetDetailsPageState extends State<ScreenAssetDetailsPage> {
                     icon: Icons.label,
                     iconColor: Appcolors.kprimarycolor,
                     label: 'Asset Name',
-                    value: assetDetail['assetName'],
+                    value: assetData.assetName,
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -191,16 +352,16 @@ class _ScreenAssetDetailsPageState extends State<ScreenAssetDetailsPage> {
                     icon: Icons.currency_rupee,
                     iconColor: Colors.green,
                     label: 'Approximate Cost',
-                    value: assetDetail['approximateCost'],
+                    value: _formatCurrency(assetData.approxCost),
                   ),
                   ResponsiveSizedBox.height20,
 
                   // Asset Group
                   _buildDetailRow(
                     icon: Icons.category,
-                    iconColor: Appcolors.kprimarycolor,
+                    iconColor: assetGroupColor,
                     label: 'Asset Group',
-                    value: assetDetail['assetGroup'],
+                    value: assetData.assetGroupName.trim(),
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -209,7 +370,7 @@ class _ScreenAssetDetailsPageState extends State<ScreenAssetDetailsPage> {
                     icon: Icons.business,
                     iconColor: Colors.deepPurple,
                     label: 'Make',
-                    value: assetDetail['make'],
+                    value: assetData.make.isNotEmpty ? assetData.make : 'N/A',
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -218,7 +379,7 @@ class _ScreenAssetDetailsPageState extends State<ScreenAssetDetailsPage> {
                     icon: Icons.devices,
                     iconColor: Colors.indigo,
                     label: 'Model',
-                    value: assetDetail['model'],
+                    value: assetData.model.isNotEmpty ? assetData.model : 'N/A',
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -227,7 +388,9 @@ class _ScreenAssetDetailsPageState extends State<ScreenAssetDetailsPage> {
                     icon: Icons.calendar_today,
                     iconColor: Colors.orange,
                     label: 'Year of Purchase',
-                    value: assetDetail['yearOfPurchase'],
+                    value: assetData.yearOfPurchase.isNotEmpty
+                        ? assetData.yearOfPurchase
+                        : 'N/A',
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -239,7 +402,7 @@ class _ScreenAssetDetailsPageState extends State<ScreenAssetDetailsPage> {
                           icon: Icons.inventory,
                           iconColor: Colors.teal,
                           label: 'Quantity',
-                          value: assetDetail['quantity'],
+                          value: assetData.qty.toString(),
                         ),
                       ),
                       ResponsiveSizedBox.width(2),
@@ -248,7 +411,7 @@ class _ScreenAssetDetailsPageState extends State<ScreenAssetDetailsPage> {
                           icon: Icons.straighten,
                           iconColor: Colors.cyan,
                           label: 'Unit',
-                          value: assetDetail['unit'],
+                          value: assetData.unit.toString(),
                         ),
                       ),
                     ],
@@ -260,7 +423,7 @@ class _ScreenAssetDetailsPageState extends State<ScreenAssetDetailsPage> {
                     icon: Icons.event,
                     iconColor: Colors.pink,
                     label: 'Transaction Date',
-                    value: assetDetail['transactionDate'],
+                    value: _formatDate(assetData.transactionDate),
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -269,8 +432,22 @@ class _ScreenAssetDetailsPageState extends State<ScreenAssetDetailsPage> {
                     icon: Icons.location_city,
                     iconColor: Colors.red,
                     label: 'Headquarters',
-                    value: assetDetail['headquarters'],
+                    value: assetData.headquarter.isNotEmpty
+                        ? assetData.headquarter
+                        : 'N/A',
                   ),
+
+                  // Document No (if available)
+                  if (assetData.documentNo.isNotEmpty) ...[
+                    ResponsiveSizedBox.height20,
+                    _buildDetailRow(
+                      icon: Icons.document_scanner,
+                      iconColor: Colors.blueGrey,
+                      label: 'Document No',
+                      value: assetData.documentNo,
+                    ),
+                  ],
+
                   ResponsiveSizedBox.height20,
 
                   // Status
@@ -321,6 +498,90 @@ class _ScreenAssetDetailsPageState extends State<ScreenAssetDetailsPage> {
                 ],
               ),
             ),
+            ResponsiveSizedBox.height(3),
+
+            // Timestamps Card
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
+              decoration: BoxDecoration(
+                color: Appcolors.kwhitecolor,
+                borderRadius: BorderRadiusStyles.kradius15(),
+                boxShadow: [
+                  BoxShadow(
+                    color: Appcolors.kgreyColor.withOpacity(0.15),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(ResponsiveUtils.wp(2)),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.1),
+                          borderRadius: BorderRadiusStyles.kradius10(),
+                        ),
+                        child: Icon(
+                          Icons.access_time,
+                          color: Colors.blue,
+                          size: ResponsiveUtils.sp(5),
+                        ),
+                      ),
+                      ResponsiveSizedBox.width(2),
+                      TextStyles.subheadline(
+                        text: 'Timestamps',
+                        weight: FontWeight.bold,
+                        color: Appcolors.kblackcolor,
+                      ),
+                    ],
+                  ),
+                  ResponsiveSizedBox.height15,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextStyles.caption(
+                              text: 'Created',
+                              color: Appcolors.kgreyColor,
+                            ),
+                            ResponsiveSizedBox.height5,
+                            TextStyles.medium(
+                              text: _formatDate(assetData.createdDate),
+                              weight: FontWeight.w600,
+                              color: Appcolors.kblackcolor,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextStyles.caption(
+                              text: 'Last Modified',
+                              color: Appcolors.kgreyColor,
+                            ),
+                            ResponsiveSizedBox.height5,
+                            TextStyles.medium(
+                              text: _formatDate(assetData.lastModifiedDate),
+                              weight: FontWeight.w600,
+                              color: Appcolors.kblackcolor,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
             ResponsiveSizedBox.height(4),
 
             // Transfer Asset Button
@@ -332,7 +593,7 @@ class _ScreenAssetDetailsPageState extends State<ScreenAssetDetailsPage> {
                   // Handle transfer asset action
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Transfer Asset: ${assetDetail['assetName']}'),
+                      content: Text('Transfer Asset: ${assetData.assetName}'),
                       duration: Duration(milliseconds: 1500),
                       behavior: SnackBarBehavior.floating,
                       backgroundColor: Appcolors.kprimarycolor,
@@ -394,21 +655,14 @@ class _ScreenAssetDetailsPageState extends State<ScreenAssetDetailsPage> {
             color: iconColor.withOpacity(0.1),
             borderRadius: BorderRadiusStyles.kradius10(),
           ),
-          child: Icon(
-            icon,
-            color: iconColor,
-            size: ResponsiveUtils.sp(5),
-          ),
+          child: Icon(icon, color: iconColor, size: ResponsiveUtils.sp(5)),
         ),
         ResponsiveSizedBox.width(3),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextStyles.caption(
-                text: label,
-                color: Appcolors.kgreyColor,
-              ),
+              TextStyles.caption(text: label, color: Appcolors.kgreyColor),
               ResponsiveSizedBox.height5,
               TextStyles.medium(
                 text: value,

@@ -13,7 +13,7 @@ class HeadquarterVehicleModel {
   factory HeadquarterVehicleModel.fromJson(Map<String, dynamic> json) {
     return HeadquarterVehicleModel(
       vehicleId: json['vehicleId'] ?? 0,
-      vehicleNumber: json['vehicleNumber'] ?? '',
+      vehicleNumber: json['vehicleRegNumber'] ?? json['vehicleNumber'] ?? '',
       vehicleType: json['vehicleType'] ?? '',
     );
   }

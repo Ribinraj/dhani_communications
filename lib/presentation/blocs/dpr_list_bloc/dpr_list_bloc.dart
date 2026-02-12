@@ -21,11 +21,7 @@ class DprListBloc extends Bloc<DprListEvent, DprListState> {
   ) async {
     emit(DprListLoadingState());
     try {
-      final response = await repository.getDprList(
-        projectId: event.projectId,
-        startDate: event.startDate,
-        endDate: event.endDate,
-      );
+      final response = await repository.getDprList(projectId: event.projectId);
       if (!response.error && response.status == 200 && response.data != null) {
         emit(DprListSuccessState(dprList: response.data!));
       } else {

@@ -1,3 +1,4 @@
+import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:flutter/material.dart';
 
@@ -34,32 +35,28 @@ class CustomDropdown extends StatelessWidget {
           vertical: ResponsiveUtils.hp(1.8),
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
-          borderSide: const BorderSide(
-            color: Color(0xFF59CBEF),
-            width: 1.5,
+          borderRadius: BorderRadius.circular(
+            ResponsiveUtils.borderRadius(2.5),
           ),
+          borderSide: const BorderSide(color: Appcolors.kbordercolor, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
-          borderSide: const BorderSide(
-            color: Color(0xFF59CBEF),
-            width: 1.5,
+          borderRadius: BorderRadius.circular(
+            ResponsiveUtils.borderRadius(2.5),
           ),
+          borderSide: const BorderSide(color: Appcolors.kbordercolor, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
-          borderSide: const BorderSide(
-            color: Color(0xFF4F8FDF),
-            width: 2,
+          borderRadius: BorderRadius.circular(
+            ResponsiveUtils.borderRadius(2.5),
           ),
+          borderSide: const BorderSide(color:Appcolors.kbordercolor, width: 1),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
-          borderSide: const BorderSide(
-            color: Colors.red,
-            width: 1.5,
+          borderRadius: BorderRadius.circular(
+            ResponsiveUtils.borderRadius(2.5),
           ),
+          borderSide: const BorderSide(color: Appcolors.kredcolor, width: 1),
         ),
       ),
       items: items.map((String item) {
@@ -77,10 +74,7 @@ class CustomDropdown extends StatelessWidget {
       onChanged: onChanged,
       validator: validator,
       dropdownColor: Colors.white,
-      icon: const Icon(
-        Icons.arrow_drop_down,
-        color: Color(0xFF4F8FDF),
-      ),
+      icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF4F8FDF)),
     );
   }
 }

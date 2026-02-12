@@ -57,15 +57,10 @@ class CustomFormtextfield extends StatelessWidget {
     );
   }
 
-  OutlineInputBorder _border(Color color, {double width = 1.5}) {
+  OutlineInputBorder _border(Color color, {double width = 1}) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(
-        ResponsiveUtils.borderRadius(2.5),
-      ),
-      borderSide: BorderSide(
-        color: color,
-        width: width,
-      ),
+      borderRadius: BorderRadius.circular(ResponsiveUtils.borderRadius(2.5)),
+      borderSide: BorderSide(color: color, width: width),
     );
   }
 }

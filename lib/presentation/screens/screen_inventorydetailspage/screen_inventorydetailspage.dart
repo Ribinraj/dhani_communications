@@ -1,4 +1,5 @@
 import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/data/models/inventory_item_model.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dhani_communications/core/colors.dart';
@@ -6,7 +7,12 @@ import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 
 class ScreenInventoryDetailPage extends StatefulWidget {
-  const ScreenInventoryDetailPage({super.key});
+  final InventoryItem inventoryItem;
+  
+  const ScreenInventoryDetailPage({
+    super.key,
+    required this.inventoryItem,
+  });
 
   @override
   State<ScreenInventoryDetailPage> createState() =>
@@ -14,21 +20,6 @@ class ScreenInventoryDetailPage extends StatefulWidget {
 }
 
 class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
-  // Sample inventory detail data
-  final Map<String, dynamic> inventoryDetail = {
-    'itemName': 'Cement Bags - Portland',
-    'issuedFrom': 'Main Warehouse',
-    'issuedDate': '03 Jan 2026',
-    'receivedFrom': 'Site Manager - Rajesh Kumar',
-    'quantity': '500',
-    'unit': 'Bags',
-    'headquarter': 'Mumbai Central Office',
-    'projectName': 'Construction Project - Tower B',
-    'status': 'Issued',
-    'transferDate': '05 Jan 2026',
-    'returnDate': '15 Jan 2026',
-  };
-
   Color _getStatusColor(String status) {
     switch (status) {
       case 'Issued':
@@ -82,7 +73,8 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final String status = inventoryDetail['status'];
+    final inventoryDetail = widget.inventoryItem;
+    final String status = inventoryDetail.status ?? 'Unknown';
     final Color statusColor = _getStatusColor(status);
     final IconData statusIcon = _getStatusIcon(status);
 
@@ -144,7 +136,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                     icon: Icons.inventory,
                     iconColor: Appcolors.kprimarycolor,
                     label: 'Item Name',
-                    value: inventoryDetail['itemName'],
+                    value: inventoryDetail.itemName ?? 'N/A',
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -156,7 +148,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                           icon: Icons.numbers,
                           iconColor: Colors.teal,
                           label: 'Quantity',
-                          value: inventoryDetail['quantity'],
+                          value: inventoryDetail.qty ?? 'N/A',
                         ),
                       ),
                       ResponsiveSizedBox.width(2),
@@ -165,7 +157,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                           icon: Icons.scale,
                           iconColor: Colors.indigo,
                           label: 'Unit',
-                          value: inventoryDetail['unit'],
+                          value: inventoryDetail.unit ?? 'N/A',
                         ),
                       ),
                     ],
@@ -253,7 +245,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                     icon: Icons.warehouse,
                     iconColor: Colors.orange,
                     label: 'Issued From',
-                    value: inventoryDetail['issuedFrom'],
+                    value: inventoryDetail.issuedFrom ?? 'N/A',
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -262,7 +254,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                     icon: Icons.business,
                     iconColor: Colors.purple,
                     label: 'Headquarter',
-                    value: inventoryDetail['headquarter'],
+                    value: inventoryDetail.headquarter ?? 'N/A',
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -271,7 +263,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                     icon: Icons.work_outline,
                     iconColor: Colors.blue,
                     label: 'Project Name',
-                    value: inventoryDetail['projectName'],
+                    value: inventoryDetail.projectName ?? 'N/A',
                   ),
                 ],
               ),
@@ -308,7 +300,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                     icon: Icons.person_outline,
                     iconColor: Colors.teal,
                     label: 'Received From',
-                    value: inventoryDetail['receivedFrom'],
+                    value: inventoryDetail.receivedFrom ?? 'N/A',
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -317,7 +309,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                     icon: Icons.calendar_today,
                     iconColor: Colors.green,
                     label: 'Issued Date',
-                    value: inventoryDetail['issuedDate'],
+                    value: inventoryDetail.issuedDate ?? 'N/A',
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -326,7 +318,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                     icon: Icons.swap_horiz,
                     iconColor: Colors.orange,
                     label: 'Transfer Date',
-                    value: inventoryDetail['transferDate'],
+                    value: inventoryDetail.transferDate ?? 'N/A',
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -335,7 +327,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                     icon: Icons.event_repeat,
                     iconColor: Colors.red,
                     label: 'Return Date',
-                    value: inventoryDetail['returnDate'],
+                    value: inventoryDetail.returnDate ?? 'N/A',
                   ),
                 ],
               ),

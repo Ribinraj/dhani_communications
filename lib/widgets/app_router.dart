@@ -1,23 +1,28 @@
 import 'package:dhani_communications/data/models/attendance_model.dart';
+import 'package:dhani_communications/data/models/company_asset_model.dart';
 import 'package:dhani_communications/data/models/expense_model.dart';
+import 'package:dhani_communications/data/models/inventory_item_model.dart';
 import 'package:dhani_communications/data/models/labor_attendance_model.dart';
 import 'package:dhani_communications/data/models/leave_model.dart';
 import 'package:dhani_communications/presentation/screens/screen_leavedetailspage/screen_leavedetailspage.dart';
-import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_dprprogresspage/screen_dprprogresspage.dart';
-import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_labourattendencepage/labour_puchoutpage.dart';
-import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_labourattendencepage/labour_punchinpage.dart';
-import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_labourattendencepage/screen_labourattendence_markingpage.dart';
-import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_leaveapplicationpage/screen_leaveapplicationpage.dart';
-import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_newattendencepage/screen_newattendencepage.dart';
-import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_newexpensepage/screen_newexpensepage.dart';
-import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_newmachineryhire/screen_newmachineryhire.dart';
-import 'package:dhani_communications/presentation/screens/multiactonbutton_options/screen_requestpage/screen_requestpage.dart';
+import 'package:dhani_communications/features/multiple_action_button/pages/screen_dprprogresspage/screen_dprprogresspage.dart';
+import 'package:dhani_communications/features/multiple_action_button/pages/screen_labourattendencepage/labour_puchoutpage.dart';
+import 'package:dhani_communications/features/multiple_action_button/pages/screen_labourattendencepage/labour_punchinpage.dart';
+import 'package:dhani_communications/features/multiple_action_button/pages/screen_labourattendencepage/screen_labourattendence_markingpage.dart';
+import 'package:dhani_communications/features/multiple_action_button/pages/screen_leaveapplicationpage/screen_leaveapplicationpage.dart';
+import 'package:dhani_communications/features/multiple_action_button/pages/screen_newattendencepage/screen_newattendencepage.dart';
+import 'package:dhani_communications/features/multiple_action_button/pages/screen_newexpensepage/screen_newexpensepage.dart';
+import 'package:dhani_communications/features/multiple_action_button/pages/screen_newmachineryhire/screen_newmachineryhire.dart';
+import 'package:dhani_communications/features/multiple_action_button/pages/screen_requestpage/screen_requestpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_approvelspage/screen_approvelexpensepage.dart';
 import 'package:dhani_communications/presentation/screens/screen_approvelspage/screen_approvemachinerypage.dart';
 import 'package:dhani_communications/presentation/screens/screen_approvelspage/screen_contractlabours_attendenceapprovelpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_approvelspage/screen_employee_attendenceapprovelpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_approvelspage/screen_leaveapprovelpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_assets_detailspage/screen_assetsdetailspage.dart';
+import 'package:dhani_communications/presentation/screens/screen_projectdprpage/screen_projectdprpage.dart';
+import 'package:dhani_communications/presentation/screens/screen_dprsubmissionspage/screen_dprsubmissionspage.dart';
+import 'package:dhani_communications/presentation/screens/screen_dprdetailspage/screen_dprdetailspage.dart';
 import 'package:dhani_communications/presentation/screens/screen_assetspage/screen_assetspage.dart';
 import 'package:dhani_communications/presentation/screens/screen_attendence_detailpage/screen_attendencedetailpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_attendencelist/screen_attendencelist.dart';
@@ -41,6 +46,8 @@ import 'package:dhani_communications/presentation/screens/screen_requestspage/sc
 import 'package:dhani_communications/presentation/screens/splash_screen/screen_splashpage.dart';
 import 'package:dhani_communications/features/auth/blocs/verify_otp_bloc/verify_otp_bloc.dart';
 import 'package:dhani_communications/features/auth/repo/authrepo.dart';
+import 'package:dhani_communications/domain/repositories/apprepo.dart';
+import 'package:dhani_communications/presentation/blocs/dpr_details_bloc/dpr_details_bloc.dart';
 import 'package:dhani_communications/core/network_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -180,7 +187,37 @@ class AppRouter {
       GoRoute(
         path: '/assetdetailspage',
         builder: (context, state) {
-          return ScreenAssetDetailsPage();
+          final asset = state.extra as CompanyAssetModel?;
+          return ScreenAssetDetailsPage(asset: asset);
+        },
+      ),
+
+      ///projectdprpage
+      GoRoute(
+        path: '/projectdprpage',
+        builder: (context, state) {
+          return ScreenProjectDprPage();
+        },
+      ),
+
+      ///dprdetailspage
+      GoRoute(
+        path: '/dprdetailspage',
+        builder: (context, state) {
+          final dprId = state.extra as int;
+          return BlocProvider(
+            create: (context) =>
+                DprDetailsBloc(repository: Apprepo(DioClient.create(context))),
+            child: ScreenDprDetailsPage(dprId: dprId),
+          );
+        },
+      ),
+
+      ///dprsubmissionspage
+      GoRoute(
+        path: '/dprsubmissionspage',
+        builder: (context, state) {
+          return ScreenDprSubmissionsPage();
         },
       ),
 
@@ -192,13 +229,14 @@ class AppRouter {
         },
       ),
 
-      ///inventorydetailspage
-      GoRoute(
-        path: '/inventorydetailspage',
-        builder: (context, state) {
-          return ScreenInventoryDetailPage();
-        },
-      ),
+///inventorydetailspage
+GoRoute(
+  path: '/inventorydetailspage',
+  builder: (context, state) {
+    final inventoryItem = state.extra as InventoryItem;
+    return ScreenInventoryDetailPage(inventoryItem: inventoryItem);
+  },
+),
 
       ///requestspage
       GoRoute(

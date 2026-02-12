@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:ui';
@@ -37,7 +36,7 @@ class _HomePageState extends State<ScreenDashboardpage>
     super.initState();
     // Fetch updates when dashboard loads
     context.read<UpdatesBloc>().add(FetchUpdatesEvent());
-    
+
     _fabAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 250),
@@ -46,20 +45,12 @@ class _HomePageState extends State<ScreenDashboardpage>
       parent: _fabAnimationController,
       curve: Curves.easeOutCubic,
     );
-    _fabRotationAnimation = Tween<double>(
-      begin: 0.0,
-      end: 0.625,
-    ).animate(CurvedAnimation(
-      parent: _fabAnimationController,
-      curve: Curves.easeInOut,
-    ));
-    _fabScaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.1,
-    ).animate(CurvedAnimation(
-      parent: _fabAnimationController,
-      curve: Curves.easeOut,
-    ));
+    _fabRotationAnimation = Tween<double>(begin: 0.0, end: 0.625).animate(
+      CurvedAnimation(parent: _fabAnimationController, curve: Curves.easeInOut),
+    );
+    _fabScaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(parent: _fabAnimationController, curve: Curves.easeOut),
+    );
   }
 
   @override
@@ -78,7 +69,6 @@ class _HomePageState extends State<ScreenDashboardpage>
       }
     });
   }
-
 
   // Grid options
   final List<Map<String, dynamic>> gridOptions = [
@@ -139,7 +129,7 @@ class _HomePageState extends State<ScreenDashboardpage>
     },
   ];
 
-// FAB options data with Iconify icons
+  // FAB options data with Iconify icons
   final List<Map<String, dynamic>> fabOptions = [
     {
       'iconify': Mdi.account_clock, // Daily Attendance
@@ -174,21 +164,21 @@ class _HomePageState extends State<ScreenDashboardpage>
       'label': 'Leave Application',
       'color': Color(0xFFFF9800),
       'useIconify': true,
-      'route':'/leaveapplicationpage',
+      'route': '/leaveapplicationpage',
     },
     {
       'iconify': Mdi.chart_line, // Daily Progress Report
       'label': 'Daily Progress (DPR)',
       'color': Color(0xFF9C27B0),
       'useIconify': true,
-      'route': '/dprprogress'
+      'route': '/dprprogress',
     },
     {
       'iconify': Mdi.file_document_edit, // Request
       'label': 'Request',
       'color': Color(0xFFE91E63),
       'useIconify': true,
-      'route': '/newrequestpage'
+      'route': '/newrequestpage',
     },
   ];
 
@@ -263,48 +253,43 @@ class _HomePageState extends State<ScreenDashboardpage>
                   color: Colors.black.withOpacity(0.6),
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                    child: Container(
-                      color: Colors.transparent,
-                    ),
+                    child: Container(color: Colors.transparent),
                   ),
                 ),
               ),
             ),
           // Multi-Action FAB Options with staggered animation
-        // Multi-Action FAB Options with staggered animation
-...List.generate(fabOptions.length, (index) {
-  final option = fabOptions[index];
-  final reversedIndex = fabOptions.length - 1 - index;
-  return AnimatedPositioned(
-    duration: const Duration(milliseconds: 250),
-    curve: Curves.easeOutCubic,
-    right: ResponsiveUtils.wp(4),
-    bottom: _isFabOpen
-        ? ResponsiveUtils.hp(22.5) + (reversedIndex * ResponsiveUtils.hp(9))
-        : ResponsiveUtils.hp(11.5),
-    child: ScaleTransition(
-      scale: CurvedAnimation(
-        parent: _fabAnimation,
-        curve: Interval(
-          index * 0.15,
-          1.0,
-          curve: Curves.elasticOut,
-        ),
-      ),
-      child: FadeTransition(
-        opacity: _fabAnimation,
-        child: _buildFabOption(
-          icon: option['icon'],
-          iconify: option['iconify'],
-          label: option['label'],
-          color: option['color'],
-          useIconify: option['useIconify'] ?? false,
-          route: option['route'], 
-        ),
-      ),
-    ),
-  );
-}),
+          // Multi-Action FAB Options with staggered animation
+          ...List.generate(fabOptions.length, (index) {
+            final option = fabOptions[index];
+            final reversedIndex = fabOptions.length - 1 - index;
+            return AnimatedPositioned(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeOutCubic,
+              right: ResponsiveUtils.wp(4),
+              bottom: _isFabOpen
+                  ? ResponsiveUtils.hp(22.5) +
+                        (reversedIndex * ResponsiveUtils.hp(9))
+                  : ResponsiveUtils.hp(11.5),
+              child: ScaleTransition(
+                scale: CurvedAnimation(
+                  parent: _fabAnimation,
+                  curve: Interval(index * 0.15, 1.0, curve: Curves.elasticOut),
+                ),
+                child: FadeTransition(
+                  opacity: _fabAnimation,
+                  child: _buildFabOption(
+                    icon: option['icon'],
+                    iconify: option['iconify'],
+                    label: option['label'],
+                    color: option['color'],
+                    useIconify: option['useIconify'] ?? false,
+                    route: option['route'],
+                  ),
+                ),
+              ),
+            );
+          }),
           // Main FAB
           Positioned(
             right: ResponsiveUtils.wp(4),
@@ -337,83 +322,83 @@ class _HomePageState extends State<ScreenDashboardpage>
     );
   }
 
-Widget _buildFabOption({
-  IconData? icon,
-  String? iconify,
-  required String label,
-  required Color color,
-  bool useIconify = false,
-   String? route,
-}) {
-  return Material(
-    color: Colors.transparent,
-    child: InkWell(
-      onTap: () {
-        _toggleFab();
-  if (route != null && route.isNotEmpty) {
-    context.push(route); // ✅ GO ROUTER NAVIGATION
-  }
-},
-      
-      borderRadius: BorderRadiusStyles.kradius15(),
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: ResponsiveUtils.wp(4),
-          vertical: ResponsiveUtils.hp(1.5),
-        ),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadiusStyles.kradius15(),
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.3),
-              blurRadius: 12,
-              offset: Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Label
-            TextStyles.medium(
-              text: label,
-              weight: FontWeight.w600,
-              color: color,
-            ),
-            ResponsiveSizedBox.width(3),
-            // Icon container
-            Container(
-              padding: EdgeInsets.all(ResponsiveUtils.wp(2.5)),
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: color.withOpacity(0.4),
-                    blurRadius: 8,
-                    offset: Offset(0, 2),
-                  ),
-                ],
+  Widget _buildFabOption({
+    IconData? icon,
+    String? iconify,
+    required String label,
+    required Color color,
+    bool useIconify = false,
+    String? route,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          _toggleFab();
+          if (route != null && route.isNotEmpty) {
+            context.push(route); // ✅ GO ROUTER NAVIGATION
+          }
+        },
+
+        borderRadius: BorderRadiusStyles.kradius15(),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: ResponsiveUtils.wp(4),
+            vertical: ResponsiveUtils.hp(1.5),
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadiusStyles.kradius15(),
+            boxShadow: [
+              BoxShadow(
+                color: color.withOpacity(0.3),
+                blurRadius: 12,
+                offset: Offset(0, 4),
               ),
-              child: useIconify && iconify != null
-                  ? Iconify(
-                      iconify,
-                      color: Colors.white,
-                      size: ResponsiveUtils.sp(5),
-                    )
-                  : Icon(
-                      icon ?? Icons.add,
-                      color: Colors.white,
-                      size: ResponsiveUtils.sp(5),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Label
+              TextStyles.medium(
+                text: label,
+                weight: FontWeight.w600,
+                color: color,
+              ),
+              ResponsiveSizedBox.width(3),
+              // Icon container
+              Container(
+                padding: EdgeInsets.all(ResponsiveUtils.wp(2.5)),
+                decoration: BoxDecoration(
+                  color: color,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: color.withOpacity(0.4),
+                      blurRadius: 8,
+                      offset: Offset(0, 2),
                     ),
-            ),
-          ],
+                  ],
+                ),
+                child: useIconify && iconify != null
+                    ? Iconify(
+                        iconify,
+                        color: Colors.white,
+                        size: ResponsiveUtils.sp(5),
+                      )
+                    : Icon(
+                        icon ?? Icons.add,
+                        color: Colors.white,
+                        size: ResponsiveUtils.sp(5),
+                      ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildAppBar() {
     return Container(
@@ -497,9 +482,7 @@ Widget _buildFabOption({
             borderRadius: BorderRadiusStyles.kradius15(),
           ),
           child: Center(
-            child: CircularProgressIndicator(
-              color: Appcolors.kprimarycolor,
-            ),
+            child: CircularProgressIndicator(color: Appcolors.kprimarycolor),
           ),
         ),
         ResponsiveSizedBox.height10,
@@ -695,7 +678,7 @@ Widget _buildFabOption({
               color: Appcolors.kprimarycolor,
               value: loadingProgress.expectedTotalBytes != null
                   ? loadingProgress.cumulativeBytesLoaded /
-                      loadingProgress.expectedTotalBytes!
+                        loadingProgress.expectedTotalBytes!
                   : null,
             ),
           );
@@ -731,7 +714,6 @@ Widget _buildFabOption({
     );
   }
 
-
   Widget _buildGridView() {
     return GridView.builder(
       padding: EdgeInsets.all(0),
@@ -747,29 +729,27 @@ Widget _buildFabOption({
       itemBuilder: (context, index) {
         final option = gridOptions[index];
         return GestureDetector(
-   onTap: () {
-    if (option['label'] == 'Attendance') {
-      context.push('/employeeattendencepage');
-    } else if (option['label'] == 'Contract Labors') {
-      context.push('/labourattendencepage');
-    } else if (option['label'] == 'Expenses') {
-      context.push('/expensespage');
-    } else if (option['label'] == 'Machinery Hire') {
-      context.push('/machinehiringpage');
-    }
-     else if (option['label'] == 'Leaves') {
-      context.push( '/leavespage');
-    }
-     else if (option['label'] == 'Company Assets') {
-      context.push( '/assetspage');
-    }
-         else if (option['label'] == 'Project Inventory') {
-      context.push( '/inventorypage');
-    }
-             else if (option['label'] == 'Requests') {
-      context.push( '/requestspage');
-    }
-  },
+          onTap: () {
+            if (option['label'] == 'Attendance') {
+              context.push('/employeeattendencepage');
+            } else if (option['label'] == 'Contract Labors') {
+              context.push('/labourattendencepage');
+            } else if (option['label'] == 'Expenses') {
+              context.push('/expensespage');
+            } else if (option['label'] == 'Machinery Hire') {
+              context.push('/machinehiringpage');
+            } else if (option['label'] == 'Leaves') {
+              context.push('/leavespage');
+            } else if (option['label'] == 'Company Assets') {
+              context.push('/assetspage');
+            } else if (option['label'] == 'Project Inventory') {
+              context.push('/inventorypage');
+            } else if (option['label'] == 'Requests') {
+              context.push('/requestspage');
+            } else if (option['label'] == 'Project DPR') {
+              context.push('/projectdprpage');
+            }
+          },
           child: Container(
             decoration: BoxDecoration(
               color: Appcolors.kwhitecolor,
@@ -819,4 +799,3 @@ Widget _buildFabOption({
     );
   }
 }
-

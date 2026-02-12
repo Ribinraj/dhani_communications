@@ -4,13 +4,8 @@ part of 'dpr_submissions_bloc.dart';
 sealed class DprSubmissionsEvent {}
 
 class FetchDprSubmissionsEvent extends DprSubmissionsEvent {
-  final int projectId;
-  final String startDate;
-  final String endDate;
+  final String? startDate;
+  final String? endDate;
 
-  FetchDprSubmissionsEvent({
-    required this.projectId,
-    required this.startDate,
-    required this.endDate,
-  });
+  FetchDprSubmissionsEvent({this.startDate, this.endDate});
 }

@@ -8,10 +8,12 @@ import 'package:meta/meta.dart';
 part 'dpr_submissions_event.dart';
 part 'dpr_submissions_state.dart';
 
-class DprSubmissionsBloc extends Bloc<DprSubmissionsEvent, DprSubmissionsState> {
+class DprSubmissionsBloc
+    extends Bloc<DprSubmissionsEvent, DprSubmissionsState> {
   final Apprepo repository;
 
-  DprSubmissionsBloc({required this.repository}) : super(DprSubmissionsInitial()) {
+  DprSubmissionsBloc({required this.repository})
+    : super(DprSubmissionsInitial()) {
     on<FetchDprSubmissionsEvent>(_onFetchDprSubmissions);
   }
 
@@ -22,7 +24,6 @@ class DprSubmissionsBloc extends Bloc<DprSubmissionsEvent, DprSubmissionsState> 
     emit(DprSubmissionsLoadingState());
     try {
       final response = await repository.getMyDprSubmissions(
-        projectId: event.projectId,
         startDate: event.startDate,
         endDate: event.endDate,
       );
