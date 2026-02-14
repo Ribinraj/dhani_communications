@@ -8,6 +8,7 @@ import 'package:dhani_communications/data/models/dpr_model.dart';
 import 'package:dhani_communications/data/models/expense_category_model.dart';
 import 'package:dhani_communications/data/models/expense_model.dart';
 import 'package:dhani_communications/data/models/headquarter_vehicle_model.dart';
+import 'package:dhani_communications/data/models/inventory_consumption_model.dart';
 import 'package:dhani_communications/data/models/inventory_item_model.dart';
 import 'package:dhani_communications/data/models/labor_attendance_model.dart';
 import 'package:dhani_communications/data/models/leave_model.dart';
@@ -671,64 +672,64 @@ class Apprepo {
 
   // ==================== LEAVES APIs ====================
 
-  /// Create new leave application
-  Future<ApiResponse<int>> createLeave({
-    required int projectId,
-    required int leaveCategoryId,
-    required String leaveFromDate,
-    required String leaveToDate,
-    String? userRemarks,
-    double? leaveLatt,
-    double? leaveLong,
-    String? picture,
-  }) async {
-    try {
-      final token = await LocalStorage.getToken();
-      Response response = await dio.post(
-        Endpoints.createLeave,
-        data: {
-          'projectId': projectId,
-          'leaveCategoryId': leaveCategoryId,
-          'leaveFromDate': leaveFromDate,
-          'leaveToDate': leaveToDate,
-          if (userRemarks != null) 'userRemarks': userRemarks,
-          if (leaveLatt != null) 'leaveLatt': leaveLatt,
-          if (leaveLong != null) 'leaveLong': leaveLong,
-          if (picture != null) 'picture': picture,
-        },
-        options: Options(headers: {'Authorization': token}),
-      );
-      final responseData = response.data;
-      log('createLeave response: $responseData');
+  // /// Create new leave application
+  // Future<ApiResponse<int>> createLeave({
+  //   required int projectId,
+  //   required int leaveCategoryId,
+  //   required String leaveFromDate,
+  //   required String leaveToDate,
+  //   String? userRemarks,
+  //   double? leaveLatt,
+  //   double? leaveLong,
+  //   String? picture,
+  // }) async {
+  //   try {
+  //     final token = await LocalStorage.getToken();
+  //     Response response = await dio.post(
+  //       Endpoints.createLeave,
+  //       data: {
+  //         'projectId': projectId,
+  //         'leaveCategoryId': leaveCategoryId,
+  //         'leaveFromDate': leaveFromDate,
+  //         'leaveToDate': leaveToDate,
+  //         if (userRemarks != null) 'userRemarks': userRemarks,
+  //         if (leaveLatt != null) 'leaveLatt': leaveLatt,
+  //         if (leaveLong != null) 'leaveLong': leaveLong,
+  //         if (picture != null) 'picture': picture,
+  //       },
+  //       options: Options(headers: {'Authorization': token}),
+  //     );
+  //     final responseData = response.data;
+  //     log('createLeave response: $responseData');
 
-      if (responseData["status"] == 200) {
-        return ApiResponse(
-          data: responseData["data"] as int?,
-          message:
-              responseData['message'] ??
-              'Leave application submitted successfully',
-          error: false,
-          status: responseData["status"],
-        );
-      } else {
-        return ApiResponse(
-          data: null,
-          message: responseData['message'] ?? 'Something went wrong',
-          error: true,
-          status: responseData["status"],
-        );
-      }
-    } on DioException catch (e) {
-      debugPrint(e.message);
-      log(e.toString());
-      return ApiResponse(
-        data: null,
-        message: 'Network or server error occurred',
-        error: true,
-        status: 500,
-      );
-    }
-  }
+  //     if (responseData["status"] == 200) {
+  //       return ApiResponse(
+  //         data: responseData["data"] as int?,
+  //         message:
+  //             responseData['message'] ??
+  //             'Leave application submitted successfully',
+  //         error: false,
+  //         status: responseData["status"],
+  //       );
+  //     } else {
+  //       return ApiResponse(
+  //         data: null,
+  //         message: responseData['message'] ?? 'Something went wrong',
+  //         error: true,
+  //         status: responseData["status"],
+  //       );
+  //     }
+  //   } on DioException catch (e) {
+  //     debugPrint(e.message);
+  //     log(e.toString());
+  //     return ApiResponse(
+  //       data: null,
+  //       message: 'Network or server error occurred',
+  //       error: true,
+  //       status: 500,
+  //     );
+  //   }
+  // }
 
   /// Get leaves list
   Future<ApiResponse<List<LeaveModel>>> getLeavesList({
@@ -873,56 +874,7 @@ class Apprepo {
     }
   }
 
-  /// Update DPR
-  Future<ApiResponse<int>> updateDpr({
-    int? dprId,
-    required int projectId,
-    required String dprDate,
-    required int progress,
-    String? userRemarks,
-  }) async {
-    try {
-      final token = await LocalStorage.getToken();
-      Response response = await dio.post(
-        Endpoints.updateDpr,
-        data: {
-          if (dprId != null) 'dprId': dprId,
-          'projectId': projectId,
-          'dprDate': dprDate,
-          'progress': progress,
-          if (userRemarks != null) 'userRemarks': userRemarks,
-        },
-        options: Options(headers: {'Authorization': token}),
-      );
-      final responseData = response.data;
-      log('updateDpr response: $responseData');
 
-      if (responseData["status"] == 200) {
-        return ApiResponse(
-          data: responseData["data"] as int?,
-          message: responseData['message'] ?? 'DPR updated successfully',
-          error: false,
-          status: responseData["status"],
-        );
-      } else {
-        return ApiResponse(
-          data: null,
-          message: responseData['message'] ?? 'Something went wrong',
-          error: true,
-          status: responseData["status"],
-        );
-      }
-    } on DioException catch (e) {
-      debugPrint(e.message);
-      log(e.toString());
-      return ApiResponse(
-        data: null,
-        message: 'Network or server error occurred',
-        error: true,
-        status: 500,
-      );
-    }
-  }
 
   /// Get my DPR submissions
   Future<ApiResponse<List<DprSubmissionModel>>> getMyDprSubmissions({
@@ -1115,7 +1067,44 @@ class Apprepo {
       );
     }
   }
+  //==========================Inventory cunsumption===============//
+  Future<ApiResponse<String>> inventoryconsumption({
+    required InventoryConsumptionModel  inventorydata,
+  }) async {
+    try {
+      Response response = await dio.post(
+        Endpoints.inventoryconsumption,
+        data: inventorydata.toJson(),
+      );
+      final responseData = response.data;
+     
 
+      if (!responseData["error"] && responseData["status"] == 200) {
+        return ApiResponse(
+          data: responseData['data']?.toString(),
+          message: responseData['message'] ?? 'Leave submitted successfully',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData["status"],
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint(e.message);
+      log(e.toString());
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
   void dispose() {
     dio.close();
   }

@@ -8,11 +8,8 @@ import 'package:go_router/go_router.dart';
 
 class ScreenInventoryDetailPage extends StatefulWidget {
   final InventoryItem inventoryItem;
-  
-  const ScreenInventoryDetailPage({
-    super.key,
-    required this.inventoryItem,
-  });
+
+  const ScreenInventoryDetailPage({super.key, required this.inventoryItem});
 
   @override
   State<ScreenInventoryDetailPage> createState() =>
@@ -51,24 +48,21 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
   }
 
   void _handleConsume() {
-    // Implement consume logic here
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Item marked as consumed')),
-    );
+    context.push('/inventoryconsumptionpage', extra: widget.inventoryItem);
   }
 
   void _handleTransfer() {
     // Implement transfer logic here
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Transfer initiated')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Transfer initiated')));
   }
 
   void _handleReturn() {
     // Implement return logic here
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Return process started')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Return process started')));
   }
 
   @override
@@ -460,21 +454,14 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
             color: iconColor.withValues(alpha: 0.1),
             borderRadius: BorderRadiusStyles.kradius10(),
           ),
-          child: Icon(
-            icon,
-            color: iconColor,
-            size: ResponsiveUtils.sp(5),
-          ),
+          child: Icon(icon, color: iconColor, size: ResponsiveUtils.sp(5)),
         ),
         ResponsiveSizedBox.width(3),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextStyles.caption(
-                text: label,
-                color: Appcolors.kgreyColor,
-              ),
+              TextStyles.caption(text: label, color: Appcolors.kgreyColor),
               ResponsiveSizedBox.height5,
               TextStyles.medium(
                 text: value,

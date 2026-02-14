@@ -42,6 +42,7 @@ class Endpoints {
   static const companyassets = 'companyassets/list';
   //inventories
   static const getInventories = 'inventory/list';
+  static const inventoryconsumption='inventory/transaction';
   //multioptionbutton
   static const newattendence = 'attendance/new';
 }

@@ -2,6 +2,8 @@ import 'package:dhani_communications/data/models/attendance_model.dart';
 import 'package:dhani_communications/data/models/company_asset_model.dart';
 import 'package:dhani_communications/data/models/expense_model.dart';
 import 'package:dhani_communications/data/models/inventory_item_model.dart';
+import 'package:dhani_communications/presentation/blocs/inventory_consumption_bloc/inventory_consumption_bloc.dart';
+import 'package:dhani_communications/presentation/screens/screen_inventoryconsumptionpage/screen_inventoryconsumptionpage.dart';
 import 'package:dhani_communications/data/models/labor_attendance_model.dart';
 import 'package:dhani_communications/data/models/leave_model.dart';
 import 'package:dhani_communications/presentation/screens/screen_leavedetailspage/screen_leavedetailspage.dart';
@@ -229,14 +231,28 @@ class AppRouter {
         },
       ),
 
-///inventorydetailspage
-GoRoute(
-  path: '/inventorydetailspage',
-  builder: (context, state) {
-    final inventoryItem = state.extra as InventoryItem;
-    return ScreenInventoryDetailPage(inventoryItem: inventoryItem);
-  },
-),
+      ///inventorydetailspage
+      GoRoute(
+        path: '/inventorydetailspage',
+        builder: (context, state) {
+          final inventoryItem = state.extra as InventoryItem;
+          return ScreenInventoryDetailPage(inventoryItem: inventoryItem);
+        },
+      ),
+
+      ///inventoryconsumptionpage
+      GoRoute(
+        path: '/inventoryconsumptionpage',
+        builder: (context, state) {
+          final inventoryItem = state.extra as InventoryItem;
+          return BlocProvider(
+            create: (context) => InventoryConsumptionBloc(
+              repository: Apprepo(DioClient.create(context)),
+            ),
+            child: ScreenInventoryConsumptionPage(inventoryItem: inventoryItem),
+          );
+        },
+      ),
 
       ///requestspage
       GoRoute(

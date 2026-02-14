@@ -1,9 +1,11 @@
 import 'dart:developer';
 
 import 'package:dhani_communications/core/urls.dart';
+import 'package:dhani_communications/features/multiple_action_button/models/dpr_update_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/hq_vehicle_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/leave_categories_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/new_expense_request_model.dart';
+import 'package:dhani_communications/features/multiple_action_button/models/new_leave_request_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/punch_in_list_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/attendance_check_response_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/attendence_requestmodel.dart';
@@ -148,19 +150,17 @@ class Multiactionrepo {
       );
     }
   }
+
   /// Get leave categories
   Future<ApiResponse<List<LeaveCategory>>> getleavecategories() async {
     try {
       Response response = await dio.get(Endpoints.leavecategories);
       final responseData = response.data;
 
-
       if (responseData["status"] == 200) {
         final List<dynamic> dataList = responseData["data"] ?? [];
         final leavecategories = dataList
-            .map(
-              (item) => LeaveCategory.fromJson(item as Map<String, dynamic>),
-            )
+            .map((item) => LeaveCategory.fromJson(item as Map<String, dynamic>))
             .toList();
         return ApiResponse(
           data: leavecategories,
@@ -322,6 +322,84 @@ class Multiactionrepo {
         return ApiResponse(
           data: responseData['data']?.toString(),
           message: responseData['message'] ?? 'Expense submitted successfully',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData["status"],
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint(e.message);
+      log(e.toString());
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+  /// Update DPR
+  Future<ApiResponse> updateDpr({
+required DprUpdateModel dpr
+  }) async {
+    try {
+
+      Response response = await dio.post(
+        Endpoints.updateDpr,
+        data:dpr,
+     
+      );
+      final responseData = response.data;
+      log('updateDpr response: $responseData');
+
+      if (responseData["status"] == 200) {
+        return ApiResponse(
+          data:null,
+          message: responseData['message'] ?? 'DPR updated successfully',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData["status"],
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint(e.message);
+      log(e.toString());
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+  //==========================createNewLeave===============//
+  Future<ApiResponse<String>> createNewLeave({
+    required NewLeaveRequestModel leave,
+  }) async {
+    try {
+      Response response = await dio.post(
+        Endpoints.createLeave,
+        data: leave.toJson(),
+      );
+      final responseData = response.data;
+      log('createNewLeave response: $responseData');
+
+      if (!responseData["error"] && responseData["status"] == 200) {
+        return ApiResponse(
+          data: responseData['data']?.toString(),
+          message: responseData['message'] ?? 'Leave submitted successfully',
           error: false,
           status: responseData["status"],
         );

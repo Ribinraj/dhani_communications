@@ -3,11 +3,13 @@ import 'package:dhani_communications/core/network_services.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:dhani_communications/domain/repositories/apprepo.dart';
 import 'package:dhani_communications/features/auth/repo/authrepo.dart';
+import 'package:dhani_communications/features/multiple_action_button/blocs/leave_categories_bloc/leave_categories_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/new_attendence_bloc/new_attendence_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/new_attendance_check_bloc/new_attendance_check_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/labor_punchin_bloc/labor_punchin_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/hq_vehicles_bloc/hq_vehicles_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/new_expense_bloc/new_expense_bloc.dart';
+import 'package:dhani_communications/features/multiple_action_button/blocs/new_leave_bloc/new_leave_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/repo/multiactionrepo.dart';
 import 'package:dhani_communications/presentation/blocs/attendance_check_bloc/attendance_check_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/attendance_list_bloc/attendance_list_bloc.dart';
@@ -16,7 +18,7 @@ import 'package:dhani_communications/presentation/blocs/create_attendance_bloc/c
 import 'package:dhani_communications/presentation/blocs/create_expense_bloc/create_expense_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/expense_categories_bloc/expense_categories_bloc.dart';
 
-import 'package:dhani_communications/presentation/blocs/create_leave_bloc/create_leave_bloc.dart';
+
 import 'package:dhani_communications/presentation/blocs/dpr_details_bloc/dpr_details_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/dpr_list_bloc/dpr_list_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/dpr_submissions_bloc/dpr_submissions_bloc.dart';
@@ -29,7 +31,7 @@ import 'package:dhani_communications/features/auth/blocs/profile_bloc/profile_bl
 import 'package:dhani_communications/presentation/blocs/projects_bloc/projects_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/punch_in_list_bloc/punch_in_list_bloc.dart';
 import 'package:dhani_communications/features/auth/blocs/send_otp_bloc/send_otp_bloc.dart';
-import 'package:dhani_communications/presentation/blocs/update_dpr_bloc/update_dpr_bloc.dart';
+import 'package:dhani_communications/features/multiple_action_button/blocs/update_dpr_bloc/update_dpr_bloc.dart';
 import 'package:dhani_communications/features/auth/blocs/update_profile_bloc/update_profile_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/updates_bloc/updates_bloc.dart';
 import 'package:dhani_communications/presentation/blocs/vehicles_bloc/vehicles_bloc.dart';
@@ -96,12 +98,12 @@ class MyApp extends StatelessWidget {
           create: (context) => ExpenseCategoriesBloc(repository: apprepo),
         ),
         // Leaves BLoCs
-        BlocProvider(create: (context) => CreateLeaveBloc(repository: apprepo)),
+ 
         BlocProvider(create: (context) => LeaveListBloc(repository: apprepo)),
         // DPR BLoCs
         BlocProvider(create: (context) => DprListBloc(repository: apprepo)),
         BlocProvider(create: (context) => DprDetailsBloc(repository: apprepo)),
-        BlocProvider(create: (context) => UpdateDprBloc(repository: apprepo)),
+        BlocProvider(create: (context) => UpdateDprBloc(repository: multirepo)),
         BlocProvider(
           create: (context) => DprSubmissionsBloc(repository: apprepo),
         ),
@@ -125,6 +127,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => NewExpenseBloc(repository: multirepo),
         ),
+        BlocProvider(
+          create: (context) => LeaveCategoriesBloc(repository: multirepo),
+        ),
+        BlocProvider(create: (context) => NewLeaveBloc(repository: multirepo)),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
