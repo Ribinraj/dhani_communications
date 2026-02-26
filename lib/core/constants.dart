@@ -80,6 +80,25 @@ class TextStyles {
     );
   }
 
+  static ResponsiveText title({
+    String? text,
+    FontWeight? weight,
+    Color? color,
+    TextOverflow? overflow,
+    TextAlign? textAlign,
+    int? maxLines,
+  }) {
+    return ResponsiveText(
+      text ?? '',
+      sizeFactor: 1.15,
+      weight: weight ?? FontWeight.w600,
+      color: color,
+      overflow: overflow,
+      textAlign: textAlign,
+      maxLines: maxLines,
+    );
+  }
+
   static ResponsiveText body({
     String? text,
     FontWeight? weight,

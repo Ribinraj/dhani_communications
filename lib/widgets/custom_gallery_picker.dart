@@ -72,18 +72,19 @@ class CustomGalleryPicker extends StatelessWidget {
         Container(
           padding: EdgeInsets.symmetric(
             horizontal: ResponsiveUtils.wp(4),
-            vertical: ResponsiveUtils.hp(1),
+            vertical: ResponsiveUtils.hp(1.7),
           ),
           decoration: BoxDecoration(
-            color: Appcolors.kprimarycolor,
-            borderRadius: BorderRadius.circular(20),
+            color: Appcolors.kwhitecolor,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(width: 1, color: Appcolors.kbordercolor),
           ),
           child: Row(
             children: [
               Expanded(
                 child: TextStyles.medium(
                   text: 'Attachments',
-                  color: Appcolors.kwhitecolor,
+                  color: Appcolors.kprimarycolor,
                   weight: FontWeight.bold,
                 ),
               ),
@@ -91,7 +92,7 @@ class CustomGalleryPicker extends StatelessWidget {
                 onTap: () => _pickFromGallery(context),
                 child: Icon(
                   Icons.add,
-                  color: Appcolors.kwhitecolor,
+                  color: Appcolors.kprimarycolor,
                   size: ResponsiveUtils.sp(6),
                 ),
               ),

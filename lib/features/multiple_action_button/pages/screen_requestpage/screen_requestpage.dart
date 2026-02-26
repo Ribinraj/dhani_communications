@@ -52,9 +52,7 @@ class _ScreenNewRequestPageState extends State<ScreenNewRequestPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Appcolors.kwhitecolor,
-        elevation: 2,
-        shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
+
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: Icon(
@@ -63,7 +61,7 @@ class _ScreenNewRequestPageState extends State<ScreenNewRequestPage> {
             size: ResponsiveUtils.sp(5),
           ),
         ),
-        title: TextStyles.subheadline(
+        title: TextStyles.title(
           text: 'New Request',
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
@@ -86,6 +84,7 @@ class _ScreenNewRequestPageState extends State<ScreenNewRequestPage> {
                       'Please fill the form and submit your request for approval',
                   color: Appcolors.kblackcolor,
                   weight: FontWeight.w500,
+                  maxLines: 2
                 ),
 
                 ResponsiveSizedBox.height30,

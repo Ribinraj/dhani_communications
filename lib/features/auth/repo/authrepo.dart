@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dhani_communications/core/local_storages.dart';
 import 'package:dhani_communications/core/urls.dart';
@@ -195,6 +197,51 @@ class Authrepo {
         return ApiResponse(
           data: null,
           message: responseData['message'] ?? 'Profile updated successfully',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData["status"],
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint(e.message);
+      log(e.toString());
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+
+  /// Update profile photo
+  Future<ApiResponse<void>> updateProfilePhoto({
+    required File imageFile,
+  }) async {
+    try {
+      final bytes = await imageFile.readAsBytes();
+      final base64Image = base64Encode(bytes);
+      final fileName = imageFile.path.split('/').last;
+
+      Response response = await dio.post(
+        Endpoints.updateProfilePhoto,
+        data: {'profilePhoto': base64Image, 'fileName': fileName},
+      );
+
+      final responseData = response.data;
+      log('updateProfilePhoto response: $responseData');
+
+      if (!responseData["error"] && responseData["status"] == 200) {
+        return ApiResponse(
+          data: null,
+          message:
+              responseData['message'] ?? 'Profile photo updated successfully',
           error: false,
           status: responseData["status"],
         );

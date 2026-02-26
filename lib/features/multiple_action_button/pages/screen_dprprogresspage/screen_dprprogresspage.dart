@@ -1,11 +1,11 @@
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/constants.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
-import 'package:dhani_communications/data/models/dpr_model.dart';
-import 'package:dhani_communications/data/models/project_model.dart';
+import 'package:dhani_communications/features/dashboard/models/dpr_model.dart';
+import 'package:dhani_communications/features/dashboard/models/project_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/update_dpr_bloc/update_dpr_bloc.dart';
-import 'package:dhani_communications/presentation/blocs/dpr_list_bloc/dpr_list_bloc.dart';
-import 'package:dhani_communications/presentation/blocs/projects_bloc/projects_bloc.dart';
+import 'package:dhani_communications/features/dashboard/blocs/dpr_list_bloc/dpr_list_bloc.dart';
+import 'package:dhani_communications/features/dashboard/blocs/projects_bloc/projects_bloc.dart';
 
 import 'package:dhani_communications/features/multiple_action_button/models/dpr_update_model.dart';
 import 'package:dhani_communications/widgets/custom_dropdown.dart';
@@ -184,9 +184,6 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Appcolors.kwhitecolor,
-        elevation: 2,
-        shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: Icon(
@@ -195,7 +192,7 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
             size: ResponsiveUtils.sp(5),
           ),
         ),
-        title: TextStyles.subheadline(
+        title: TextStyles.title(
           text: 'DPR Progress Submission',
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
@@ -213,11 +210,11 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
             );
             // Clear form after successful submission
             _clearForm();
-                  Future.delayed(const Duration(seconds: 1), () {
-            if (mounted) {
-              context.pop();
-            }
-          });
+            Future.delayed(const Duration(seconds: 1), () {
+              if (mounted) {
+                context.pop();
+              }
+            });
           } else if (state is UpdateDprErrorState) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -243,6 +240,7 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
                         'Please fill the form and submit your DPR progress for approval',
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w500,
+                    maxLines: 2,
                   ),
 
                   ResponsiveSizedBox.height30,
@@ -521,8 +519,8 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
                           onPressed: isLoading ? null : _submitDprProgress,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Appcolors.kprimarycolor,
-                            disabledBackgroundColor:
-                                Appcolors.kgreyColor.withOpacity(0.5),
+                            disabledBackgroundColor: Appcolors.kgreyColor
+                                .withOpacity(0.5),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(
                                 ResponsiveUtils.borderRadius(2.5),

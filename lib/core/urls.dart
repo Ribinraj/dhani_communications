@@ -1,17 +1,29 @@
 class Endpoints {
-  static const baseUrl = 'https://app.dhanigroups.com/api/';
+  static const baseUrl = 'https://test.dhanigroups.com/api/';
+  // static const baseUrl = 'https://app.dhanigroups.com/api/';
   static const sendOtp = 'login';
   static const verifyOtp = 'login/verify';
   static const resendOtp = 'login/resend';
   static const getUpdates = 'login/updates';
   static const getProfile = 'login/profile';
   static const updateProfile = 'login/updateprofile';
+  static const updateProfilePhoto = 'login/updateprofilephoto';
   static const getProjects = 'login/projects';
   static const getVehicles = 'login/vehicles';
   static const getHeadquarterVehicles = 'login/headquartervehicles';
   static const updateVehicle = 'login/updatevehicle';
   static const getNotifications = 'login/notifications';
   static const updateNotification = 'login/updatenotification';
+  static const attendencelistforapprove = 'approvals/attendance';
+  static const updateattendanceapproval = 'approvals/updateattendance';
+  static const updatelaborapproval = 'approvals/updatelabor';
+  static const approvelaboursattendencelist = 'approvals/labor';
+  static const approvelexpenseslist = 'approvals/expense';
+  static const updateexpenseapproval = 'approvals/updateexpense';
+  static const approvelleaves = 'approvals/leaves';
+  static const updateleaveapproval = 'approvals/updateleaves';
+  static const approveldprlist = 'approvals/dpr';
+  static const updatedprapproval = 'approvals/updatedpr';
 
   // Attendance endpoints
   static const checkAttendance = 'attendance/check';
@@ -40,9 +52,13 @@ class Endpoints {
   static const getMyDprSubmissions = 'dpr/mysubmissions';
   //company assets
   static const companyassets = 'companyassets/list';
+  static const assetTransfer = 'companyassets/transfer';
   //inventories
   static const getInventories = 'inventory/list';
-  static const inventoryconsumption='inventory/transaction';
+  static const inventoryconsumption = 'inventory/transaction';
+  static const inventoryTransfer = 'inventory/transfer';
   //multioptionbutton
   static const newattendence = 'attendance/new';
+  //employees
+  static const employees = 'masters/employees';
 }

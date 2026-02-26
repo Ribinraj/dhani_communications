@@ -4,12 +4,12 @@ import 'dart:io';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/constants.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
-import 'package:dhani_communications/data/models/project_model.dart';
+import 'package:dhani_communications/features/dashboard/models/project_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/leave_categories_bloc/leave_categories_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/new_leave_bloc/new_leave_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/leave_categories_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/new_leave_request_model.dart';
-import 'package:dhani_communications/presentation/blocs/projects_bloc/projects_bloc.dart';
+import 'package:dhani_communications/features/dashboard/blocs/projects_bloc/projects_bloc.dart';
 import 'package:dhani_communications/widgets/custom_dropdown.dart';
 import 'package:dhani_communications/widgets/custom_formtextfield.dart';
 import 'package:dhani_communications/widgets/custom_gallery_picker.dart';
@@ -293,9 +293,6 @@ class _ScreenLeaveApplicationPageState
       },
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Appcolors.kwhitecolor,
-          elevation: 2,
-          shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
           leading: IconButton(
             onPressed: () {
               context.pop();
@@ -306,7 +303,7 @@ class _ScreenLeaveApplicationPageState
               size: ResponsiveUtils.sp(5),
             ),
           ),
-          title: TextStyles.subheadline(
+          title: TextStyles.title(
             text: 'Leave Application',
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
@@ -329,6 +326,7 @@ class _ScreenLeaveApplicationPageState
                         'Please fill the form, attach your report (if any) and submit your leaves for approval',
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w500,
+                    maxLines: 2,
                   ),
 
                   ResponsiveSizedBox.height30,
@@ -501,7 +499,7 @@ class _ScreenLeaveApplicationPageState
                           padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: Colors.red.withOpacity(0.3),
+                              color: Appcolors.kredcolor.withOpacity(0.3),
                             ),
                             borderRadius: BorderRadius.circular(
                               ResponsiveUtils.borderRadius(2.5),
@@ -511,14 +509,14 @@ class _ScreenLeaveApplicationPageState
                             children: [
                               Icon(
                                 Icons.error_outline,
-                                color: Colors.red,
+                                color: Appcolors.kredcolor,
                                 size: ResponsiveUtils.sp(5),
                               ),
                               ResponsiveSizedBox.width(2),
                               Expanded(
                                 child: TextStyles.medium(
                                   text: state.message,
-                                  color: Colors.red,
+                                  color: Appcolors.kredcolor,
                                 ),
                               ),
                               TextButton(

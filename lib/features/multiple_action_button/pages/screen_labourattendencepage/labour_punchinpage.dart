@@ -4,10 +4,10 @@ import 'package:camera/camera.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/constants.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
-import 'package:dhani_communications/data/models/project_model.dart';
+import 'package:dhani_communications/features/dashboard/models/project_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/labor_punchin_bloc/labor_punchin_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/labor_attendance_request_model.dart';
-import 'package:dhani_communications/presentation/blocs/projects_bloc/projects_bloc.dart';
+import 'package:dhani_communications/features/dashboard/blocs/projects_bloc/projects_bloc.dart';
 import 'package:dhani_communications/widgets/custom_camera.dart';
 import 'package:dhani_communications/widgets/custom_dropdown.dart';
 import 'package:dhani_communications/widgets/custom_formtextfield.dart';
@@ -278,9 +278,6 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Appcolors.kwhitecolor,
-          elevation: 2,
-          shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
           leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -291,7 +288,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
               size: ResponsiveUtils.sp(5),
             ),
           ),
-          title: TextStyles.subheadline(
+          title: TextStyles.title(
             text: 'Labour Punch In',
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
@@ -503,7 +500,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
                               : Text(
                                   'Record Labour Attendance',
                                   style: TextStyle(
-                                    fontSize: ResponsiveUtils.sp(4.2),
+                                    fontSize: ResponsiveUtils.sp(3.5),
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),

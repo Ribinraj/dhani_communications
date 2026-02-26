@@ -1,8 +1,8 @@
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/constants.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
-import 'package:dhani_communications/data/models/notification_model.dart';
-import 'package:dhani_communications/presentation/blocs/notifications_bloc/notifications_bloc.dart';
+import 'package:dhani_communications/features/dashboard/models/notification_model.dart';
+import 'package:dhani_communications/features/dashboard/blocs/notifications_bloc/notifications_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';

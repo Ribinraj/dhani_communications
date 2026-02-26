@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:dhani_communications/core/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomCameraWidget extends StatefulWidget {
@@ -66,11 +67,11 @@ class CustomCameraWidgetState extends State<CustomCameraWidget> {
     try {
       final image = await _controller!.takePicture();
       final imageFile = File(image.path);
-      
+
       setState(() {
         _capturedImage = imageFile;
       });
-      
+
       widget.onImageCaptured(imageFile);
       return imageFile;
     } catch (e) {
@@ -93,8 +94,10 @@ class CustomCameraWidgetState extends State<CustomCameraWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final displayHeight = widget.height ?? MediaQuery.of(context).size.width * 0.6;
-    final displayWidth = widget.width ?? MediaQuery.of(context).size.width * 0.6;
+    final displayHeight =
+        widget.height ?? MediaQuery.of(context).size.width * 0.6;
+    final displayWidth =
+        widget.width ?? MediaQuery.of(context).size.width * 0.6;
 
     if (_capturedImage != null) {
       return Container(
@@ -102,19 +105,13 @@ class CustomCameraWidgetState extends State<CustomCameraWidget> {
         width: displayWidth,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(
-            color: const Color(0xFF59CBEF),
-            width: 3,
-          ),
+          border: Border.all(color: Appcolors.kprimarycolor, width: 1),
         ),
         child: ClipOval(
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Image.file(
-                _capturedImage!,
-                fit: BoxFit.cover,
-              ),
+              Image.file(_capturedImage!, fit: BoxFit.cover),
               Positioned(
                 bottom: 10,
                 right: 10,
@@ -147,14 +144,9 @@ class CustomCameraWidgetState extends State<CustomCameraWidget> {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.grey[300],
-          border: Border.all(
-            color: const Color(0xFF59CBEF),
-            width: 3,
-          ),
+          border: Border.all(color: const Color(0xFF59CBEF), width: 3),
         ),
-        child: const Center(
-          child: CircularProgressIndicator(),
-        ),
+        child: const Center(child: CircularProgressIndicator()),
       );
     }
 
@@ -163,14 +155,9 @@ class CustomCameraWidgetState extends State<CustomCameraWidget> {
       width: displayWidth,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(
-          color: const Color(0xFF59CBEF),
-          width: 3,
-        ),
+        border: Border.all(color: Appcolors.kprimarycolor, width: 1),
       ),
-      child: ClipOval(
-        child: CameraPreview(_controller!),
-      ),
+      child: ClipOval(child: CameraPreview(_controller!)),
     );
   }
 }

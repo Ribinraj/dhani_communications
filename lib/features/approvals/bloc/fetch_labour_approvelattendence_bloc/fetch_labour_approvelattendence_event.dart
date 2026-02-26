@@ -1,0 +1,5 @@
+part of 'fetch_labour_approvelattendence_bloc.dart';
+
+@immutable
+sealed class FetchLabourApprovelattendenceEvent {}
+final class FetchLabourApprovelattendenceInitialFetchingEvent extends FetchLabourApprovelattendenceEvent{}

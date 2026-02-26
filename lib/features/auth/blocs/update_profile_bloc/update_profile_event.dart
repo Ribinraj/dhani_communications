@@ -9,3 +9,10 @@ class SubmitUpdateProfileEvent extends UpdateProfileEvent {
 
   SubmitUpdateProfileEvent({required this.profileData});
 }
+
+/// Event to submit profile photo update
+class SubmitUpdateProfilePhotoEvent extends UpdateProfileEvent {
+  final File imageFile;
+
+  SubmitUpdateProfilePhotoEvent({required this.imageFile});
+}

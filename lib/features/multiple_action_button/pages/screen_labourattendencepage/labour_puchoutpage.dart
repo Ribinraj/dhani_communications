@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:camera/camera.dart';
+import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/constants.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
@@ -10,6 +11,7 @@ import 'package:dhani_communications/features/multiple_action_button/models/labo
 import 'package:dhani_communications/features/multiple_action_button/models/punch_in_list_model.dart';
 import 'package:dhani_communications/widgets/custom_camera.dart';
 import 'package:dhani_communications/widgets/custom_formtextfield.dart';
+import 'package:dhani_communications/widgets/custom_nondatawidget.dart';
 import 'package:dhani_communications/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -144,8 +146,7 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Appcolors.kwhitecolor,
-          elevation: 2,
-          shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
+
           leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -156,7 +157,7 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
               size: ResponsiveUtils.sp(5),
             ),
           ),
-          title: TextStyles.subheadline(
+          title: TextStyles.title(
             text: 'Labour Punch Out',
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
@@ -197,7 +198,9 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
                           padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: Appcolors.kgreyColor.withOpacity(0.3),
+                              color: Appcolors.kgreyColor.withValues(
+                                alpha: 0.3,
+                              ),
                             ),
                             borderRadius: BorderRadiusStyles.kradius10(),
                           ),
@@ -223,77 +226,69 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
                       }
 
                       if (state is PunchInListErrorState) {
-                        return Container(
-                          padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.red.withOpacity(0.3),
-                            ),
-                            borderRadius: BorderRadiusStyles.kradius10(),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.error_outline,
-                                color: Colors.red,
-                                size: ResponsiveUtils.sp(5),
-                              ),
-                              ResponsiveSizedBox.width(2),
-                              Expanded(
-                                child: TextStyles.medium(
-                                  text: state.message,
-                                  color: Colors.red,
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  context.read<PunchInListBloc>().add(
-                                    FetchPunchInListEvent(),
-                                  );
-                                },
-                                child: TextStyles.medium(
-                                  text: 'Retry',
-                                  color: Appcolors.kprimarycolor,
-                                ),
-                              ),
-                            ],
-                          ),
+                        return NoDataWidget(
+                          title: state.message,
+                          assetIcon: Appconstants.attenedence,
+                          onRefresh: () {
+                            context.read<PunchInListBloc>().add(
+                              FetchPunchInListEvent(),
+                            );
+                          },
                         );
+                        // return Container(
+                        //   padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
+                        //   decoration: BoxDecoration(
+                        //     border: Border.all(
+                        //       color: Colors.red.withValues(alpha:0.3),
+                        //     ),
+                        //     borderRadius: BorderRadiusStyles.kradius10(),
+                        //   ),
+                        //   child: Row(
+                        //     children: [
+                        //       Icon(
+                        //         Icons.error_outline,
+                        //         color: Colors.red,
+                        //         size: ResponsiveUtils.sp(5),
+                        //       ),
+                        //       ResponsiveSizedBox.width(2),
+                        //       Expanded(
+                        //         child: TextStyles.medium(
+                        //           text: state.message,
+                        //           color: Colors.red,
+                        //         ),
+                        //       ),
+                        //       TextButton(
+                        //         onPressed: () {
+                        //           context.read<PunchInListBloc>().add(
+                        //             FetchPunchInListEvent(),
+                        //           );
+                        //         },
+                        //         child: TextStyles.medium(
+                        //           text: 'Retry',
+                        //           color: Appcolors.kprimarycolor,
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // );
                       }
 
                       if (state is PunchInListSuccessState) {
                         final punchInList = state.punchInList;
 
                         if (punchInList.isEmpty) {
-                          return Container(
-                            padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Appcolors.kgreyColor.withOpacity(0.3),
-                              ),
-                              borderRadius: BorderRadiusStyles.kradius10(),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.people_outline,
-                                  color: Appcolors.kgreyColor,
-                                  size: ResponsiveUtils.sp(5),
-                                ),
-                                ResponsiveSizedBox.width(3),
-                                TextStyles.medium(
-                                  text: 'No punched in labours available',
-                                  color: Appcolors.kgreyColor,
-                                ),
-                              ],
-                            ),
+                          return NoDataWidget(
+                            title: "No Punched-In Attendence available",
+                            assetIcon: Appconstants.attenedence,
                           );
                         }
 
                         return Container(
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: Appcolors.kgreyColor.withOpacity(0.3),
+                              color: Appcolors.kgreyColor.withValues(
+                                alpha: 0.3,
+                              ),
                             ),
                             borderRadius: BorderRadiusStyles.kradius10(),
                           ),
@@ -427,7 +422,7 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
                             backgroundColor: const Color(0xFF4F8FDF),
                             disabledBackgroundColor: const Color(
                               0xFF4F8FDF,
-                            ).withOpacity(0.4),
+                            ).withValues(alpha: 0.4),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(
                                 ResponsiveUtils.borderRadius(2.5),
@@ -447,7 +442,7 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
                               : Text(
                                   'Punch Out',
                                   style: TextStyle(
-                                    fontSize: ResponsiveUtils.sp(4.2),
+                                    fontSize: ResponsiveUtils.sp(3.5),
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),

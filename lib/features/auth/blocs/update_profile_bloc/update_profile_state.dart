@@ -18,3 +18,17 @@ final class UpdateProfileErrorState extends UpdateProfileState {
 
   UpdateProfileErrorState({required this.message});
 }
+
+final class UpdateProfilePhotoLoadingState extends UpdateProfileState {}
+
+final class UpdateProfilePhotoSuccessState extends UpdateProfileState {
+  final String message;
+
+  UpdateProfilePhotoSuccessState({required this.message});
+}
+
+final class UpdateProfilePhotoErrorState extends UpdateProfileState {
+  final String message;
+
+  UpdateProfilePhotoErrorState({required this.message});
+}

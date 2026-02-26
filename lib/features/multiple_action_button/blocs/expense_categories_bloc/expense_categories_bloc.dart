@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:dhani_communications/data/models/expense_category_model.dart';
-import 'package:dhani_communications/domain/repositories/apprepo.dart';
+import 'package:dhani_communications/features/dashboard/models/expense_category_model.dart';
+import 'package:dhani_communications/features/dashboard/repo/apprepo.dart';
 import 'package:meta/meta.dart';
 
 part 'expense_categories_event.dart';

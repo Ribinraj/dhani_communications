@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/constants.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
-import 'package:dhani_communications/data/models/dpr_model.dart';
+import 'package:dhani_communications/features/dashboard/models/dpr_model.dart';
 import 'package:flutter/material.dart';
 
 /// A reusable card widget to display DPR details with a circular progress indicator.

@@ -5,12 +5,12 @@ import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/constants.dart';
 
 import 'package:dhani_communications/core/responsiveutils.dart';
-import 'package:dhani_communications/data/models/project_model.dart';
+import 'package:dhani_communications/features/dashboard/models/project_model.dart';
 
 import 'package:dhani_communications/features/multiple_action_button/blocs/new_attendance_check_bloc/new_attendance_check_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/new_attendence_bloc/new_attendence_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/attendence_requestmodel.dart';
-import 'package:dhani_communications/presentation/blocs/projects_bloc/projects_bloc.dart';
+import 'package:dhani_communications/features/dashboard/blocs/projects_bloc/projects_bloc.dart';
 import 'package:dhani_communications/widgets/custom_camera.dart';
 import 'package:dhani_communications/widgets/custom_formtextfield.dart';
 import 'package:dhani_communications/widgets/custom_project_dropdown.dart';
@@ -235,9 +235,6 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
       ],
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Appcolors.kwhitecolor,
-          elevation: 2,
-          shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
           leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -248,7 +245,7 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
               size: ResponsiveUtils.sp(5),
             ),
           ),
-          title: TextStyles.subheadline(
+          title: TextStyles.title(
             text: 'New Attendance',
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
@@ -374,7 +371,7 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
                                 backgroundColor: const Color(0xFF4F8FDF),
                                 disabledBackgroundColor: const Color(
                                   0xFF4F8FDF,
-                                ).withOpacity(0.4),
+                                ).withValues(alpha: 0.4),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(
                                     ResponsiveUtils.borderRadius(2.5),
@@ -396,7 +393,7 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
                                           ? 'Record Attendance'
                                           : 'Attendance Not Available',
                                       style: TextStyle(
-                                        fontSize: ResponsiveUtils.sp(4.2),
+                                        fontSize: ResponsiveUtils.sp(3.5),
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white,
                                       ),

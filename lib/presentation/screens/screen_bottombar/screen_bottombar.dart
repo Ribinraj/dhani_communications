@@ -84,11 +84,11 @@
 //   }
 // }
 ///////////////////////////
-import 'package:dhani_communications/presentation/blocs/bottom_navigation_bloc/bottom_navigation_bloc.dart';
-import 'package:dhani_communications/presentation/screens/screen_approvelpage/screen_approvelpage.dart';
+import 'package:dhani_communications/features/dashboard/blocs/bottom_navigation_bloc/bottom_navigation_bloc.dart';
+import 'package:dhani_communications/features/approvals/pages/screen_approvelpage/screen_approvelpage.dart';
 import 'package:dhani_communications/presentation/screens/screen_bottombar/widgets/custom_nav.dart';
-import 'package:dhani_communications/presentation/screens/screen_dashboard.dart/screen_dashboard.dart';
-import 'package:dhani_communications/presentation/screens/screen_profilepage/screen_profilepage.dart';
+import 'package:dhani_communications/features/dashboard/pges/screen_dashboard.dart/screen_dashboard.dart';
+import 'package:dhani_communications/features/auth/pages/screen_profilepage/screen_profilepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

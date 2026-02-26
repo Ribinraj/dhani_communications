@@ -3,14 +3,14 @@ import 'dart:io';
 
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/constants.dart';
-import 'package:dhani_communications/data/models/expense_category_model.dart';
-import 'package:dhani_communications/data/models/project_model.dart';
+import 'package:dhani_communications/features/dashboard/models/expense_category_model.dart';
+import 'package:dhani_communications/features/dashboard/models/project_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/hq_vehicles_bloc/hq_vehicles_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/new_expense_bloc/new_expense_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/hq_vehicle_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/new_expense_request_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/expense_categories_bloc/expense_categories_bloc.dart';
-import 'package:dhani_communications/presentation/blocs/projects_bloc/projects_bloc.dart';
+import 'package:dhani_communications/features/dashboard/blocs/projects_bloc/projects_bloc.dart';
 import 'package:dhani_communications/widgets/custom_formtextfield.dart';
 import 'package:dhani_communications/widgets/custom_project_dropdown.dart';
 import 'package:dhani_communications/widgets/custom_snackbar.dart';
@@ -130,7 +130,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                   ),
                 ),
                 ResponsiveSizedBox.height20,
-                TextStyles.subheadline(
+                TextStyles.title(
                   text: 'Upload Attachment',
                   weight: FontWeight.bold,
                   color: Appcolors.kblackcolor,
@@ -392,9 +392,6 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Appcolors.kwhitecolor,
-        elevation: 2,
-        shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
         leading: IconButton(
           onPressed: () {
             context.pop();
@@ -405,7 +402,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
             size: ResponsiveUtils.sp(5),
           ),
         ),
-        title: TextStyles.subheadline(
+        title: TextStyles.title(
           text: 'Expense Submission',
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
@@ -449,6 +446,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                         'Please fill the form, attach your bills and submit your expenses for approval',
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w500,
+                    maxLines: 2,
                   ),
 
                   ResponsiveSizedBox.height30,

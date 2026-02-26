@@ -1,7 +1,7 @@
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/constants.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
-import 'package:dhani_communications/data/models/project_model.dart';
+import 'package:dhani_communications/features/dashboard/models/project_model.dart';
 import 'package:flutter/material.dart';
 
 class CustomProjectDropdown extends StatelessWidget {
