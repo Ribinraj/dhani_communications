@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "109493461755",
+    "project_id": "dhaniapp-d8a3a",
+    "storage_bucket": "dhaniapp-d8a3a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:109493461755:android:c3c61f103b164cccc5465e",
+        "android_client_info": {
+          "package_name": "com.crisant.dhani"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTTA_2QyVafi_ORsUJT8AeHzCAw0xouUE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

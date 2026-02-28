@@ -1,4 +1,7 @@
-﻿import 'package:dhani_communications/core/constants.dart';
+﻿import 'package:dhani_communications/core/appconstants.dart';
+import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/widgets/custom_nondatawidget.dart';
+import 'package:dhani_communications/widgets/customshimmer_widget.dart';
 import 'package:dhani_communications/widgets/date_filter_dialog.dart';
 import 'package:dhani_communications/features/approvals/bloc/fetch_approvel_dprbloc/fetch_approvel_dpr_bloc.dart';
 import 'package:dhani_communications/features/approvals/bloc/update_approvel_dpr/update_approvel_dpr_bloc.dart';
@@ -214,8 +217,7 @@ class _ScreenApprovelDprPageState extends State<ScreenApprovelDprPage> {
     return Scaffold(
       backgroundColor: Appcolors.kwhitecolor,
       appBar: AppBar(
-        backgroundColor: Appcolors.kwhitecolor,
-        elevation: 2,
+    
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: Icon(
@@ -223,7 +225,7 @@ class _ScreenApprovelDprPageState extends State<ScreenApprovelDprPage> {
             color: Appcolors.kprimarycolor,
           ),
         ),
-        title: TextStyles.subheadline(
+        title: TextStyles.title(
           text: "Approve DPR",
           weight: FontWeight.bold,
         ),
@@ -280,61 +282,19 @@ class _ScreenApprovelDprPageState extends State<ScreenApprovelDprPage> {
         child: BlocBuilder<FetchApprovelDprBloc, FetchApprovelDprState>(
           builder: (context, state) {
             if (state is FetchApprovelDprLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return CustomListShimmer();
             }
             if (state is FetchApprovelDprError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      size: ResponsiveUtils.sp(12),
-                      color: Colors.red.shade300,
-                    ),
-                    ResponsiveSizedBox.height15,
-                    TextStyles.body(
-                      text: state.message,
-                      color: Appcolors.kgreyColor,
-                    ),
-                    ResponsiveSizedBox.height15,
-                    ElevatedButton.icon(
-                      onPressed: () {
+              return NoDataWidget(title: state.message, assetIcon: Appconstants.dprreport,onRefresh: (){
                         context.read<FetchApprovelDprBloc>().add(
                           FetchApprovelDpr(),
                         );
-                      },
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('Retry'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Appcolors.kprimarycolor,
-                        foregroundColor: Appcolors.kwhitecolor,
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              },);
             }
             if (state is FetchApprovelDprLoaded) {
               final dprList = state.approveDprList;
               if (dprList.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.assignment_late_outlined,
-                        size: ResponsiveUtils.sp(15),
-                        color: Appcolors.kgreyColor.withOpacity(0.4),
-                      ),
-                      ResponsiveSizedBox.height15,
-                      TextStyles.body(
-                        text: 'No DPR records found',
-                        color: Appcolors.kgreyColor,
-                      ),
-                    ],
-                  ),
-                );
+                return NoDataWidget(title: 'No DPR records found', assetIcon:Appconstants.dprreport);
               }
               return RefreshIndicator(
                 onRefresh: () async {

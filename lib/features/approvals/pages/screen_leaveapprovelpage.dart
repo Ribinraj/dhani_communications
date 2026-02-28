@@ -1,4 +1,7 @@
-﻿import 'package:dhani_communications/core/constants.dart';
+﻿import 'package:dhani_communications/core/appconstants.dart';
+import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/widgets/custom_nondatawidget.dart';
+import 'package:dhani_communications/widgets/customshimmer_widget.dart';
 import 'package:dhani_communications/widgets/date_filter_dialog.dart';
 import 'package:dhani_communications/features/approvals/bloc/fetch_approvel_leave_bloc/fetch_approvel_leave_bloc.dart';
 import 'package:dhani_communications/features/approvals/bloc/update_approvel_leave/update_approvel_leave_bloc.dart';
@@ -235,8 +238,7 @@ class _ScreenLeaveApprovalPageState extends State<ScreenLeaveApprovalPage> {
     return Scaffold(
       backgroundColor: Appcolors.kwhitecolor,
       appBar: AppBar(
-        backgroundColor: Appcolors.kwhitecolor,
-        elevation: 2,
+       
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: Icon(
@@ -244,7 +246,7 @@ class _ScreenLeaveApprovalPageState extends State<ScreenLeaveApprovalPage> {
             color: Appcolors.kprimarycolor,
           ),
         ),
-        title: TextStyles.subheadline(
+        title: TextStyles.title(
           text: "Approve Leaves",
           weight: FontWeight.bold,
         ),
@@ -305,61 +307,19 @@ class _ScreenLeaveApprovalPageState extends State<ScreenLeaveApprovalPage> {
         child: BlocBuilder<FetchApprovelLeaveBloc, FetchApprovelLeaveState>(
           builder: (context, state) {
             if (state is FetchApprovelLeaveLoadingState) {
-              return const Center(child: CircularProgressIndicator());
+              return CustomListShimmer();
             }
             if (state is FetchApprovelLeavesErrorState) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      size: ResponsiveUtils.sp(12),
-                      color: Colors.red.shade300,
-                    ),
-                    ResponsiveSizedBox.height15,
-                    TextStyles.body(
-                      text: state.message,
-                      color: Appcolors.kgreyColor,
-                    ),
-                    ResponsiveSizedBox.height15,
-                    ElevatedButton.icon(
-                      onPressed: () {
+              return NoDataWidget(title: state.message, assetIcon: Appconstants.leaves,onRefresh: (){
                         context.read<FetchApprovelLeaveBloc>().add(
                           FetchApprovelleavesInitialEvent(),
                         );
-                      },
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('Retry'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Appcolors.kprimarycolor,
-                        foregroundColor: Appcolors.kwhitecolor,
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              },);
             }
             if (state is FetchApprovelLeaveSuccessState) {
               final leavesList = state.leaves;
               if (leavesList.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.event_busy,
-                        size: ResponsiveUtils.sp(15),
-                        color: Appcolors.kgreyColor.withOpacity(0.4),
-                      ),
-                      ResponsiveSizedBox.height15,
-                      TextStyles.body(
-                        text: 'No leave requests found',
-                        color: Appcolors.kgreyColor,
-                      ),
-                    ],
-                  ),
-                );
+                return NoDataWidget(title: 'No leave requests found', assetIcon: Appconstants.leaves);
               }
               return RefreshIndicator(
                 onRefresh: () async {

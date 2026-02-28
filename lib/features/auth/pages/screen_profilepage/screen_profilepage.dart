@@ -602,6 +602,7 @@ import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/features/dashboard/blocs/bottom_navigation_bloc/bottom_navigation_bloc.dart';
 
 class ScreenProfilePage extends StatefulWidget {
   const ScreenProfilePage({super.key});
@@ -718,6 +719,8 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
     await LocalStorage.clearAll();
 
     if (mounted) {
+      // Reset bottom navigation index to 0 (Dashboard) before logout
+      context.read<BottomNavigationBloc>().add(NavigateToPageEvent(pageIndex: 0));
       // Navigate to login and clear navigation stack
       context.go('/login');
     }
