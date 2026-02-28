@@ -1,4 +1,7 @@
+import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/widgets/custom_nondatawidget.dart';
+import 'package:dhani_communications/widgets/customshimmer_widget.dart';
 import 'package:dhani_communications/widgets/date_filter_dialog.dart';
 import 'package:dhani_communications/features/approvals/bloc/fetch_approvel_expense_bloc/fetch_approvel_expense_bloc.dart';
 import 'package:dhani_communications/features/approvals/bloc/update_approvel_expense/update_approvel_expense_bloc.dart';
@@ -215,8 +218,6 @@ class _ScreenExpenseApprovalPageState extends State<ScreenExpenseApprovalPage> {
     return Scaffold(
       backgroundColor: Appcolors.kwhitecolor,
       appBar: AppBar(
-        backgroundColor: Appcolors.kwhitecolor,
-        elevation: 2,
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: Icon(
@@ -224,7 +225,7 @@ class _ScreenExpenseApprovalPageState extends State<ScreenExpenseApprovalPage> {
             color: Appcolors.kprimarycolor,
           ),
         ),
-        title: TextStyles.subheadline(
+        title: TextStyles.title(
           text: 'Approve Expenses',
           weight: FontWeight.bold,
         ),
@@ -284,63 +285,24 @@ class _ScreenExpenseApprovalPageState extends State<ScreenExpenseApprovalPage> {
         child: BlocBuilder<FetchApprovelExpenseBloc, FetchApprovelExpenseState>(
           builder: (context, state) {
             if (state is FetchApprovelExpenseLoadingState) {
-              return const Center(child: CircularProgressIndicator());
+              return CustomListShimmer();
             } else if (state is FetchApprovelExpensesErrorState) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline_rounded,
-                      size: ResponsiveUtils.sp(20),
-                      color: Colors.red.withOpacity(0.5),
-                    ),
-                    ResponsiveSizedBox.height20,
-                    TextStyles.subheadline(
-                      text: state.message,
-                      color: Appcolors.kgreyColor,
-                    ),
-                    ResponsiveSizedBox.height20,
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<FetchApprovelExpenseBloc>().add(
-                          FetchApprovelExpenseInitialEvent(),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Appcolors.kprimarycolor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadiusStyles.kradius10(),
-                        ),
-                      ),
-                      child: TextStyles.medium(
-                        text: 'Retry',
-                        color: Appcolors.kwhitecolor,
-                      ),
-                    ),
-                  ],
-                ),
+              return NoDataWidget(
+                title: state.message,
+                assetIcon: Appconstants.expenses,
+                onRefresh: () {
+                  context.read<FetchApprovelExpenseBloc>().add(
+                    FetchApprovelExpenseInitialEvent(),
+                  );
+                },
               );
             } else if (state is FetchApprovelExpensesSuccessSate) {
               final expenses = state.expenses;
 
               if (expenses.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.receipt_long_rounded,
-                        size: ResponsiveUtils.sp(20),
-                        color: Appcolors.kgreyColor.withOpacity(0.5),
-                      ),
-                      ResponsiveSizedBox.height20,
-                      TextStyles.subheadline(
-                        text: 'No expenses found',
-                        color: Appcolors.kgreyColor,
-                      ),
-                    ],
-                  ),
+                return NoDataWidget(
+                  title: "Expenses is Empty",
+                  assetIcon: Appconstants.expenses,
                 );
               }
 
@@ -484,7 +446,7 @@ class _ScreenExpenseApprovalPageState extends State<ScreenExpenseApprovalPage> {
                   ),
                   ResponsiveSizedBox.height5,
                   // Amount
-                  TextStyles.headline(
+                  TextStyles.title(
                     text: '₹${expense.expenseAmount}',
                     color: Appcolors.kprimarycolor,
                   ),
