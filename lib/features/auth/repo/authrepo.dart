@@ -264,8 +264,47 @@ class Authrepo {
       );
     }
   }
-
+//   ///////////////update token/////////////////
+Future<void> updatetoken({required String token}) async {
+  try {
+  
+    
+    Response response = await dio.post(
+      Endpoints.settoken, 
+    
+      data: {  "pushToken": token}
+    );
+    
+    final responseData = response.data;
+    if (!responseData["error"] && responseData["status"] == 200) {
+      log("FCM token updated successfully");
+    } else {
+      log("Failed to update FCM token: ${responseData["message"]}");
+    }
+  } catch (e) {
+    log("Error updating FCM token: $e");
+  }
+}
   void dispose() {
     dio.close();
+  }
+
+  /// Remove FCM push token from server (logout flow)
+  Future<void> removeToken({required String token}) async {
+    try {
+      Response response = await dio.post(
+        Endpoints.removetoken,
+        data: {"pushToken": token},
+      );
+
+      final responseData = response.data;
+      if (!responseData["error"] && responseData["status"] == 200) {
+        log("FCM token removed from server successfully");
+      } else {
+        log("Failed to remove FCM token from server: ${responseData["message"]}");
+      }
+    } catch (e) {
+      log("Error removing FCM token from server: $e");
+    }
   }
 }

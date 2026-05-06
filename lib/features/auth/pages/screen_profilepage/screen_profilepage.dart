@@ -592,6 +592,7 @@
 // }
 import 'package:dhani_communications/core/constants.dart';
 import 'package:dhani_communications/core/local_storages.dart';
+import 'package:dhani_communications/core/pushnotification_controller.dart';
 import 'package:dhani_communications/features/auth/models/profile_model.dart';
 import 'package:dhani_communications/features/auth/blocs/profile_bloc/profile_bloc.dart';
 import 'package:dhani_communications/features/dashboard/pges/screen_dashboard.dart/widgets/paint.dart';
@@ -715,13 +716,16 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
 
   /// Perform logout - clear storage and navigate to login
   Future<void> _performLogout() async {
-    // Clear all stored data
+    // 1) Delete FCM token from server & device (must happen BEFORE clearing auth)
+    await PushNotifications.instance.deleteDeviceToken();
+
+    // 2) Clear all stored session data (preserves FCM token if needed)
     await LocalStorage.clearAll();
 
     if (mounted) {
-      // Reset bottom navigation index to 0 (Dashboard) before logout
+      // 3) Reset bottom navigation index to 0 (Dashboard) before logout
       context.read<BottomNavigationBloc>().add(NavigateToPageEvent(pageIndex: 0));
-      // Navigate to login and clear navigation stack
+      // 4) Navigate to login and clear navigation stack
       context.go('/login');
     }
   }

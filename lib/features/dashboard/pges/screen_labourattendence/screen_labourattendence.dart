@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/widgets/date_filter_dialog.dart';
 import 'package:dhani_communications/core/constants.dart';
@@ -14,6 +16,19 @@ import 'package:intl/intl.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+
+extension TimeFormatExtension on String? {
+  String to12Hour() {
+    if (this == null || this!.isEmpty) return '--';
+    try {
+      final input = DateFormat("HH:mm");
+      final output = DateFormat("hh:mm a");
+      return output.format(input.parse(this!));
+    } catch (e) {
+      return '--';
+    }
+  }
+}
 
 class ScreenLabourAttendancePage extends StatefulWidget {
   const ScreenLabourAttendancePage({super.key});
@@ -35,7 +50,6 @@ class _ScreenLabourAttendancePageState
     _laborAttendanceListBloc = LaborAttendanceListBloc(
       repository: Apprepo(DioClient.create(context)),
     );
-    // Fetch labor attendance list without filters initially
     _laborAttendanceListBloc.add(FetchLaborAttendanceListEvent());
   }
 
@@ -91,18 +105,8 @@ class _ScreenLabourAttendancePageState
     try {
       final date = DateTime.parse(dateStr);
       const months = [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
       ];
       return '${date.day.toString().padLeft(2, '0')} ${months[date.month - 1]} ${date.year}';
     } catch (e) {
@@ -111,19 +115,13 @@ class _ScreenLabourAttendancePageState
   }
 
   String _getStatusDisplay(String status) {
-    // APPROVED, REJECTED, PENDING
     if (status.toUpperCase() == 'APPROVED') return 'Approved';
     if (status.toUpperCase() == 'REJECTED') return 'Rejected';
     return 'Pending';
   }
 
-  bool _isApproved(String status) {
-    return status.toUpperCase() == 'APPROVED';
-  }
-
-  bool _isRejected(String status) {
-    return status.toUpperCase() == 'REJECTED';
-  }
+  bool _isApproved(String status) => status.toUpperCase() == 'APPROVED';
+  bool _isRejected(String status) => status.toUpperCase() == 'REJECTED';
 
   @override
   Widget build(BuildContext context) {
@@ -131,11 +129,8 @@ class _ScreenLabourAttendancePageState
       backgroundColor: Appcolors.kwhitecolor,
       appBar: AppBar(
         backgroundColor: Appcolors.kappbarbackgroundcolor,
-
         leading: IconButton(
-          onPressed: () {
-            context.pop();
-          },
+          onPressed: () => context.pop(),
           icon: Icon(
             Icons.arrow_back_ios_new_rounded,
             color: Appcolors.kprimarycolor,
@@ -226,15 +221,13 @@ class _ScreenLabourAttendancePageState
               if (attendanceList.isEmpty) {
                 return NoDataWidget(
                   assetIcon: Appconstants.contractlabours,
-                  title: "Attendence list is Empty",
+                  title: "Attendance list is Empty",
                 );
               }
 
               return RefreshIndicator(
                 color: Appcolors.kprimarycolor,
-                onRefresh: () async {
-                  _applyFilter();
-                },
+                onRefresh: () async => _applyFilter(),
                 child: ListView.builder(
                   padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
                   itemCount: attendanceList.length,
@@ -254,7 +247,7 @@ class _ScreenLabourAttendancePageState
               );
             }
 
-            // Initial state
+            // Initial / unknown state
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -281,184 +274,218 @@ class _ScreenLabourAttendancePageState
   Widget _buildAttendanceCard(LaborAttendanceModel attendance) {
     final bool isApproved = _isApproved(attendance.status);
     final bool isRejected = _isRejected(attendance.status);
-    final String laborDisplayName =
-        attendance.laborType.toUpperCase() == 'CONTRACT'
-        ? attendance.contractorName.isNotEmpty
-              ? attendance.contractorName
-              : 'Contractor'
-        : attendance.laborName.isNotEmpty
-        ? attendance.laborName
-        : 'Casual Labour';
+
+    final bool isContract = attendance.laborType.toUpperCase() == 'CONTRACT';
+
+    final String laborDisplayName = isContract
+        ? (attendance.contractorName.isNotEmpty
+            ? attendance.contractorName
+            : 'Contractor')
+        : (attendance.laborName.isNotEmpty
+            ? attendance.laborName
+            : 'Casual Labour');
+
+    // Status colours
+    final Color statusColor = isApproved
+        ? Colors.green
+        : isRejected
+            ? Appcolors.kredcolor
+            : Appcolors.korangecolor;
+
+    final Color statusBgColor = isApproved
+        ? Colors.green.withAlpha(30)
+        : isRejected
+            ? Appcolors.kredcolor.withAlpha(30)
+            : Appcolors.korangecolor.withAlpha(30);
+
+    final IconData statusIcon = isApproved
+        ? Icons.check_circle_rounded
+        : isRejected
+            ? Icons.cancel_rounded
+            : Icons.pending_rounded;
 
     return Container(
-      margin: EdgeInsets.only(bottom: ResponsiveUtils.hp(2)),
+      margin: EdgeInsets.only(bottom: ResponsiveUtils.hp(1.8)),
       decoration: BoxDecoration(
         color: Appcolors.kwhitecolor,
         borderRadius: BorderRadiusStyles.kradius15(),
         boxShadow: [
           BoxShadow(
-            color: Appcolors.kgreyColor.withOpacity(0.15),
+            color: Appcolors.kgreyColor.withOpacity(0.12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
+        padding: EdgeInsets.all(ResponsiveUtils.wp(3.5)),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Profile Image
+            // ── Avatar ──────────────────────────────────────────────
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isApproved
-                      ? Appcolors.kgreencolor.withAlpha(77)
-                      : isRejected
-                      ? Appcolors.kredcolor.withAlpha(77)
-                      : Appcolors.korangecolor.withAlpha(77),
-                  width: 1,
+                  color: statusColor.withAlpha(100),
+                  width: 1.5,
                 ),
               ),
               child: CircleAvatar(
-                radius: ResponsiveUtils.wp(8),
-                backgroundColor: Appcolors.kgreyColor.withAlpha(66),
+                radius: ResponsiveUtils.wp(7),
+                backgroundColor: Appcolors.kgreyColor.withAlpha(40),
                 backgroundImage: attendance.picture.isNotEmpty
                     ? NetworkImage(attendance.picture)
                     : null,
                 child: attendance.picture.isEmpty
                     ? Icon(
                         Icons.person,
-                        size: ResponsiveUtils.sp(8),
+                        size: ResponsiveUtils.sp(7),
                         color: Appcolors.kprimarycolor,
                       )
                     : null,
               ),
             ),
-            ResponsiveSizedBox.width(3),
-            // Details
+
+            SizedBox(width: ResponsiveUtils.wp(3)),
+
+            // ── Info column ─────────────────────────────────────────
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Name
-                  TextStyles.title(
-                    text: laborDisplayName,
-                    weight: FontWeight.bold,
-                    color: Appcolors.kblackcolor,
+                  Text(
+                    laborDisplayName,
+                    style: TextStyle(
+                      fontSize: ResponsiveUtils.sp(4.2),
+                      fontWeight: FontWeight.w600,
+                      color: Appcolors.kblackcolor,
+                    ),
                     overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                  ResponsiveSizedBox.height5,
-                  // Date and Labor Type
+
+                  SizedBox(height: ResponsiveUtils.hp(0.6)),
+
+                  // Row 1: Date  |  Labour type badge
                   Row(
                     children: [
                       Icon(
-                        Icons.calendar_today,
-                        size: ResponsiveUtils.sp(3.5),
+                        Icons.calendar_today_rounded,
+                        size: ResponsiveUtils.sp(3.2),
                         color: Appcolors.kgreyColor,
                       ),
-                      ResponsiveSizedBox.width(1.5),
-                      TextStyles.caption(
-                        text: _formatDate(attendance.hireDate),
-                        color: Appcolors.kgreyColor,
-                      ),
-                      ResponsiveSizedBox.width(2),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: ResponsiveUtils.wp(2),
-                          vertical: ResponsiveUtils.hp(0.3),
-                        ),
-                        decoration: BoxDecoration(
-                          color:
-                              attendance.laborType.toUpperCase() == 'CONTRACT'
-                              ? Colors.purple.withAlpha(33)
-                              : Colors.teal.withAlpha(33),
-                          borderRadius: BorderRadiusStyles.kradius5(),
-                        ),
-                        child: TextStyles.caption(
-                          text: attendance.laborType.toUpperCase() == 'CONTRACT'
-                              ? 'Contract'
-                              : 'Casual',
-                          weight: FontWeight.w600,
-                          color:
-                              attendance.laborType.toUpperCase() == 'CONTRACT'
-                              ? Colors.purple.shade700
-                              : Colors.teal.shade700,
+                      SizedBox(width: ResponsiveUtils.wp(1)),
+                      Text(
+                        _formatDate(attendance.hireDate),
+                        style: TextStyle(
+                          fontSize: ResponsiveUtils.sp(3.2),
+                          color: Appcolors.kgreyColor,
                         ),
                       ),
+                      SizedBox(width: ResponsiveUtils.wp(2)),
+                      _buildTypeBadge(isContract),
                     ],
                   ),
-                  ResponsiveSizedBox.height5,
-                  // KM and Time
+
+                  SizedBox(height: ResponsiveUtils.hp(0.6)),
+
+                  // Row 2: Time (Expanded)  |  Distance
                   Row(
                     children: [
                       Icon(
-                        Icons.directions_walk_rounded,
-                        size: ResponsiveUtils.sp(3.5),
-                        color: Appcolors.kprimarycolor,
-                      ),
-                      ResponsiveSizedBox.width(1.5),
-                      TextStyles.caption(
-                        text: '${attendance.distanceFromHQ} km',
-                        weight: FontWeight.w600,
-                        color: Appcolors.kprimarycolor,
-                      ),
-                      ResponsiveSizedBox.width(3),
-                      Icon(
                         Icons.access_time_rounded,
-                        size: ResponsiveUtils.sp(3.5),
+                        size: ResponsiveUtils.sp(3.2),
                         color: Appcolors.kgreyColor,
                       ),
-                      ResponsiveSizedBox.width(1.5),
-                      TextStyles.caption(
-                        text: '${attendance.punchIn} - ${attendance.punchOut}',
-                        color: Appcolors.kgreyColor,
+                      SizedBox(width: ResponsiveUtils.wp(1)),
+                      // ✅ Expanded so time never overflows into status
+                      Expanded(
+                        child: Text(
+                          '${attendance.punchIn.to12Hour()} – ${attendance.punchOut.to12Hour()}',
+                          style: TextStyle(
+                            fontSize: ResponsiveUtils.sp(3.2),
+                            color: Appcolors.kgreyColor,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                      SizedBox(width: ResponsiveUtils.wp(2)),
+                      Icon(
+                        Icons.social_distance_rounded,
+                        size: ResponsiveUtils.sp(3.2),
+                        color: Appcolors.kprimarycolor,
+                      ),
+                      SizedBox(width: ResponsiveUtils.wp(1)),
+                      Text(
+                        '${attendance.distanceFromHQ} km',
+                        style: TextStyle(
+                          fontSize: ResponsiveUtils.sp(3.2),
+                          fontWeight: FontWeight.w600,
+                          color: Appcolors.kprimarycolor,
+                        ),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            // Approval Status
+
+            SizedBox(width: ResponsiveUtils.wp(2)),
+
+            // ── Status column ────────────────────────────────────────
             Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
                   padding: EdgeInsets.all(ResponsiveUtils.wp(2)),
                   decoration: BoxDecoration(
-                    color: isApproved
-                        ? Colors.green.withAlpha(33)
-                        : isRejected
-                        ? Appcolors.kredcolor.withAlpha(33)
-                        : Appcolors.korangecolor.withAlpha(33),
+                    color: statusBgColor,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    isApproved
-                        ? Icons.check_circle
-                        : isRejected
-                        ? Icons.cancel
-                        : Icons.pending,
-                    color: isApproved
-                        ? Colors.green
-                        : isRejected
-                        ? Appcolors.kredcolor
-                        : Appcolors.korangecolor,
-                    size: ResponsiveUtils.sp(6),
+                    statusIcon,
+                    color: statusColor,
+                    size: ResponsiveUtils.sp(5.5),
                   ),
                 ),
-                ResponsiveSizedBox.height5,
-                TextStyles.caption(
-                  text: _getStatusDisplay(attendance.status),
-                  weight: FontWeight.w600,
-                  color: isApproved
-                      ? Colors.green.shade700
-                      : isRejected
-                      ? Appcolors.kredcolor.shade700
-                      : Appcolors.korangecolor.shade700,
+                SizedBox(height: ResponsiveUtils.hp(0.4)),
+                Text(
+                  _getStatusDisplay(attendance.status),
+                  style: TextStyle(
+                    fontSize: ResponsiveUtils.sp(2.8),
+                    fontWeight: FontWeight.w600,
+                    color: statusColor,
+                  ),
                 ),
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTypeBadge(bool isContract) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: ResponsiveUtils.wp(2),
+        vertical: ResponsiveUtils.hp(0.25),
+      ),
+      decoration: BoxDecoration(
+        color: isContract
+            ? Colors.purple.withAlpha(30)
+            : Colors.teal.withAlpha(30),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        isContract ? 'Contract' : 'Casual',
+        style: TextStyle(
+          fontSize: ResponsiveUtils.sp(2.8),
+          fontWeight: FontWeight.w600,
+          color: isContract ? Colors.purple.shade700 : Colors.teal.shade700,
         ),
       ),
     );

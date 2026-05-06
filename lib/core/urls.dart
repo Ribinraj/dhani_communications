@@ -24,7 +24,8 @@ class Endpoints {
   static const updateleaveapproval = 'approvals/updateleaves';
   static const approveldprlist = 'approvals/dpr';
   static const updatedprapproval = 'approvals/updatedpr';
-
+  static const settoken = 'login/settoken';
+  static const removetoken = 'login/removetoken';
   // Attendance endpoints
   static const checkAttendance = 'attendance/check';
   static const createAttendance = 'attendance/new';

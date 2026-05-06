@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/network_services.dart';
+import 'package:dhani_communications/core/pushnotification_controller.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:dhani_communications/features/approvals/bloc/fetch_approvel_attendence/fetch_approvelattendence_bloc.dart';
 import 'package:dhani_communications/features/approvals/bloc/fetch_approvel_dprbloc/fetch_approvel_dpr_bloc.dart';
@@ -48,12 +51,44 @@ import 'package:dhani_communications/features/dashboard/blocs/updates_bloc/updat
 import 'package:dhani_communications/features/dashboard/blocs/vehicles_bloc/vehicles_bloc.dart';
 import 'package:dhani_communications/features/auth/blocs/verify_otp_bloc/verify_otp_bloc.dart';
 import 'package:dhani_communications/widgets/app_router.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Optional: initialize firebase here if you need (only if you use Firebase in background)
+  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await PushNotifications.backgroundMessageHandler(message);
+}
 
-void main() {
+// Global navigator key so we can navigate from notification handlers
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+void main()async {
+      WidgetsFlutterBinding.ensureInitialized();
+      // Initialize Firebase
+  await Firebase.initializeApp(
+    //options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Register FCM background handler BEFORE runApp
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  // Initialize PushNotifications helper (this will request permissions, create channel, etc.)
+  // It's okay to await this so notifications are ready by the time the app runs.
+  await PushNotifications.instance.init();
+
+  // Optional: request permissions again for iOS if you want explicit control here
+  if (Platform.isIOS) {
+    await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+      provisional: false,
+    );
+  }
+
   runApp(const MyApp());
 }
 

@@ -1,5 +1,6 @@
 import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/core/colors.dart';
+import 'package:dhani_communications/core/pushnotification_controller.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:dhani_communications/features/auth/blocs/verify_otp_bloc/verify_otp_bloc.dart';
 import 'package:flutter/material.dart';
@@ -146,6 +147,8 @@ class _OtpPageState extends State<OtpPage> {
       body: BlocListener<VerifyOtpBloc, VerifyOtpState>(
         listener: (context, state) {
           if (state is VerifyOtpSuccessState) {
+            // Send FCM push token to server after successful login
+            PushNotifications.instance.sendTokenToServer();
             // Navigate to main page on successful OTP verification
             context.go('/main');
           } else if (state is VerifyOtpErrorState) {

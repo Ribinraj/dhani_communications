@@ -327,19 +327,21 @@ class _ScreenEmployeeExpensesPageState
                       ResponsiveSizedBox.width(2),
                       if (expense.expenseCategoryName.isNotEmpty &&
                           expense.expenseCategoryName != '-')
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: ResponsiveUtils.wp(2),
-                            vertical: ResponsiveUtils.hp(0.3),
-                          ),
-                          decoration: BoxDecoration(
-                            color: Appcolors.kprimarycolor.withOpacity(0.1),
-                            borderRadius: BorderRadiusStyles.kradius5(),
-                          ),
-                          child: TextStyles.caption(
-                            text: expense.expenseCategoryName,
-                            weight: FontWeight.w600,
-                            color: Appcolors.kprimarycolor,
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: ResponsiveUtils.wp(2),
+                              vertical: ResponsiveUtils.hp(0.3),
+                            ),
+                            decoration: BoxDecoration(
+                              color: Appcolors.kprimarycolor.withOpacity(0.1),
+                              borderRadius: BorderRadiusStyles.kradius5(),
+                            ),
+                            child: TextStyles.caption(
+                              text: expense.expenseCategoryName,
+                              weight: FontWeight.w600,
+                              color: Appcolors.kprimarycolor,
+                            ),
                           ),
                         ),
                     ],
