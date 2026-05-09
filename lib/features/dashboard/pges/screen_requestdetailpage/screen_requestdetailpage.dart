@@ -1,63 +1,67 @@
 import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/features/dashboard/models/request_model.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 
-class ScreenRequestDetailPage extends StatefulWidget {
-  const ScreenRequestDetailPage({super.key});
+class ScreenRequestDetailPage extends StatelessWidget {
+  final RequestModel? request;
 
-  @override
-  State<ScreenRequestDetailPage> createState() =>
-      _ScreenRequestDetailPageState();
-}
-
-class _ScreenRequestDetailPageState extends State<ScreenRequestDetailPage> {
-  // Sample request detail data
-  final Map<String, dynamic> requestDetail = {
-    'request': 'REQ-2026-001',
-    'category': 'Material Request',
-    'notes': 'Urgent requirement for construction materials at Tower B site. Need cement bags, steel rods, and sand for foundation work. Please process on priority basis.',
-    'requestCreated': '02 Jan 2026, 03:30 PM',
-    'status': 'Pending',
-  };
+  const ScreenRequestDetailPage({super.key, this.request});
 
   Color _getStatusColor(String status) {
-    switch (status) {
-      case 'Approved':
+    switch (status.toUpperCase()) {
+      case 'COMPLETED':
         return Colors.green;
-      case 'Rejected':
+      case 'REJECTED':
         return Colors.red;
-      case 'Pending':
+      case 'PENDING':
         return Colors.orange;
-      case 'Completed':
-        return Colors.blue;
       default:
         return Appcolors.kgreyColor;
     }
   }
 
   IconData _getStatusIcon(String status) {
-    switch (status) {
-      case 'Approved':
-        return Icons.check_circle;
-      case 'Rejected':
-        return Icons.cancel;
-      case 'Pending':
-        return Icons.pending;
-      case 'Completed':
+    switch (status.toUpperCase()) {
+      case 'COMPLETED':
         return Icons.done_all;
+      case 'REJECTED':
+        return Icons.cancel;
+      case 'PENDING':
+        return Icons.pending;
       default:
         return Icons.info;
     }
   }
 
+  String _formatDate(String rawDate) {
+    final parsed = DateTime.tryParse(rawDate);
+    if (parsed == null) return rawDate;
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ];
+    final hour = parsed.hour > 12 ? parsed.hour - 12 : parsed.hour;
+    final period = parsed.hour >= 12 ? 'PM' : 'AM';
+    final minute = parsed.minute.toString().padLeft(2, '0');
+    return '${parsed.day.toString().padLeft(2, '0')} '
+        '${months[parsed.month - 1]} ${parsed.year}, '
+        '${hour.toString().padLeft(2, '0')}:$minute $period';
+  }
+
+  String _capitalizeFirst(String s) {
+    if (s.isEmpty) return s;
+    return s[0].toUpperCase() + s.substring(1).toLowerCase();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final String status = requestDetail['status'];
-    final Color statusColor = _getStatusColor(status);
-    final IconData statusIcon = _getStatusIcon(status);
+    final status = request?.status ?? '';
+    final statusColor = _getStatusColor(status);
+    final statusIcon = _getStatusIcon(status);
 
     return Scaffold(
       backgroundColor: Appcolors.kwhitecolor,
@@ -82,166 +86,202 @@ class _ScreenRequestDetailPageState extends State<ScreenRequestDetailPage> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Request Information Card
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
-              decoration: BoxDecoration(
-                color: Appcolors.kwhitecolor,
-                borderRadius: BorderRadiusStyles.kradius15(),
-                boxShadow: [
-                  BoxShadow(
-                    color: Appcolors.kgreyColor.withValues(alpha: 0.15),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+      body: request == null
+          ? Center(
+              child: TextStyles.subheadline(
+                text: 'No request data available',
+                color: Appcolors.kgreyColor,
               ),
+            )
+          : SingleChildScrollView(
+              padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextStyles.subheadline(
-                    text: 'Request Information',
-                    weight: FontWeight.bold,
-                    color: Appcolors.kblackcolor,
-                  ),
-                  ResponsiveSizedBox.height20,
-
-                  // Request ID
-                  _buildDetailRow(
-                    icon: Icons.tag,
-                    iconColor: Appcolors.kprimarycolor,
-                    label: 'Request',
-                    value: requestDetail['request'],
-                  ),
-                  ResponsiveSizedBox.height20,
-
-                  // Category
-                  _buildDetailRow(
-                    icon: Icons.category,
-                    iconColor: Colors.purple,
-                    label: 'Category',
-                    value: requestDetail['category'],
-                  ),
-                  ResponsiveSizedBox.height20,
-
-                  // Status
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(ResponsiveUtils.wp(2)),
-                        decoration: BoxDecoration(
-                          color: statusColor.withValues(alpha: 0.1),
-                          borderRadius: BorderRadiusStyles.kradius10(),
+                  // ── Request Information Card ──────────────────────────
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
+                    decoration: BoxDecoration(
+                      color: Appcolors.kwhitecolor,
+                      borderRadius: BorderRadiusStyles.kradius15(),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Appcolors.kgreyColor.withValues(alpha: 0.15),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
-                        child: Icon(
-                          statusIcon,
-                          color: statusColor,
-                          size: ResponsiveUtils.sp(5),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextStyles.subheadline(
+                          text: 'Request Information',
+                          weight: FontWeight.bold,
+                          color: Appcolors.kblackcolor,
                         ),
-                      ),
-                      ResponsiveSizedBox.width(3),
-                      Expanded(
-                        child: Column(
+                        ResponsiveSizedBox.height20,
+
+                        // Request ID
+                        _buildDetailRow(
+                          icon: Icons.tag,
+                          iconColor: Appcolors.kprimarycolor,
+                          label: 'Request ID',
+                          value: '#${request!.requestId}',
+                        ),
+                        ResponsiveSizedBox.height20,
+
+                        // Category
+                        _buildDetailRow(
+                          icon: Icons.category,
+                          iconColor: Colors.purple,
+                          label: 'Category',
+                          value: request!.requestCategory,
+                        ),
+                        ResponsiveSizedBox.height20,
+
+                        // Requested By
+                        _buildDetailRow(
+                          icon: Icons.person_outline,
+                          iconColor: Colors.teal,
+                          label: 'Requested By',
+                          value: request!.requestedBy,
+                        ),
+                        ResponsiveSizedBox.height20,
+
+                        // Status
+                        Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            TextStyles.caption(
-                              text: 'Status',
-                              color: Appcolors.kgreyColor,
-                            ),
-                            ResponsiveSizedBox.height5,
                             Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: ResponsiveUtils.wp(3),
-                                vertical: ResponsiveUtils.hp(0.6),
-                              ),
+                              padding: EdgeInsets.all(ResponsiveUtils.wp(2)),
                               decoration: BoxDecoration(
                                 color: statusColor.withValues(alpha: 0.1),
-                                borderRadius: BorderRadiusStyles.kradius5(),
+                                borderRadius: BorderRadiusStyles.kradius10(),
                               ),
-                              child: TextStyles.medium(
-                                text: status,
-                                weight: FontWeight.w600,
+                              child: Icon(
+                                statusIcon,
                                 color: statusColor,
+                                size: ResponsiveUtils.sp(5),
+                              ),
+                            ),
+                            ResponsiveSizedBox.width(3),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TextStyles.caption(
+                                    text: 'Status',
+                                    color: Appcolors.kgreyColor,
+                                  ),
+                                  ResponsiveSizedBox.height5,
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: ResponsiveUtils.wp(3),
+                                      vertical: ResponsiveUtils.hp(0.6),
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: statusColor.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadiusStyles.kradius5(),
+                                    ),
+                                    child: TextStyles.medium(
+                                      text: _capitalizeFirst(status),
+                                      weight: FontWeight.w600,
+                                      color: statusColor,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                  ResponsiveSizedBox.height20,
+                        ResponsiveSizedBox.height20,
 
-                  // Request Created
-                  _buildDetailRow(
-                    icon: Icons.schedule,
-                    iconColor: Colors.brown,
-                    label: 'Request Created',
-                    value: requestDetail['requestCreated'],
+                        // Updated By
+                        _buildDetailRow(
+                          icon: Icons.edit_outlined,
+                          iconColor: Colors.indigo,
+                          label: 'Updated By',
+                          value: request!.updatedBy,
+                        ),
+                        ResponsiveSizedBox.height20,
+
+                        // Created At
+                        _buildDetailRow(
+                          icon: Icons.schedule,
+                          iconColor: Colors.brown,
+                          label: 'Request Created',
+                          value: _formatDate(request!.createdAt),
+                        ),
+                        ResponsiveSizedBox.height20,
+
+                        // Modified At
+                        _buildDetailRow(
+                          icon: Icons.update,
+                          iconColor: Colors.blueGrey,
+                          label: 'Last Modified',
+                          value: _formatDate(request!.modifiedAt),
+                        ),
+                      ],
+                    ),
                   ),
+                  ResponsiveSizedBox.height(3),
+
+                  // ── Notes Card ────────────────────────────────────────
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
+                    decoration: BoxDecoration(
+                      color: Appcolors.kwhitecolor,
+                      borderRadius: BorderRadiusStyles.kradius15(),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Appcolors.kgreyColor.withValues(alpha: 0.15),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(ResponsiveUtils.wp(2)),
+                              decoration: BoxDecoration(
+                                color: Colors.amber.withValues(alpha: 0.1),
+                                borderRadius: BorderRadiusStyles.kradius10(),
+                              ),
+                              child: Icon(
+                                Icons.note_alt,
+                                color: Colors.amber.shade700,
+                                size: ResponsiveUtils.sp(5),
+                              ),
+                            ),
+                            ResponsiveSizedBox.width(2),
+                            TextStyles.subheadline(
+                              text: 'Notes',
+                              weight: FontWeight.bold,
+                              color: Appcolors.kblackcolor,
+                            ),
+                          ],
+                        ),
+                        ResponsiveSizedBox.height15,
+                        TextStyles.medium(
+                          text: request!.notes.isEmpty
+                              ? 'No notes provided.'
+                              : request!.notes,
+                          color: Appcolors.kgreyColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                  ResponsiveSizedBox.height(3),
                 ],
               ),
             ),
-            ResponsiveSizedBox.height(3),
-
-            // Notes Card
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
-              decoration: BoxDecoration(
-                color: Appcolors.kwhitecolor,
-                borderRadius: BorderRadiusStyles.kradius15(),
-                boxShadow: [
-                  BoxShadow(
-                    color: Appcolors.kgreyColor.withValues(alpha: 0.15),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(ResponsiveUtils.wp(2)),
-                        decoration: BoxDecoration(
-                          color: Colors.amber.withValues(alpha: 0.1),
-                          borderRadius: BorderRadiusStyles.kradius10(),
-                        ),
-                        child: Icon(
-                          Icons.note_alt,
-                          color: Colors.amber.shade700,
-                          size: ResponsiveUtils.sp(5),
-                        ),
-                      ),
-                      ResponsiveSizedBox.width(2),
-                      TextStyles.subheadline(
-                        text: 'Notes',
-                        weight: FontWeight.bold,
-                        color: Appcolors.kblackcolor,
-                      ),
-                    ],
-                  ),
-                  ResponsiveSizedBox.height15,
-                  TextStyles.medium(
-                    text: requestDetail['notes'],
-                    color: Appcolors.kgreyColor,
-                  ),
-                ],
-              ),
-            ),
-            ResponsiveSizedBox.height(3),
-          ],
-        ),
-      ),
     );
   }
 

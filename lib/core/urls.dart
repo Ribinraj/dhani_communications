@@ -11,6 +11,7 @@ class Endpoints {
   static const getProjects = 'login/projects';
   static const getVehicles = 'login/vehicles';
   static const getHeadquarterVehicles = 'login/headquartervehicles';
+  static const createRequest = 'login/newrequest';
   static const updateVehicle = 'login/updatevehicle';
   static const getNotifications = 'login/notifications';
   static const updateNotification = 'login/updatenotification';
@@ -24,6 +25,8 @@ class Endpoints {
   static const updateleaveapproval = 'approvals/updateleaves';
   static const approveldprlist = 'approvals/dpr';
   static const updatedprapproval = 'approvals/updatedpr';
+  static const approveMachineHireList = 'approvals/machinehirelist';
+  static const updateMachineHireApproval = 'approvals/updatemachinehire';
   static const settoken = 'login/settoken';
   static const removetoken = 'login/removetoken';
   // Attendance endpoints
@@ -45,6 +48,7 @@ class Endpoints {
   static const createLeave = 'leaves/new';
   static const getLeavesList = 'leaves/list';
   static const leavecategories = 'masters/leavecategories';
+  static const requestCategories = 'masters/requestcategory';
 
   // DPR endpoints
   static const getDprList = 'dpr/list';
@@ -62,4 +66,13 @@ class Endpoints {
   static const newattendence = 'attendance/new';
   //employees
   static const employees = 'masters/employees';
+  //machine hire
+  static const machinehire = 'machineryhire/list';
+  //requests
+  static const requestList = 'login/requestlist';
+  // Cash Balance
+  static const cashBalance = 'login/cashbalance';
+  static const cashTransactions = 'login/cashtransactions';
+  static const createMachineHire = 'machineryhire/new';
+  static const machineTypes = 'masters/machinelist';
 }

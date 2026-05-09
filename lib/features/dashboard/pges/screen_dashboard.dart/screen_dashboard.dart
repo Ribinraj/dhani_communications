@@ -707,8 +707,12 @@ class _HomePageState extends State<ScreenDashboardpage>
               context.push('/expensespage');
             } else if (option['label'] == 'Machinery Hire') {
               context.push('/machinehiringpage');
+            } else if (option['label'] == 'Cash Balance') {
+              context.push('/cashbalancepage');
             } else if (option['label'] == 'Leaves') {
               context.push('/leavespage');
+            } else if (option['label'] == 'Vehicles') {
+              context.push('/vehiclespage');
             } else if (option['label'] == 'Company Assets') {
               context.push('/assetspage');
             } else if (option['label'] == 'Project Inventory') {

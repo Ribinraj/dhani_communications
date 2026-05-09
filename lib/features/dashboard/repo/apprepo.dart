@@ -4,6 +4,7 @@ import 'package:dhani_communications/core/local_storages.dart';
 import 'package:dhani_communications/core/urls.dart';
 import 'package:dhani_communications/features/dashboard/models/attendance_check_model.dart';
 import 'package:dhani_communications/features/dashboard/models/attendance_model.dart';
+import 'package:dhani_communications/features/dashboard/models/cash_transaction_model.dart';
 import 'package:dhani_communications/features/dashboard/models/dpr_model.dart';
 import 'package:dhani_communications/features/dashboard/models/expense_category_model.dart';
 import 'package:dhani_communications/features/dashboard/models/expense_model.dart';
@@ -14,6 +15,8 @@ import 'package:dhani_communications/features/dashboard/models/asset_transfer_mo
 import 'package:dhani_communications/features/dashboard/models/inventory_item_model.dart';
 import 'package:dhani_communications/features/dashboard/models/labor_attendance_model.dart';
 import 'package:dhani_communications/features/dashboard/models/leave_model.dart';
+import 'package:dhani_communications/features/dashboard/models/machine_hire_model.dart';
+import 'package:dhani_communications/features/dashboard/models/machine_type_model.dart';
 import 'package:dhani_communications/features/dashboard/models/notification_model.dart';
 import 'package:dhani_communications/features/dashboard/models/project_model.dart';
 import 'package:dhani_communications/features/dashboard/models/employees_model.dart';
@@ -21,6 +24,7 @@ import 'package:dhani_communications/features/dashboard/models/employees_model.d
 import 'package:dhani_communications/features/dashboard/models/update_model.dart';
 import 'package:dhani_communications/features/dashboard/models/vehicle_model.dart';
 import 'package:dhani_communications/features/dashboard/models/company_asset_model.dart';
+import 'package:dhani_communications/features/dashboard/models/request_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -128,13 +132,87 @@ class Apprepo {
     }
   }
 
-  /// Get vehicles list assigned to user (POST with empty body)
+  /// Get current cash balance
+  Future<ApiResponse<String>> getCashBalance() async {
+    try {
+      Response response = await dio.get(Endpoints.cashBalance);
+      final responseData = response.data;
+      log('getCashBalance response: $responseData');
+
+      if (responseData["status"] == 200) {
+        return ApiResponse(
+          data: responseData["data"]?.toString() ?? '0.00',
+          message: responseData['message'] ?? 'Success',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData["status"],
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint(e.message);
+      log(e.toString());
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+
+  /// Get cash transactions
+  Future<ApiResponse<List<CashTransactionModel>>> getCashTransactions() async {
+    try {
+      Response response = await dio.get(Endpoints.cashTransactions);
+      final responseData = response.data;
+      log('getCashTransactions response: $responseData');
+
+      if (responseData["status"] == 200) {
+        final List<dynamic> dataList = responseData["data"] ?? [];
+        final transactions = dataList
+            .map(
+              (item) =>
+                  CashTransactionModel.fromJson(item as Map<String, dynamic>),
+            )
+            .toList();
+        return ApiResponse(
+          data: transactions,
+          message: responseData['message'] ?? 'Success',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData["status"],
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint(e.message);
+      log(e.toString());
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+
+  /// Get vehicles list assigned to user
   Future<ApiResponse<List<VehicleModel>>> getVehicles() async {
     try {
       final token = await LocalStorage.getToken();
-      Response response = await dio.post(
+      Response response = await dio.get(
         Endpoints.getVehicles,
-        data: {},
         options: Options(headers: {'Authorization': token}),
       );
       final responseData = response.data;
@@ -221,8 +299,10 @@ class Apprepo {
   /// Update vehicle information
   Future<ApiResponse<void>> updateVehicle({
     required int vehicleId,
-    required int meterReading,
-    required String vehicleNumber,
+    required double vehicleLastServiceKm,
+    required String vehicleLastServiceDate,
+    required String vehiclePucValidity,
+    required String vehicleInsuranceValidity,
   }) async {
     try {
       final token = await LocalStorage.getToken();
@@ -230,8 +310,10 @@ class Apprepo {
         Endpoints.updateVehicle,
         data: {
           'vehicleId': vehicleId,
-          'meterReading': meterReading,
-          'vehicleNumber': vehicleNumber,
+          'vehicleLastServiceKm': vehicleLastServiceKm,
+          'vehicleLastServiceDate': vehicleLastServiceDate,
+          'vehiclePucValidity': vehiclePucValidity,
+          'vehicleInsuranceValidity': vehicleInsuranceValidity,
         },
         options: Options(headers: {'Authorization': token}),
       );
@@ -673,7 +755,6 @@ class Apprepo {
     }
   }
 
-
   /// Get leaves list
   Future<ApiResponse<List<LeaveModel>>> getLeavesList({
     String? startDate,
@@ -1009,6 +1090,46 @@ class Apprepo {
     }
   }
 
+  /// Get machine types from masters/machinelist
+  Future<ApiResponse<List<MachineTypeModel>>> getMachineTypes() async {
+    try {
+      Response response = await dio.get(Endpoints.machineTypes);
+      final responseData = response.data;
+      log('getMachineTypes response: $responseData');
+
+      if (!responseData['error'] && responseData['status'] == 200) {
+        final List<dynamic> dataList = responseData['data'] ?? [];
+        final machineTypes = dataList
+            .map(
+              (item) => MachineTypeModel.fromJson(item as Map<String, dynamic>),
+            )
+            .toList();
+        return ApiResponse(
+          data: machineTypes,
+          message: responseData['message'] ?? 'Success',
+          error: false,
+          status: responseData['status'],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData['status'],
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint(e.message);
+      log(e.toString());
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+
   //==========================Inventory cunsumption===============//
   Future<ApiResponse<String>> inventoryconsumption({
     required InventoryConsumptionModel inventorydata,
@@ -1157,6 +1278,107 @@ class Apprepo {
       return ApiResponse(
         data: null,
         message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+
+  // ========================= machinehirelist list ========================= //
+  Future<ApiResponse<List<MachineHireModel>>> machinehirelist() async {
+    try {
+      Response response = await dio.post(Endpoints.machinehire, data: {});
+
+      final responseData = response.data;
+      log('machinehire response: $responseData');
+
+      if (responseData != null && responseData["status"] == 200) {
+        final List<dynamic> dataList = responseData["data"] ?? [];
+
+        final machinelist = dataList
+            .map(
+              (item) => MachineHireModel.fromJson(item as Map<String, dynamic>),
+            )
+            .toList();
+
+        return ApiResponse(
+          data: machinelist,
+          message: responseData['message'] ?? 'Success',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData?['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData?["status"] ?? 400,
+        );
+      }
+    } on DioException catch (e) {
+      log('Dio error: ${e.response?.data ?? e.message}');
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: e.response?.statusCode ?? 500,
+      );
+    } catch (e) {
+      log('Unexpected error: $e');
+      return ApiResponse(
+        data: null,
+        message: 'Unexpected error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+
+  // ========================= Request list ========================= //
+  Future<ApiResponse<List<RequestModel>>> getRequestList() async {
+    try {
+      final token = await LocalStorage.getToken();
+      Response response = await dio.get(
+        Endpoints.requestList,
+        options: Options(headers: {'Authorization': token}),
+      );
+
+      final responseData = response.data;
+      log('getRequestList response: $responseData');
+
+      if (responseData != null && responseData["status"] == 200) {
+        final List<dynamic> dataList = responseData["data"] ?? [];
+        final requestList = dataList
+            .map((item) => RequestModel.fromJson(item as Map<String, dynamic>))
+            .toList();
+
+        return ApiResponse(
+          data: requestList,
+          message: responseData['message'] ?? 'Success',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData?['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData?["status"] ?? 400,
+        );
+      }
+    } on DioException catch (e) {
+      log('Dio error: ${e.response?.data ?? e.message}');
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: e.response?.statusCode ?? 500,
+      );
+    } catch (e) {
+      log('Unexpected error: $e');
+      return ApiResponse(
+        data: null,
+        message: 'Unexpected error occurred',
         error: true,
         status: 500,
       );

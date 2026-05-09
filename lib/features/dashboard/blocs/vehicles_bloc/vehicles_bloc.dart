@@ -60,8 +60,10 @@ class VehiclesBloc extends Bloc<VehiclesEvent, VehiclesState> {
     try {
       final response = await repository.updateVehicle(
         vehicleId: event.vehicleId,
-        meterReading: event.meterReading,
-        vehicleNumber: event.vehicleNumber,
+        vehicleLastServiceKm: event.vehicleLastServiceKm,
+        vehicleLastServiceDate: event.vehicleLastServiceDate,
+        vehiclePucValidity: event.vehiclePucValidity,
+        vehicleInsuranceValidity: event.vehicleInsuranceValidity,
       );
       if (!response.error && response.status == 200) {
         emit(UpdateVehicleSuccessState(message: response.message));

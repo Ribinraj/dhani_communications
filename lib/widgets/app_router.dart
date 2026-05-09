@@ -8,6 +8,7 @@ import 'package:dhani_communications/features/approvals/pages/screen_approveldpr
 import 'package:dhani_communications/features/approvals/pages/screen_approveldprdetailspage.dart';
 import 'package:dhani_communications/features/approvals/models/approvels_expensemodel.dart';
 import 'package:dhani_communications/features/approvals/models/approvels_leavemodel.dart';
+import 'package:dhani_communications/features/approvals/models/approvels_machine_hire_model.dart';
 import 'package:dhani_communications/features/approvals/models/approvels_dprmodel.dart';
 import 'package:dhani_communications/features/dashboard/models/attendance_model.dart';
 import 'package:dhani_communications/features/dashboard/models/company_asset_model.dart';
@@ -20,6 +21,7 @@ import 'package:dhani_communications/features/dashboard/pges/screen_assettransfe
 import 'package:dhani_communications/features/dashboard/pges/screen_inventoryconsumptionpage/screen_inventoryconsumptionpage.dart';
 import 'package:dhani_communications/features/dashboard/models/labor_attendance_model.dart';
 import 'package:dhani_communications/features/dashboard/models/leave_model.dart';
+import 'package:dhani_communications/features/dashboard/models/machine_hire_model.dart';
 import 'package:dhani_communications/features/dashboard/pges/screen_inventorytransferpage/screen_inventory_transferpage.dart';
 import 'package:dhani_communications/features/dashboard/pges/screen_leavedetailspage/screen_leavedetailspage.dart';
 import 'package:dhani_communications/features/multiple_action_button/pages/screen_dprprogresspage/screen_dprprogresspage.dart';
@@ -36,7 +38,9 @@ import 'package:dhani_communications/features/approvals/pages/screen_approvemach
 import 'package:dhani_communications/features/approvals/pages/screen_contractlabours_attendenceapprovelpage.dart';
 import 'package:dhani_communications/features/approvals/pages/screen_employee_attendenceapprovelpage.dart';
 import 'package:dhani_communications/features/approvals/pages/screen_leaveapprovelpage.dart';
+import 'package:dhani_communications/features/approvals/pages/screen_machinehire_approve_detailpage.dart';
 import 'package:dhani_communications/features/dashboard/pges/screen_assets_detailspage/screen_assetsdetailspage.dart';
+import 'package:dhani_communications/features/dashboard/pges/screen_cashbalancepage/screen_cashbalancepage.dart';
 import 'package:dhani_communications/features/dashboard/pges/screen_projectdprpage/screen_projectdprpage.dart';
 import 'package:dhani_communications/features/dashboard/pges/screen_dprsubmissionspage/screen_dprsubmissionspage.dart';
 import 'package:dhani_communications/features/dashboard/pges/screen_dprdetailspage/screen_dprdetailspage.dart';
@@ -59,6 +63,10 @@ import 'package:dhani_communications/features/dashboard/pges/screen_machinehirin
 import 'package:dhani_communications/presentation/screens/screen_notificationpage/screen_notificationpage.dart';
 import 'package:dhani_communications/features/auth/pages/screen_otppage/screen_otppage.dart';
 import 'package:dhani_communications/features/dashboard/pges/screen_requestdetailpage/screen_requestdetailpage.dart';
+import 'package:dhani_communications/features/dashboard/models/request_model.dart';
+import 'package:dhani_communications/features/dashboard/models/vehicle_model.dart';
+import 'package:dhani_communications/features/dashboard/pges/screen_vehiclespage/screen_vehiclespage.dart';
+import 'package:dhani_communications/features/dashboard/pges/screen_vehicledetailpage/screen_vehicledetailpage.dart';
 import 'package:dhani_communications/features/dashboard/pges/screen_requestspage/screen_requestspage.dart';
 import 'package:dhani_communications/presentation/screens/splash_screen/screen_splashpage.dart';
 import 'package:dhani_communications/features/auth/blocs/verify_otp_bloc/verify_otp_bloc.dart';
@@ -191,7 +199,8 @@ class AppRouter {
       GoRoute(
         path: '/machinehiredetailpage',
         builder: (context, state) {
-          return ScreenMachineHireDetailPage();
+          final machineHire = state.extra as MachineHireModel?;
+          return ScreenMachineHireDetailPage(machineHire: machineHire);
         },
       ),
 
@@ -316,11 +325,45 @@ class AppRouter {
         },
       ),
 
+      ///cashbalancepage
+      GoRoute(
+        path: '/cashbalancepage',
+        builder: (context, state) {
+          return const ScreenCashBalancePage();
+        },
+      ),
+
+      ///cashbalsepage
+      GoRoute(
+        path: '/cashbalsepage',
+        builder: (context, state) {
+          return const ScreenCashBalancePage();
+        },
+      ),
+
+      ///vehiclespage
+      GoRoute(
+        path: '/vehiclespage',
+        builder: (context, state) {
+          return const ScreenVehiclesPage();
+        },
+      ),
+
+      ///vehicledetailpage
+      GoRoute(
+        path: '/vehicledetailpage',
+        builder: (context, state) {
+          final vehicle = state.extra as VehicleModel;
+          return ScreenVehicleDetailPage(vehicle: vehicle);
+        },
+      ),
+
       ///requestdetailspage
       GoRoute(
         path: '/requestdetailspage',
         builder: (context, state) {
-          return ScreenRequestDetailPage();
+          final request = state.extra as RequestModel?;
+          return ScreenRequestDetailPage(request: request);
         },
       ),
 
@@ -499,6 +542,15 @@ class AppRouter {
         path: '/screenapprovemachinerypage',
         builder: (context, state) {
           return ScreenApproveMachineryPage();
+        },
+      ),
+
+      ///machinehireapprovedetailpage
+      GoRoute(
+        path: '/machinehireapprovedetailpage',
+        builder: (context, state) {
+          final machineHire = state.extra as ApprovelsMachineHireModel?;
+          return ScreenMachineHireApproveDetailPage(machineHire: machineHire!);
         },
       ),
 

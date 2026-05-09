@@ -1,6 +1,13 @@
+import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/features/dashboard/blocs/get_machines_bloc/get_machines_bloc.dart';
+import 'package:dhani_communications/features/dashboard/models/machine_hire_model.dart';
 import 'package:dhani_communications/widgets/date_filter_dialog.dart';
+import 'package:dhani_communications/widgets/custom_nondatawidget.dart';
+import 'package:dhani_communications/widgets/customshimmer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
@@ -18,57 +25,24 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
   DateTime? _fromDate;
   DateTime? _toDate;
 
-  // Sample machine hiring data
-  final List<Map<String, dynamic>> hiringList = [
-    {
-      'toolName': 'Excavator',
-      'date': '03 Jan 2026',
-      'amount': '₹12,500',
-      'status': 'Approved',
-    },
-    {
-      'toolName': 'Bulldozer',
-      'date': '03 Jan 2026',
-      'amount': '₹15,800',
-      'status': 'Rejected',
-    },
-    {
-      'toolName': 'Crane',
-      'date': '02 Jan 2026',
-      'amount': '₹25,000',
-      'status': 'Approved',
-    },
-    {
-      'toolName': 'Concrete Mixer',
-      'date': '02 Jan 2026',
-      'amount': '₹8,500',
-      'status': 'Approved',
-    },
-    {
-      'toolName': 'Forklift',
-      'date': '01 Jan 2026',
-      'amount': '₹6,200',
-      'status': 'Rejected',
-    },
-    {
-      'toolName': 'Loader',
-      'date': '01 Jan 2026',
-      'amount': '₹11,000',
-      'status': 'Approved',
-    },
-    {
-      'toolName': 'Compactor',
-      'date': '31 Dec 2025',
-      'amount': '₹9,300',
-      'status': 'Approved',
-    },
-    {
-      'toolName': 'Grader',
-      'date': '31 Dec 2025',
-      'amount': '₹18,700',
-      'status': 'Rejected',
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    context.read<GetMachinesBloc>().add(GetMachinesInitialFetchingEvent());
+  }
+
+  void _applyFilter() {
+    context.read<GetMachinesBloc>().add(
+      GetMachinesInitialFetchingEvent(
+        startDate: _fromDate == null
+            ? null
+            : DateFormat('yyyy-MM-dd').format(_fromDate!),
+        endDate: _toDate == null
+            ? null
+            : DateFormat('yyyy-MM-dd').format(_toDate!),
+      ),
+    );
+  }
 
   void _showFilterDialog() {
     DateFilterDialog.show(
@@ -81,14 +55,51 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
           _fromDate = fromDate;
           _toDate = toDate;
         });
+        _applyFilter();
       },
       onClear: () {
         setState(() {
           _fromDate = null;
           _toDate = null;
         });
+        context.read<GetMachinesBloc>().add(GetMachinesInitialFetchingEvent());
       },
     );
+  }
+
+  String _formatDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return 'N/A';
+    try {
+      final date = DateTime.parse(dateStr);
+      return DateFormat('dd MMM yyyy').format(date);
+    } catch (e) {
+      return dateStr;
+    }
+  }
+
+  String _formatAmount(String? amount) {
+    if (amount == null || amount.isEmpty) return 'N/A';
+    if (amount.startsWith('₹')) return amount;
+    return '₹$amount';
+  }
+
+  String _getStatusDisplay(String? status) {
+    final value = status?.toUpperCase() ?? '';
+    if (value == 'APPROVED') return 'Approved';
+    if (value == 'REJECTED') return 'Rejected';
+    return 'Pending';
+  }
+
+  Color _getStatusColor(String status) {
+    if (status == 'Approved') return Colors.green;
+    if (status == 'Rejected') return Colors.red;
+    return Colors.orange;
+  }
+
+  IconData _getStatusIcon(String status) {
+    if (status == 'Approved') return Icons.check_circle;
+    if (status == 'Rejected') return Icons.cancel;
+    return Icons.pending;
   }
 
   @override
@@ -143,42 +154,57 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
           ),
         ],
       ),
-      body: hiringList.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.construction_rounded,
-                    size: ResponsiveUtils.sp(20),
-                    color: Appcolors.kgreyColor.withOpacity(0.5),
-                  ),
-                  ResponsiveSizedBox.height20,
-                  TextStyles.subheadline(
-                    text: 'No hiring records found',
-                    color: Appcolors.kgreyColor,
-                  ),
-                ],
-              ),
-            )
-          : ListView.builder(
+      body: BlocBuilder<GetMachinesBloc, GetMachinesState>(
+        builder: (context, state) {
+          if (state is GetMachinesLoadingState) {
+            return CustomListShimmer();
+          }
+
+          if (state is GetMachinesErrorState) {
+            return NoDataWidget(
+              title: state.message,
+              assetIcon: Appconstants.machinery,
+            );
+          }
+
+          if (state is GetMachinesSuccessState) {
+            final hiringList = state.machinelist;
+
+            if (hiringList.isEmpty) {
+              return NoDataWidget(
+                title: 'No hiring records found',
+                assetIcon: Appconstants.machinery,
+              );
+            }
+
+            return ListView.builder(
               padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
               itemCount: hiringList.length,
               itemBuilder: (context, index) {
                 final hiring = hiringList[index];
                 return GestureDetector(
                   onTap: () {
-                    context.push('/machinehiredetailpage');
+                    context.push('/machinehiredetailpage', extra: hiring);
                   },
                   child: _buildHiringCard(hiring),
                 );
               },
-            ),
+            );
+          }
+
+          return NoDataWidget(
+            title: 'No hiring records found',
+            assetIcon: Appconstants.machinery,
+          );
+        },
+      ),
     );
   }
 
-  Widget _buildHiringCard(Map<String, dynamic> hiring) {
-    final bool isApproved = hiring['status'] == 'Approved';
+  Widget _buildHiringCard(MachineHireModel hiring) {
+    final status = _getStatusDisplay(hiring.status);
+    final statusColor = _getStatusColor(status);
+    final statusIcon = _getStatusIcon(status);
 
     return Container(
       margin: EdgeInsets.only(bottom: ResponsiveUtils.hp(2)),
@@ -218,7 +244,7 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
                 children: [
                   // Tool Name
                   TextStyles.subheadline(
-                    text: hiring['toolName'],
+                    text: hiring.machine ?? 'Unknown Machine',
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                     overflow: TextOverflow.ellipsis,
@@ -234,7 +260,7 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
                       ),
                       ResponsiveSizedBox.width(1.5),
                       TextStyles.caption(
-                        text: hiring['date'],
+                        text: _formatDate(hiring.hireDate),
                         color: Appcolors.kgreyColor,
                       ),
                     ],
@@ -250,7 +276,7 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
                       ),
                       ResponsiveSizedBox.width(1),
                       TextStyles.medium(
-                        text: hiring['amount'],
+                        text: _formatAmount(hiring.amountPaid),
                         weight: FontWeight.w600,
                         color: Appcolors.kprimarycolor,
                       ),
@@ -265,24 +291,20 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
                 Container(
                   padding: EdgeInsets.all(ResponsiveUtils.wp(2)),
                   decoration: BoxDecoration(
-                    color: isApproved
-                        ? Colors.green.withOpacity(0.1)
-                        : Colors.red.withOpacity(0.1),
+                    color: statusColor.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    isApproved ? Icons.check_circle : Icons.cancel,
-                    color: isApproved ? Colors.green : Colors.red,
+                    statusIcon,
+                    color: statusColor,
                     size: ResponsiveUtils.sp(6),
                   ),
                 ),
                 ResponsiveSizedBox.height5,
                 TextStyles.caption(
-                  text: hiring['status'],
+                  text: status,
                   weight: FontWeight.w600,
-                  color: isApproved
-                      ? Colors.green.shade700
-                      : Colors.red.shade700,
+                  color: statusColor,
                 ),
               ],
             ),

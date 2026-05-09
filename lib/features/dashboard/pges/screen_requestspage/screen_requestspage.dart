@@ -1,6 +1,9 @@
 import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/features/dashboard/blocs/request_list_bloc/request_list_bloc.dart';
+import 'package:dhani_communications/features/dashboard/models/request_model.dart';
 import 'package:dhani_communications/widgets/date_filter_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
@@ -10,35 +13,23 @@ class ScreenrequestsPage extends StatefulWidget {
   const ScreenrequestsPage({super.key});
 
   @override
-  State<ScreenrequestsPage> createState() => _ScreenEmployeeExpensesPageState();
+  State<ScreenrequestsPage> createState() => _ScreenrequestsPageState();
 }
 
-class _ScreenEmployeeExpensesPageState extends State<ScreenrequestsPage> {
+class _ScreenrequestsPageState extends State<ScreenrequestsPage> {
   DateTime? _fromDate;
   DateTime? _toDate;
 
-  // Sample expenses data
-  final List<Map<String, dynamic>> expensesList = [
-    {
-      'date': '03 Jan 2026',
-      'amount': '#1',
-
-      'remarks': 'others',
-      'status': 'Approved',
-    },
-    {
-      'date': '03 Jan 2026',
-      'amount': '#2',
-
-      'remarks': 'HQ movement',
-      'status': 'Pending',
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    context.read<RequestListBloc>().add(FetchRequestListEvent());
+  }
 
   void _showFilterDialog() {
     DateFilterDialog.show(
       context: context,
-      title: 'Filter Expenses',
+      title: 'Filter Requests',
       initialFromDate: _fromDate,
       initialToDate: _toDate,
       onApply: (fromDate, toDate) {
@@ -56,105 +47,189 @@ class _ScreenEmployeeExpensesPageState extends State<ScreenrequestsPage> {
     );
   }
 
+  /// Filter list by date range (client-side)
+  List<RequestModel> _applyDateFilter(List<RequestModel> list) {
+    if (_fromDate == null && _toDate == null) return list;
+    return list.where((request) {
+      final date = DateTime.tryParse(request.createdAt);
+      if (date == null) return true;
+      if (_fromDate != null && date.isBefore(_fromDate!)) return false;
+      if (_toDate != null) {
+        final endOfDay = DateTime(
+          _toDate!.year,
+          _toDate!.month,
+          _toDate!.day,
+          23,
+          59,
+          59,
+        );
+        if (date.isAfter(endOfDay)) return false;
+      }
+      return true;
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Appcolors.kwhitecolor,
-          appBar: AppBar(
-          backgroundColor: Appcolors.kappbarbackgroundcolor,
-
-          leading: IconButton(
-            onPressed: () {
-              context.pop();
-            },
-            icon: Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: Appcolors.kprimarycolor,
-              size: ResponsiveUtils.sp(5),
-            ),
+      appBar: AppBar(
+        backgroundColor: Appcolors.kappbarbackgroundcolor,
+        leading: IconButton(
+          onPressed: () {
+            context.pop();
+          },
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Appcolors.kprimarycolor,
+            size: ResponsiveUtils.sp(5),
           ),
-          title: TextStyles.title(
-            text: 'Requests',
-            weight: FontWeight.bold,
-            color: Appcolors.kblackcolor,
-          ),
-          centerTitle: true,
-          actions: [
-            IconButton(
-              onPressed: _showFilterDialog,
-              icon: Stack(
-                children: [
-                  Icon(
-                    Icons.filter_list_rounded,
-                    color: Appcolors.kprimarycolor,
-                    size: ResponsiveUtils.sp(6),
-                  ),
-                  if (_fromDate != null || _toDate != null)
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      child: Container(
-                        width: ResponsiveUtils.wp(2),
-                        height: ResponsiveUtils.wp(2),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
+        ),
+        title: TextStyles.title(
+          text: 'Requests',
+          weight: FontWeight.bold,
+          color: Appcolors.kblackcolor,
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: _showFilterDialog,
+            icon: Stack(
+              children: [
+                Icon(
+                  Icons.filter_list_rounded,
+                  color: Appcolors.kprimarycolor,
+                  size: ResponsiveUtils.sp(6),
+                ),
+                if (_fromDate != null || _toDate != null)
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      width: ResponsiveUtils.wp(2),
+                      height: ResponsiveUtils.wp(2),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
-          ],
-        ),
-      body: expensesList.isEmpty
-          ? Center(
+          ),
+        ],
+      ),
+      body: BlocBuilder<RequestListBloc, RequestListState>(
+        builder: (context, state) {
+          if (state is RequestListLoadingState) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is RequestListErrorState) {
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.receipt_long_rounded,
+                    Icons.error_outline_rounded,
                     size: ResponsiveUtils.sp(20),
-                    color: Appcolors.kgreyColor.withOpacity(0.5),
+                    color: Colors.red.withOpacity(0.5),
                   ),
                   ResponsiveSizedBox.height20,
                   TextStyles.subheadline(
-                    text: 'No expense records found',
+                    text: state.message,
                     color: Appcolors.kgreyColor,
+                  ),
+                  ResponsiveSizedBox.height20,
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      context
+                          .read<RequestListBloc>()
+                          .add(FetchRequestListEvent());
+                    },
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Retry'),
                   ),
                 ],
               ),
-            )
-          : ListView.builder(
+            );
+          }
+
+          if (state is RequestListSuccessState) {
+            final filteredList = _applyDateFilter(state.requestList);
+
+            if (filteredList.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.receipt_long_rounded,
+                      size: ResponsiveUtils.sp(20),
+                      color: Appcolors.kgreyColor.withOpacity(0.5),
+                    ),
+                    ResponsiveSizedBox.height20,
+                    TextStyles.subheadline(
+                      text: 'No request records found',
+                      color: Appcolors.kgreyColor,
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return ListView.builder(
               padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
-              itemCount: expensesList.length,
+              itemCount: filteredList.length,
               itemBuilder: (context, index) {
-                final expense = expensesList[index];
+                final request = filteredList[index];
                 return GestureDetector(
                   onTap: () {
-                    context.push('/requestdetailspage');
+                    context.push('/requestdetailspage', extra: request);
                   },
-                  child: _buildExpenseCard(expense),
+                  child: _buildRequestCard(request),
                 );
               },
-            ),
+            );
+          }
+
+          // Initial state – trigger fetch
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 
-  Widget _buildExpenseCard(Map<String, dynamic> expense) {
-    final String status = expense['status'];
+  Widget _buildRequestCard(RequestModel request) {
+    final String status = request.status;
 
     Color statusColor;
     IconData statusIcon;
-    if (status == 'Approved') {
-      statusColor = Colors.green;
-      statusIcon = Icons.check_circle;
-    } else if (status == 'Rejected') {
-      statusColor = Colors.red;
-      statusIcon = Icons.cancel;
-    } else {
-      statusColor = Colors.orange;
-      statusIcon = Icons.pending;
+
+    switch (status.toUpperCase()) {
+      case 'COMPLETED':
+        statusColor = Colors.green;
+        statusIcon = Icons.check_circle;
+        break;
+      case 'REJECTED':
+        statusColor = Colors.red;
+        statusIcon = Icons.cancel;
+        break;
+      case 'PENDING':
+      default:
+        statusColor = Colors.orange;
+        statusIcon = Icons.pending;
+        break;
+    }
+
+    // Format date display
+    String displayDate = request.modifiedAt;
+    final parsedDate = DateTime.tryParse(request.createdAt);
+    if (parsedDate != null) {
+      displayDate =
+          '${parsedDate.day.toString().padLeft(2, '0')} '
+          '${_monthName(parsedDate.month)} '
+          '${parsedDate.year}';
     }
 
     return Container(
@@ -178,14 +253,30 @@ class _ScreenEmployeeExpensesPageState extends State<ScreenrequestsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Amount
+                  // Request Category as heading
                   TextStyles.headline(
-                    text: expense['amount'],
+                    text: request.requestCategory,
                     weight: FontWeight.bold,
                     color: Appcolors.kprimarycolor,
                   ),
                   ResponsiveSizedBox.height5,
-                  // Date and Category
+                  // Request ID (secondary)
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.tag,
+                        size: ResponsiveUtils.sp(3.5),
+                        color: Appcolors.kgreyColor,
+                      ),
+                      ResponsiveSizedBox.width(1.5),
+                      TextStyles.caption(
+                        text: 'ID: ${request.requestId}',
+                        color: Appcolors.kgreyColor,
+                      ),
+                    ],
+                  ),
+                  ResponsiveSizedBox.height5,
+                  // Date
                   Row(
                     children: [
                       Icon(
@@ -195,13 +286,13 @@ class _ScreenEmployeeExpensesPageState extends State<ScreenrequestsPage> {
                       ),
                       ResponsiveSizedBox.width(1.5),
                       TextStyles.caption(
-                        text: expense['date'],
+                        text: displayDate,
                         color: Appcolors.kgreyColor,
                       ),
                     ],
                   ),
                   ResponsiveSizedBox.height5,
-                  // Remarks
+                  // Notes
                   Row(
                     children: [
                       Icon(
@@ -212,7 +303,7 @@ class _ScreenEmployeeExpensesPageState extends State<ScreenrequestsPage> {
                       ResponsiveSizedBox.width(1.5),
                       Expanded(
                         child: TextStyles.caption(
-                          text: expense['remarks'],
+                          text: request.notes,
                           color: Appcolors.kgreyColor,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
@@ -240,12 +331,28 @@ class _ScreenEmployeeExpensesPageState extends State<ScreenrequestsPage> {
                   ),
                 ),
                 ResponsiveSizedBox.height5,
-                TextStyles.caption(text: status, weight: FontWeight.w600),
+                TextStyles.caption(
+                  text: _capitalizeFirst(status),
+                  weight: FontWeight.w600,
+                ),
               ],
             ),
           ],
         ),
       ),
     );
+  }
+
+  String _monthName(int month) {
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ];
+    return months[month - 1];
+  }
+
+  String _capitalizeFirst(String s) {
+    if (s.isEmpty) return s;
+    return s[0].toUpperCase() + s.substring(1).toLowerCase();
   }
 }

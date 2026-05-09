@@ -1,36 +1,24 @@
 import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/features/dashboard/models/machine_hire_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 
 class ScreenMachineHireDetailPage extends StatefulWidget {
-  const ScreenMachineHireDetailPage({super.key});
+  final MachineHireModel? machineHire;
+
+  const ScreenMachineHireDetailPage({super.key, this.machineHire});
 
   @override
   State<ScreenMachineHireDetailPage> createState() =>
       _ScreenMachineHireDetailPageState();
 }
 
-class _ScreenMachineHireDetailPageState extends State<ScreenMachineHireDetailPage> {
-  // Sample machine hire detail data
-  final Map<String, dynamic> machineHireDetail = {
-    'hire': 'MH-2026-001',
-    'projectName': 'Construction Project - Tower B',
-    'machine': 'JCB Excavator 3DX',
-    'hireDate': '03 Jan 2026',
-    'fromTime': '09:00 AM',
-    'toTime': '06:00 PM',
-    'totalHours': '9 hours',
-    'amountPaid': '₹15,000',
-    'remarks': 'Machine required for excavation work at site. Operator included with machine hire. Fuel charges extra as per actual consumption.',
-    'approver': 'Rajesh Kumar',
-    'approverRemarks': 'Approved for urgent excavation work. Please ensure safety protocols are followed.',
-    'requestCreated': '02 Jan 2026, 03:30 PM',
-    'status': 'Rejected',
-  };
-
+class _ScreenMachineHireDetailPageState
+    extends State<ScreenMachineHireDetailPage> {
   Color _getStatusColor(String status) {
     switch (status) {
       case 'Approved':
@@ -57,9 +45,102 @@ class _ScreenMachineHireDetailPageState extends State<ScreenMachineHireDetailPag
     }
   }
 
+  String _formatDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return 'N/A';
+    try {
+      return DateFormat('dd MMM yyyy').format(DateTime.parse(dateStr));
+    } catch (e) {
+      return dateStr;
+    }
+  }
+
+  String _formatDateTime(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return 'N/A';
+    try {
+      return DateFormat('dd MMM yyyy, hh:mm a').format(DateTime.parse(dateStr));
+    } catch (e) {
+      return dateStr;
+    }
+  }
+
+  String _formatAmount(String? amount) {
+    if (amount == null || amount.isEmpty) return 'N/A';
+    if (amount.startsWith('₹')) return amount;
+    return '₹$amount';
+  }
+
+  String _getStatusDisplay(String? status) {
+    final value = status?.toUpperCase() ?? '';
+    if (value == 'APPROVED') return 'Approved';
+    if (value == 'REJECTED') return 'Rejected';
+    return 'Pending';
+  }
+
   @override
   Widget build(BuildContext context) {
-    final String status = machineHireDetail['status'];
+    final machineHire = widget.machineHire;
+
+    if (machineHire == null) {
+      return Scaffold(
+        backgroundColor: Appcolors.kwhitecolor,
+        appBar: AppBar(
+          backgroundColor: Appcolors.kwhitecolor,
+          elevation: 2,
+          shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
+          leading: IconButton(
+            onPressed: () {
+              context.pop();
+            },
+            icon: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Appcolors.kprimarycolor,
+              size: ResponsiveUtils.sp(5),
+            ),
+          ),
+          title: TextStyles.subheadline(
+            text: 'Machine Hire Details',
+            weight: FontWeight.bold,
+            color: Appcolors.kblackcolor,
+          ),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline_rounded,
+                size: ResponsiveUtils.sp(20),
+                color: Appcolors.kgreyColor.withOpacity(0.5),
+              ),
+              ResponsiveSizedBox.height20,
+              TextStyles.subheadline(
+                text: 'No machine hire data available',
+                color: Appcolors.kgreyColor,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final Map<String, String> machineHireDetail = {
+      'hire': machineHire.hireId ?? 'N/A',
+      'projectName': machineHire.projectName ?? 'N/A',
+      'machine': machineHire.machine ?? 'N/A',
+      'hireDate': _formatDate(machineHire.hireDate),
+      'fromTime': machineHire.fromTime ?? 'N/A',
+      'toTime': machineHire.toTime ?? 'N/A',
+      'totalHours': machineHire.totalHours ?? 'N/A',
+      'amountPaid': _formatAmount(machineHire.amountPaid),
+      'remarks': machineHire.notes ?? 'N/A',
+      'approver': machineHire.approver ?? 'N/A',
+      'approverRemarks': machineHire.approverRemarks ?? 'N/A',
+      'requestCreated': _formatDateTime(machineHire.createdAt?.date),
+      'status': _getStatusDisplay(machineHire.status),
+    };
+
+    final String status = machineHireDetail['status']!;
     final Color statusColor = _getStatusColor(status);
     final IconData statusIcon = _getStatusIcon(status);
 
@@ -121,7 +202,7 @@ class _ScreenMachineHireDetailPageState extends State<ScreenMachineHireDetailPag
                     icon: Icons.tag,
                     iconColor: Appcolors.kprimarycolor,
                     label: 'Hire ID',
-                    value: machineHireDetail['hire'],
+                    value: machineHireDetail['hire']!,
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -130,7 +211,7 @@ class _ScreenMachineHireDetailPageState extends State<ScreenMachineHireDetailPag
                     icon: Icons.work_outline,
                     iconColor: Colors.purple,
                     label: 'Project Name',
-                    value: machineHireDetail['projectName'],
+                    value: machineHireDetail['projectName']!,
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -139,7 +220,7 @@ class _ScreenMachineHireDetailPageState extends State<ScreenMachineHireDetailPag
                     icon: Icons.construction,
                     iconColor: Colors.orange,
                     label: 'Machine',
-                    value: machineHireDetail['machine'],
+                    value: machineHireDetail['machine']!,
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -148,7 +229,7 @@ class _ScreenMachineHireDetailPageState extends State<ScreenMachineHireDetailPag
                     icon: Icons.calendar_today,
                     iconColor: Colors.blue,
                     label: 'Hire Date',
-                    value: machineHireDetail['hireDate'],
+                    value: machineHireDetail['hireDate']!,
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -160,7 +241,7 @@ class _ScreenMachineHireDetailPageState extends State<ScreenMachineHireDetailPag
                           icon: Icons.access_time,
                           iconColor: Colors.teal,
                           label: 'From Time',
-                          value: machineHireDetail['fromTime'],
+                          value: machineHireDetail['fromTime']!,
                         ),
                       ),
                       ResponsiveSizedBox.width(2),
@@ -169,7 +250,7 @@ class _ScreenMachineHireDetailPageState extends State<ScreenMachineHireDetailPag
                           icon: Icons.access_time_filled,
                           iconColor: Colors.indigo,
                           label: 'To Time',
-                          value: machineHireDetail['toTime'],
+                          value: machineHireDetail['toTime']!,
                         ),
                       ),
                     ],
@@ -181,7 +262,7 @@ class _ScreenMachineHireDetailPageState extends State<ScreenMachineHireDetailPag
                     icon: Icons.timer,
                     iconColor: Colors.deepOrange,
                     label: 'Total Hours',
-                    value: machineHireDetail['totalHours'],
+                    value: machineHireDetail['totalHours']!,
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -190,7 +271,7 @@ class _ScreenMachineHireDetailPageState extends State<ScreenMachineHireDetailPag
                     icon: Icons.currency_rupee,
                     iconColor: Colors.green,
                     label: 'Amount Paid',
-                    value: machineHireDetail['amountPaid'],
+                    value: machineHireDetail['amountPaid']!,
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -247,7 +328,7 @@ class _ScreenMachineHireDetailPageState extends State<ScreenMachineHireDetailPag
                     icon: Icons.schedule,
                     iconColor: Colors.brown,
                     label: 'Request Created',
-                    value: machineHireDetail['requestCreated'],
+                    value: machineHireDetail['requestCreated']!,
                   ),
                 ],
               ),
@@ -296,7 +377,7 @@ class _ScreenMachineHireDetailPageState extends State<ScreenMachineHireDetailPag
                   ),
                   ResponsiveSizedBox.height15,
                   TextStyles.medium(
-                    text: machineHireDetail['remarks'],
+                    text: machineHireDetail['remarks']!,
                     color: Appcolors.kgreyColor,
                   ),
                 ],
@@ -334,7 +415,7 @@ class _ScreenMachineHireDetailPageState extends State<ScreenMachineHireDetailPag
                     icon: Icons.person_outline,
                     iconColor: Colors.teal,
                     label: 'Approver',
-                    value: machineHireDetail['approver'],
+                    value: machineHireDetail['approver']!,
                   ),
                   ResponsiveSizedBox.height20,
 
@@ -365,7 +446,7 @@ class _ScreenMachineHireDetailPageState extends State<ScreenMachineHireDetailPag
                             ),
                             ResponsiveSizedBox.height5,
                             TextStyles.medium(
-                              text: machineHireDetail['approverRemarks'],
+                              text: machineHireDetail['approverRemarks']!,
                               color: Appcolors.kblackcolor,
                             ),
                           ],
@@ -398,21 +479,14 @@ class _ScreenMachineHireDetailPageState extends State<ScreenMachineHireDetailPag
             color: iconColor.withOpacity(0.1),
             borderRadius: BorderRadiusStyles.kradius10(),
           ),
-          child: Icon(
-            icon,
-            color: iconColor,
-            size: ResponsiveUtils.sp(5),
-          ),
+          child: Icon(icon, color: iconColor, size: ResponsiveUtils.sp(5)),
         ),
         ResponsiveSizedBox.width(3),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextStyles.caption(
-                text: label,
-                color: Appcolors.kgreyColor,
-              ),
+              TextStyles.caption(text: label, color: Appcolors.kgreyColor),
               ResponsiveSizedBox.height5,
               TextStyles.medium(
                 text: value,

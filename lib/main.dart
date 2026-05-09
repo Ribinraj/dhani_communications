@@ -8,12 +8,14 @@ import 'package:dhani_communications/features/approvals/bloc/fetch_approvel_atte
 import 'package:dhani_communications/features/approvals/bloc/fetch_approvel_dprbloc/fetch_approvel_dpr_bloc.dart';
 import 'package:dhani_communications/features/approvals/bloc/fetch_approvel_expense_bloc/fetch_approvel_expense_bloc.dart';
 import 'package:dhani_communications/features/approvals/bloc/fetch_approvel_leave_bloc/fetch_approvel_leave_bloc.dart';
+import 'package:dhani_communications/features/approvals/bloc/fetch_approvel_machine_hire/fetch_approvel_machine_hire_bloc.dart';
 import 'package:dhani_communications/features/approvals/bloc/fetch_labour_approvelattendence_bloc/fetch_labour_approvelattendence_bloc.dart';
 import 'package:dhani_communications/features/approvals/bloc/update_approvel_attendence/update_approvel_attendence_bloc.dart';
 import 'package:dhani_communications/features/approvals/bloc/update_labour_approvel_attendence/update_labour_approvel_attendence_bloc.dart';
 import 'package:dhani_communications/features/approvals/bloc/update_approvel_expense/update_approvel_expense_bloc.dart';
 import 'package:dhani_communications/features/approvals/bloc/update_approvel_leave/update_approvel_leave_bloc.dart';
 import 'package:dhani_communications/features/approvals/bloc/update_approvel_dpr/update_approvel_dpr_bloc.dart';
+import 'package:dhani_communications/features/approvals/bloc/update_machine_hire_approval/update_machine_hire_approval_bloc.dart';
 import 'package:dhani_communications/features/approvals/repo/approvels_repo.dart';
 import 'package:dhani_communications/features/dashboard/repo/apprepo.dart';
 import 'package:dhani_communications/features/auth/repo/authrepo.dart';
@@ -24,11 +26,15 @@ import 'package:dhani_communications/features/multiple_action_button/blocs/labor
 import 'package:dhani_communications/features/multiple_action_button/blocs/hq_vehicles_bloc/hq_vehicles_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/new_expense_bloc/new_expense_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/new_leave_bloc/new_leave_bloc.dart';
+import 'package:dhani_communications/features/multiple_action_button/blocs/new_machinery_hire_bloc/new_machinery_hire_bloc.dart';
+import 'package:dhani_communications/features/multiple_action_button/blocs/new_request_bloc/new_request_bloc.dart';
+import 'package:dhani_communications/features/multiple_action_button/blocs/request_categories_bloc/request_categories_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/repo/multiactionrepo.dart';
 import 'package:dhani_communications/features/dashboard/blocs/asset_transfer_bloc/asset_transfer_bloc.dart';
 import 'package:dhani_communications/features/dashboard/blocs/attendance_check_bloc/attendance_check_bloc.dart';
 import 'package:dhani_communications/features/dashboard/blocs/attendance_list_bloc/attendance_list_bloc.dart';
 import 'package:dhani_communications/features/dashboard/blocs/bottom_navigation_bloc/bottom_navigation_bloc.dart';
+import 'package:dhani_communications/features/dashboard/blocs/cash_balance_bloc/cash_balance_bloc.dart';
 import 'package:dhani_communications/features/dashboard/blocs/create_attendance_bloc/create_attendance_bloc.dart';
 import 'package:dhani_communications/features/dashboard/blocs/create_expense_bloc/create_expense_bloc.dart';
 import 'package:dhani_communications/features/multiple_action_button/blocs/expense_categories_bloc/expense_categories_bloc.dart';
@@ -38,8 +44,10 @@ import 'package:dhani_communications/features/dashboard/blocs/dpr_list_bloc/dpr_
 import 'package:dhani_communications/features/dashboard/blocs/dpr_submissions_bloc/dpr_submissions_bloc.dart';
 import 'package:dhani_communications/features/dashboard/blocs/expense_list_bloc/expense_list_bloc.dart';
 import 'package:dhani_communications/features/dashboard/blocs/get_inventories_bloc/get_inventories_bloc.dart';
+import 'package:dhani_communications/features/dashboard/blocs/get_machines_bloc/get_machines_bloc.dart';
 import 'package:dhani_communications/features/dashboard/blocs/labor_attendance_list_bloc/labor_attendance_list_bloc.dart';
 import 'package:dhani_communications/features/dashboard/blocs/leave_list_bloc/leave_list_bloc.dart';
+import 'package:dhani_communications/features/dashboard/blocs/machine_types_bloc/machine_types_bloc.dart';
 import 'package:dhani_communications/features/dashboard/blocs/notifications_bloc/notifications_bloc.dart';
 import 'package:dhani_communications/features/auth/blocs/profile_bloc/profile_bloc.dart';
 import 'package:dhani_communications/features/dashboard/blocs/projects_bloc/projects_bloc.dart';
@@ -49,6 +57,7 @@ import 'package:dhani_communications/features/multiple_action_button/blocs/updat
 import 'package:dhani_communications/features/auth/blocs/update_profile_bloc/update_profile_bloc.dart';
 import 'package:dhani_communications/features/dashboard/blocs/updates_bloc/updates_bloc.dart';
 import 'package:dhani_communications/features/dashboard/blocs/vehicles_bloc/vehicles_bloc.dart';
+import 'package:dhani_communications/features/dashboard/blocs/request_list_bloc/request_list_bloc.dart';
 import 'package:dhani_communications/features/auth/blocs/verify_otp_bloc/verify_otp_bloc.dart';
 import 'package:dhani_communications/widgets/app_router.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -57,6 +66,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Optional: initialize firebase here if you need (only if you use Firebase in background)
   // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -65,9 +75,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 // Global navigator key so we can navigate from notification handlers
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-void main()async {
-      WidgetsFlutterBinding.ensureInitialized();
-      // Initialize Firebase
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Initialize Firebase
   await Firebase.initializeApp(
     //options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -131,6 +141,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => AttendanceListBloc(repository: apprepo),
         ),
+        BlocProvider(create: (context) => CashBalanceBloc(repository: apprepo)),
         // Labor Attendance BLoCs
         BlocProvider(
           create: (context) => LaborAttendanceListBloc(repository: apprepo),
@@ -160,6 +171,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => GetInventoriesBloc(repository: apprepo),
         ),
+        BlocProvider(create: (context) => GetMachinesBloc(repository: apprepo)),
+        BlocProvider(create: (context) => RequestListBloc(repository: apprepo)),
+        BlocProvider(
+          create: (context) => MachineTypesBloc(repository: apprepo),
+        ),
 
         //multiactionblocs
         BlocProvider(
@@ -176,6 +192,15 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => NewExpenseBloc(repository: multirepo),
+        ),
+        BlocProvider(
+          create: (context) => NewMachineryHireBloc(repository: multirepo),
+        ),
+        BlocProvider(
+          create: (context) => RequestCategoriesBloc(repository: multirepo),
+        ),
+        BlocProvider(
+          create: (context) => NewRequestBloc(repository: multirepo),
         ),
         BlocProvider(
           create: (context) => LeaveCategoriesBloc(repository: multirepo),
@@ -217,7 +242,15 @@ class MyApp extends StatelessWidget {
           create: (context) => FetchApprovelDprBloc(repository: approvelreppo),
         ),
         BlocProvider(
+          create: (context) =>
+              FetchApprovelMachineHireBloc(repository: approvelreppo),
+        ),
+        BlocProvider(
           create: (context) => UpdateApprovelDprBloc(repository: approvelreppo),
+        ),
+        BlocProvider(
+          create: (context) =>
+              UpdateMachineHireApprovalBloc(repository: approvelreppo),
         ),
       ],
       child: MaterialApp.router(

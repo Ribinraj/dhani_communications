@@ -2,12 +2,14 @@ import 'dart:developer';
 
 import 'package:dhani_communications/core/urls.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/dpr_update_model.dart';
-import 'package:dhani_communications/features/dashboard/models/employees_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/hq_vehicle_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/leave_categories_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/new_expense_request_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/new_leave_request_model.dart';
+import 'package:dhani_communications/features/multiple_action_button/models/new_machinery_hire_request_model.dart';
+import 'package:dhani_communications/features/multiple_action_button/models/new_request_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/punch_in_list_model.dart';
+import 'package:dhani_communications/features/multiple_action_button/models/request_category_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/attendance_check_response_model.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/attendence_requestmodel.dart';
 import 'package:dhani_communications/features/multiple_action_button/models/labor_attendance_request_model.dart';
@@ -189,6 +191,47 @@ class Multiactionrepo {
     }
   }
 
+  /// Get request categories
+  Future<ApiResponse<List<RequestCategoryModel>>> getRequestCategories() async {
+    try {
+      Response response = await dio.get(Endpoints.requestCategories);
+      final responseData = response.data;
+      log('getRequestCategories response: $responseData');
+
+      if (responseData["status"] == 200) {
+        final List<dynamic> dataList = responseData["data"] ?? [];
+        final categories = dataList
+            .map(
+              (item) =>
+                  RequestCategoryModel.fromJson(item as Map<String, dynamic>),
+            )
+            .toList();
+        return ApiResponse(
+          data: categories,
+          message: responseData['message'] ?? 'Success',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData["status"],
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint(e.message);
+      log(e.toString());
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+
   //==========================createLaborAttendance===============//
   Future<ApiResponse<String>> createLaborAttendance({
     required LaborAttendanceRequestModel laborAttendance,
@@ -345,23 +388,97 @@ class Multiactionrepo {
       );
     }
   }
-  /// Update DPR
-  Future<ApiResponse> updateDpr({
-required DprUpdateModel dpr
+
+  //==========================createNewMachineryHire===============//
+  Future<ApiResponse<String>> createNewMachineryHire({
+    required NewMachineryHireRequestModel machineryHire,
   }) async {
     try {
-
       Response response = await dio.post(
-        Endpoints.updateDpr,
-        data:dpr,
-     
+        Endpoints.createMachineHire,
+        data: machineryHire.toJson(),
       );
+      final responseData = response.data;
+      log('createNewMachineryHire response: $responseData');
+
+      if (!responseData["error"] && responseData["status"] == 200) {
+        return ApiResponse(
+          data: responseData['data']?.toString(),
+          message:
+              responseData['message'] ??
+              'Machinery hire submitted successfully',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData["status"],
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint(e.message);
+      log(e.toString());
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+
+  //==========================createNewRequest===============//
+  Future<ApiResponse<String>> createNewRequest({
+    required NewRequestModel request,
+  }) async {
+    try {
+      Response response = await dio.post(
+        Endpoints.createRequest,
+        data: request.toJson(),
+      );
+      final responseData = response.data;
+      log('createNewRequest response: $responseData');
+
+      if (!responseData["error"] && responseData["status"] == 200) {
+        return ApiResponse(
+          data: responseData['data']?.toString(),
+          message: responseData['message'] ?? 'Request submitted successfully',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData["status"],
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint(e.message);
+      log(e.toString());
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+
+  /// Update DPR
+  Future<ApiResponse> updateDpr({required DprUpdateModel dpr}) async {
+    try {
+      Response response = await dio.post(Endpoints.updateDpr, data: dpr);
       final responseData = response.data;
       log('updateDpr response: $responseData');
 
       if (responseData["status"] == 200) {
         return ApiResponse(
-          data:null,
+          data: null,
           message: responseData['message'] ?? 'DPR updated successfully',
           error: false,
           status: responseData["status"],
@@ -385,6 +502,7 @@ required DprUpdateModel dpr
       );
     }
   }
+
   //==========================createNewLeave===============//
   Future<ApiResponse<String>> createNewLeave({
     required NewLeaveRequestModel leave,

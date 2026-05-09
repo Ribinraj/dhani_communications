@@ -6,6 +6,7 @@ import 'package:dhani_communications/features/approvals/models/approvels_dprmode
 import 'package:dhani_communications/features/approvals/models/approvels_expensemodel.dart';
 import 'package:dhani_communications/features/approvals/models/approvels_labourattendencemodel.dart';
 import 'package:dhani_communications/features/approvals/models/approvels_leavemodel.dart';
+import 'package:dhani_communications/features/approvals/models/approvels_machine_hire_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -417,6 +418,59 @@ class ApprovelsRepo {
     }
   }
 
+  /// Get machine hire list for approval
+  Future<ApiResponse<List<ApprovelsMachineHireModel>>> approveMachineHireList({
+    String? filterFrom,
+    String? filterTo,
+  }) async {
+    try {
+      final Map<String, dynamic> submitData = {};
+      if (filterFrom != null && filterTo != null) {
+        submitData['filterFrom'] = filterFrom;
+        submitData['filterTo'] = filterTo;
+      }
+
+      Response response = await dio.post(
+        Endpoints.approveMachineHireList,
+        data: submitData,
+      );
+      final responseData = response.data;
+
+      if (responseData["status"] == 200) {
+        final List<dynamic> dataList = responseData["data"] ?? [];
+        final machineHireList = dataList
+            .map(
+              (item) => ApprovelsMachineHireModel.fromJson(
+                item as Map<String, dynamic>,
+              ),
+            )
+            .toList();
+        return ApiResponse(
+          data: machineHireList,
+          message: responseData['message'] ?? 'Success',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: null,
+          message: responseData['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData["status"],
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint(e.message);
+      log(e.toString());
+      return ApiResponse(
+        data: null,
+        message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+
   /// Approve or Reject DPR progress
   Future<ApiResponse<bool>> updateDprApproval({
     required String progressId,
@@ -432,6 +486,52 @@ class ApprovelsRepo {
 
       Response response = await dio.post(
         Endpoints.updatedprapproval,
+        data: submitData,
+      );
+      final responseData = response.data;
+
+      if (responseData["status"] == 200) {
+        return ApiResponse(
+          data: true,
+          message: responseData['message'] ?? 'Success',
+          error: false,
+          status: responseData["status"],
+        );
+      } else {
+        return ApiResponse(
+          data: false,
+          message: responseData['message'] ?? 'Something went wrong',
+          error: true,
+          status: responseData["status"],
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint(e.message);
+      log(e.toString());
+      return ApiResponse(
+        data: false,
+        message: 'Network or server error occurred',
+        error: true,
+        status: 500,
+      );
+    }
+  }
+
+  /// Approve or Reject machine hire
+  Future<ApiResponse<bool>> updateMachineHireApproval({
+    required String hireId,
+    required String status,
+    String? approverRemarks,
+  }) async {
+    try {
+      final submitData = {
+        'hireId': int.tryParse(hireId) ?? hireId,
+        'status': status,
+        'approverRemarks': approverRemarks,
+      };
+
+      Response response = await dio.post(
+        Endpoints.updateMachineHireApproval,
         data: submitData,
       );
       final responseData = response.data;
