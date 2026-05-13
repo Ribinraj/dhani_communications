@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenAssetsPage extends StatefulWidget {
   const ScreenAssetsPage({super.key});
@@ -61,7 +62,7 @@ class _ScreenAssetsPageState extends State<ScreenAssetsPage> {
   void _showFilterDialog() {
     DateFilterDialog.show(
       context: context,
-      title: 'Filter Assets',
+      title: context.tr('filter_assets'),
       initialFromDate: _fromDate,
       initialToDate: _toDate,
       onApply: (fromDate, toDate) {
@@ -145,7 +146,7 @@ class _ScreenAssetsPageState extends State<ScreenAssetsPage> {
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Assets',
+          text: context.tr('assets'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -215,7 +216,7 @@ class _ScreenAssetsPageState extends State<ScreenAssetsPage> {
                         backgroundColor: Appcolors.kprimarycolor,
                       ),
                       child: TextStyles.medium(
-                        text: 'Retry',
+                        text: context.tr('retry'),
                         color: Appcolors.kwhitecolor,
                       ),
                     ),
@@ -228,7 +229,7 @@ class _ScreenAssetsPageState extends State<ScreenAssetsPage> {
               final assetsList = state.assetsList;
 
               if (assetsList.isEmpty) {
-                return NoDataWidget(title: 'No asset records found', assetIcon: Appconstants.assets);
+                return NoDataWidget(title: context.tr('no_asset_records_found'), assetIcon: Appconstants.assets);
               }
 
               return RefreshIndicator(
@@ -253,7 +254,7 @@ class _ScreenAssetsPageState extends State<ScreenAssetsPage> {
             }
 
             // Initial state
-            return NoDataWidget(title: 'No asset records found', assetIcon: Appconstants.assets);
+            return NoDataWidget(title: context.tr('no_asset_records_found'), assetIcon: Appconstants.assets);
           },
         ),
       ),

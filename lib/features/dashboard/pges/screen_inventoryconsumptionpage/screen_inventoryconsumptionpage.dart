@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenInventoryConsumptionPage extends StatefulWidget {
   final InventoryItem inventoryItem;
@@ -116,7 +117,7 @@ class _ScreenInventoryConsumptionPageState
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Consume Inventory',
+          text: context.tr('consume_inventory'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -198,14 +199,14 @@ class _ScreenInventoryConsumptionPageState
 
                 // Quantity Field
                 TextStyles.medium(
-                  text: 'Quantity to Consume',
+                  text: context.tr('quantity_to_consume'),
                   weight: FontWeight.w600,
                   color: Appcolors.kblackcolor,
                 ),
                 ResponsiveSizedBox.height10,
                 CustomTextField(
                   controller: _qtyController,
-                  hintText: 'Enter quantity',
+                  hintText: context.tr('enter_quantity'),
                   prefixIcon: Icons.numbers,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
@@ -234,14 +235,14 @@ class _ScreenInventoryConsumptionPageState
 
                 // Date Field
                 TextStyles.medium(
-                  text: 'Consumption Date',
+                  text: context.tr('consumption_date'),
                   weight: FontWeight.w600,
                   color: Appcolors.kblackcolor,
                 ),
                 ResponsiveSizedBox.height10,
                 CustomTextField(
                   controller: _dateController,
-                  hintText: 'Select date',
+                  hintText: context.tr('select_date'),
                   prefixIcon: Icons.calendar_today,
                   suffixIcon: IconButton(
                     icon: const Icon(
@@ -261,14 +262,14 @@ class _ScreenInventoryConsumptionPageState
 
                 // Remarks Field
                 TextStyles.medium(
-                  text: 'Remarks',
+                  text: context.tr('remarks'),
                   weight: FontWeight.w600,
                   color: Appcolors.kblackcolor,
                 ),
                 ResponsiveSizedBox.height10,
                 CustomTextField(
                   controller: _remarksController,
-                  hintText: 'Enter remarks (optional)',
+                  hintText: context.tr('enter_remarks_optional'),
                   prefixIcon: Icons.notes,
                   keyboardType: TextInputType.multiline,
                 ),
@@ -314,7 +315,7 @@ class _ScreenInventoryConsumptionPageState
                                   const Icon(Icons.check_circle_outline),
                                   SizedBox(width: ResponsiveUtils.wp(2)),
                                   TextStyles.medium(
-                                    text: 'Submit Consumption',
+                                    text: context.tr('submit_consumption'),
                                     weight: FontWeight.w600,
                                     color: Appcolors.kwhitecolor,
                                   ),

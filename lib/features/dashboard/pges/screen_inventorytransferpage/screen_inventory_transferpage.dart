@@ -13,6 +13,7 @@ import 'package:dhani_communications/widgets/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenInventoryTransferPage extends StatefulWidget {
   final InventoryItem inventoryItem;
@@ -83,7 +84,7 @@ class _ScreenInventoryTransferPageState
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Transfer Inventory',
+          text: context.tr('transfer_inventory'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -184,7 +185,7 @@ class _ScreenInventoryTransferPageState
 
                 // Transfer To Dropdown
                 TextStyles.medium(
-                  text: 'Transfer To',
+                  text: context.tr('transfer_to'),
                   weight: FontWeight.w600,
                   color: Appcolors.kblackcolor,
                 ),
@@ -215,7 +216,7 @@ class _ScreenInventoryTransferPageState
                             ),
                             SizedBox(width: ResponsiveUtils.wp(3)),
                             TextStyles.caption(
-                              text: 'Loading employees...',
+                              text: context.tr('loading_employees'),
                               color: Appcolors.kgreyColor,
                             ),
                           ],
@@ -246,7 +247,7 @@ class _ScreenInventoryTransferPageState
                             SizedBox(width: ResponsiveUtils.wp(3)),
                             Expanded(
                               child: TextStyles.caption(
-                                text: 'No employees available',
+                                text: context.tr('no_employees_available'),
                                 color: Colors.red,
                               ),
                             ),
@@ -257,7 +258,7 @@ class _ScreenInventoryTransferPageState
 
                     return CustomDropdown(
                       value: _selectedEmployeeName,
-                      hint: 'Select employee',
+                      hint: context.tr('select_employee'),
                       items: _employees.map((e) => e.employeeName).toList(),
                       onChanged: (value) {
                         setState(() {
@@ -287,7 +288,7 @@ class _ScreenInventoryTransferPageState
                 // ResponsiveSizedBox.height10,
                 // CustomTextField(
                 //   controller: _qtyController,
-                //   hintText: 'Enter quantity',
+                //   hintText: context.tr('enter_quantity'),
                 //   prefixIcon: Icons.numbers,
                 //   keyboardType: const TextInputType.numberWithOptions(
                 //     decimal: true,
@@ -316,14 +317,14 @@ class _ScreenInventoryTransferPageState
 
                 // Remarks Field
                 TextStyles.medium(
-                  text: 'Remarks',
+                  text: context.tr('remarks'),
                   weight: FontWeight.w600,
                   color: Appcolors.kblackcolor,
                 ),
                 ResponsiveSizedBox.height10,
                 CustomTextField(
                   controller: _remarksController,
-                  hintText: 'Enter remarks (optional)',
+                  hintText: context.tr('enter_remarks_optional'),
                   prefixIcon: Icons.notes,
                   keyboardType: TextInputType.multiline,
                 ),
@@ -365,7 +366,7 @@ class _ScreenInventoryTransferPageState
                                   const Icon(Icons.send_outlined),
                                   SizedBox(width: ResponsiveUtils.wp(2)),
                                   TextStyles.medium(
-                                    text: 'Initiate Transfer',
+                                    text: context.tr('initiate_transfer'),
                                     weight: FontWeight.w600,
                                     color: Appcolors.kwhitecolor,
                                   ),

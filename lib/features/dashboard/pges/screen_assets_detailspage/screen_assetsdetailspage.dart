@@ -1,4 +1,5 @@
 import 'package:dhani_communications/core/constants.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 import 'package:dhani_communications/features/dashboard/models/company_asset_model.dart';
 import 'package:flutter/material.dart';
 
@@ -91,7 +92,7 @@ class ScreenAssetDetailsPage extends StatelessWidget {
             ),
           ),
           title: TextStyles.subheadline(
-            text: 'Asset Details',
+            text: context.tr('asset_details'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -108,7 +109,7 @@ class ScreenAssetDetailsPage extends StatelessWidget {
               ),
               ResponsiveSizedBox.height20,
               TextStyles.subheadline(
-                text: 'No asset data available',
+                text: context.tr('no_asset_data_available'),
                 color: Appcolors.kgreyColor,
               ),
             ],
@@ -154,7 +155,7 @@ class ScreenAssetDetailsPage extends StatelessWidget {
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Asset Details',
+          text: context.tr('asset_details'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -332,7 +333,7 @@ class ScreenAssetDetailsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextStyles.subheadline(
-                    text: 'Asset Information',
+                    text: context.tr('asset_information'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -471,7 +472,7 @@ class ScreenAssetDetailsPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextStyles.caption(
-                              text: 'Status',
+                              text: context.tr('status'),
                               color: Appcolors.kgreyColor,
                             ),
                             ResponsiveSizedBox.height5,
@@ -534,7 +535,7 @@ class ScreenAssetDetailsPage extends StatelessWidget {
                       ),
                       ResponsiveSizedBox.width(2),
                       TextStyles.subheadline(
-                        text: 'Timestamps',
+                        text: context.tr('timestamps'),
                         weight: FontWeight.bold,
                         color: Appcolors.kblackcolor,
                       ),
@@ -548,7 +549,7 @@ class ScreenAssetDetailsPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextStyles.caption(
-                              text: 'Created',
+                              text: context.tr('created'),
                               color: Appcolors.kgreyColor,
                             ),
                             ResponsiveSizedBox.height5,
@@ -565,7 +566,7 @@ class ScreenAssetDetailsPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextStyles.caption(
-                              text: 'Last Modified',
+                              text: context.tr('last_modified'),
                               color: Appcolors.kgreyColor,
                             ),
                             ResponsiveSizedBox.height5,
@@ -594,7 +595,11 @@ class ScreenAssetDetailsPage extends StatelessWidget {
                   // Handle transfer asset action
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Transfer Asset: ${assetData.assetName}'),
+                      content: Text(
+                        context.trParams('transfer_asset', {
+                          'assetName': assetData.assetName,
+                        }),
+                      ),
                       duration: Duration(milliseconds: 1500),
                       behavior: SnackBarBehavior.floating,
                       backgroundColor: Appcolors.kprimarycolor,
@@ -627,7 +632,7 @@ class ScreenAssetDetailsPage extends StatelessWidget {
                     ),
                     ResponsiveSizedBox.width(2),
                     TextStyles.body(
-                      text: 'Transfer Asset',
+                      text: context.tr('transfer_asset_2'),
                       weight: FontWeight.bold,
                       color: Appcolors.kwhitecolor,
                     ),

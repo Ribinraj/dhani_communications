@@ -173,6 +173,7 @@ import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenLabourattendenceMarkingpage extends StatefulWidget {
   const ScreenLabourattendenceMarkingpage({super.key});
@@ -268,7 +269,7 @@ class _ScreenLabourAttendanceScreenState
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Labour Attendance',
+          text: context.tr('labour_attendance'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -375,8 +376,7 @@ class _ScreenLabourAttendanceScreenState
                       left: ResponsiveUtils.wp(1),
                       bottom: ResponsiveUtils.hp(1.8),
                     ),
-                    child: Text(
-                      'Mark Attendance',
+                    child: Text(context.tr('mark_attendance'),
                       style: TextStyle(
                         fontSize: ResponsiveUtils.sp(4.5),
                         fontWeight: FontWeight.w700,
@@ -558,8 +558,7 @@ class _ScreenLabourAttendanceScreenState
           ),
           SizedBox(width: ResponsiveUtils.wp(3)),
           Expanded(
-            child: Text(
-              'Tap Punch In when you arrive and Punch Out when you leave the site.',
+            child: Text(context.tr('tap_punch_in_when_you_arrive_and_punch_out_when'),
               style: TextStyle(
                 fontSize: ResponsiveUtils.sp(3.2),
                 color: Appcolors.kprimarycolor.withValues(alpha: 0.85),

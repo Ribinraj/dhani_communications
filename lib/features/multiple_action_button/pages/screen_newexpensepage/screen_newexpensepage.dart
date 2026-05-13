@@ -25,6 +25,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenNewexpensepage extends StatefulWidget {
   const ScreenNewexpensepage({super.key});
@@ -54,8 +55,8 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
 
   // Bill types matching the React code
   final List<Map<String, String>> billTypeList = [
-    {'label': 'GST Bill', 'value': 'GST'},
-    {'label': 'Non GST Bill', 'value': 'NONGST'},
+    {'labelKey': 'gst_bill', 'value': 'GST'},
+    {'labelKey': 'non_gst_bill', 'value': 'NONGST'},
   ];
 
   @override
@@ -131,7 +132,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                 ),
                 ResponsiveSizedBox.height20,
                 TextStyles.title(
-                  text: 'Upload Attachment',
+                  text: context.tr('upload_attachment'),
                   weight: FontWeight.bold,
                   color: Appcolors.kblackcolor,
                 ),
@@ -149,12 +150,12 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                     ),
                   ),
                   title: TextStyles.body(
-                    text: 'Take a Photo',
+                    text: context.tr('take_a_photo'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w500,
                   ),
                   subtitle: TextStyles.medium(
-                    text: 'Use camera to capture image',
+                    text: context.tr('use_camera_to_capture_image'),
                     color: Appcolors.kgreyColor,
                   ),
                   onTap: () {
@@ -176,12 +177,12 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                     ),
                   ),
                   title: TextStyles.body(
-                    text: 'Choose from Gallery',
+                    text: context.tr('choose_from_gallery'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w500,
                   ),
                   subtitle: TextStyles.medium(
-                    text: 'Upload images or PDF files',
+                    text: context.tr('upload_images_or_pdf_files'),
                     color: Appcolors.kgreyColor,
                   ),
                   onTap: () {
@@ -219,7 +220,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
         if (mounted) {
           CustomSnackbar.show(
             context: context,
-            message: 'Photo captured successfully!',
+            message: context.tr('photo_captured_successfully'),
             type: SnackBarType.success,
           );
         }
@@ -228,7 +229,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
       if (mounted) {
         CustomSnackbar.show(
           context: context,
-          message: 'Error capturing photo',
+          message: context.tr('error_capturing_photo'),
           type: SnackBarType.error,
         );
       }
@@ -251,7 +252,9 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
         if (mounted) {
           CustomSnackbar.show(
             context: context,
-            message: '${result.files.length} file(s) attached successfully!',
+            message: context.trParams('files_attached_successfully', {
+              'count': result.files.length,
+            }),
             type: SnackBarType.success,
           );
         }
@@ -260,7 +263,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
       if (mounted) {
         CustomSnackbar.show(
           context: context,
-          message: 'Error picking files',
+          message: context.tr('error_picking_files'),
           type: SnackBarType.error,
         );
       }
@@ -315,7 +318,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
       if (selectedProject == null) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please select your Project',
+          message: context.tr('please_select_your_project'),
           type: SnackBarType.error,
         );
         return;
@@ -324,7 +327,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
       if (selectedExpenseCategory == null) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please choose Expense Category',
+          message: context.tr('please_choose_expense_category'),
           type: SnackBarType.error,
         );
         return;
@@ -333,7 +336,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
       if (_requireVehicle && selectedVehicle == null) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please select Vehicle',
+          message: context.tr('please_select_vehicle'),
           type: SnackBarType.error,
         );
         return;
@@ -342,7 +345,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
       if (_requireFuel && fuelFillKmController.text.isEmpty) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please enter the KM Reading',
+          message: context.tr('please_enter_the_km_reading'),
           type: SnackBarType.error,
         );
         return;
@@ -352,7 +355,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
       if (selectedBillType == 'GST' && attachedFiles.isEmpty) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please attach the invoice for GST Bill',
+          message: context.tr('please_attach_the_invoice_for_gst_bill'),
           type: SnackBarType.error,
         );
         return;
@@ -403,7 +406,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
           ),
         ),
         title: TextStyles.title(
-          text: 'Expense Submission',
+          text: context.tr('expense_submission'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -443,7 +446,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                   // Header text
                   TextStyles.body(
                     text:
-                        'Please fill the form, attach your bills and submit your expenses for approval',
+                        context.tr('please_fill_the_form_attach_your_bills_and_submi'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w500,
                     maxLines: 2,
@@ -453,7 +456,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
 
                   // ── Project dropdown ──
                   TextStyles.caption(
-                    text: 'Project *',
+                    text: context.tr('project_2'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
@@ -463,7 +466,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                       if (state is ProjectsLoadingState) {
                         return CustomProjectDropdown(
                           selectedProject: selectedProject,
-                          projects: const [],
+                          projects: [],
                           onChanged: (project) {
                             setState(() {
                               selectedProject = project;
@@ -476,7 +479,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                       if (state is ProjectsErrorState) {
                         return CustomProjectDropdown(
                           selectedProject: selectedProject,
-                          projects: const [],
+                          projects: [],
                           onChanged: (project) {
                             setState(() {
                               selectedProject = project;
@@ -509,7 +512,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                               selectedProject = project;
                             });
                           },
-                          hintText: 'Select Project',
+                          hintText: context.tr('select_project'),
                           showIcon: true,
                           showLocation: true,
                         );
@@ -523,14 +526,14 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
 
                   // ── Expense Date ──
                   TextStyles.caption(
-                    text: 'Expense Date *',
+                    text: context.tr('expense_date'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
                   ResponsiveSizedBox.height10,
                   CustomFormtextfield(
                     controller: expenseDateController,
-                    hintText: 'Select Expense Date',
+                    hintText: context.tr('select_expense_date'),
                     readOnly: true,
                     onTap: () => _selectDate(context),
                     suffixIcon: const Icon(
@@ -549,7 +552,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
 
                   // ── Expense Category dropdown ──
                   TextStyles.caption(
-                    text: 'Expense Category *',
+                    text: context.tr('expense_category'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
@@ -580,7 +583,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                               ),
                               ResponsiveSizedBox.width(3),
                               TextStyles.medium(
-                                text: 'Loading categories...',
+                                text: context.tr('loading_categories'),
                                 color: Appcolors.kgreyColor,
                               ),
                             ],
@@ -620,7 +623,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                                   );
                                 },
                                 child: TextStyles.medium(
-                                  text: 'Retry',
+                                  text: context.tr('retry'),
                                   color: Appcolors.kprimarycolor,
                                 ),
                               ),
@@ -633,7 +636,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                         final categories = state.categories;
                         return CustomDropdown(
                           value: selectedExpenseCategory?.expenseCategory,
-                          hint: 'Select Expense Category',
+                          hint: context.tr('select_expense_category'),
                           items: categories
                               .map((e) => e.expenseCategory)
                               .toList(),
@@ -660,23 +663,27 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
 
                   // ── Bill Type dropdown ──
                   TextStyles.caption(
-                    text: 'Bill Type',
+                    text: context.tr('bill_type'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
                   ResponsiveSizedBox.height10,
                   CustomDropdown(
                     value: selectedBillType != null
-                        ? billTypeList.firstWhere(
-                            (e) => e['value'] == selectedBillType,
-                          )['label']
+                        ? context.tr(
+                            billTypeList.firstWhere(
+                              (e) => e['value'] == selectedBillType,
+                            )['labelKey']!,
+                          )
                         : null,
-                    hint: 'Select Bill Type',
-                    items: billTypeList.map((e) => e['label']!).toList(),
+                    hint: context.tr('select_bill_type'),
+                    items: billTypeList
+                        .map((e) => context.tr(e['labelKey']!))
+                        .toList(),
                     onChanged: (value) {
                       setState(() {
                         selectedBillType = billTypeList.firstWhere(
-                          (e) => e['label'] == value,
+                          (e) => context.tr(e['labelKey']!) == value,
                         )['value'];
                       });
                     },
@@ -687,7 +694,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                   // ── Vehicle dropdown (conditional) ──
                   if (_requireVehicle) ...[
                     TextStyles.caption(
-                      text: 'Select Vehicle *',
+                      text: context.tr('select_vehicle'),
                       color: Appcolors.kblackcolor,
                       weight: FontWeight.w600,
                     ),
@@ -718,7 +725,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                                 ),
                                 ResponsiveSizedBox.width(3),
                                 TextStyles.medium(
-                                  text: 'Loading vehicles...',
+                                  text: context.tr('loading_vehicles'),
                                   color: Appcolors.kgreyColor,
                                 ),
                               ],
@@ -758,7 +765,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                                     );
                                   },
                                   child: TextStyles.medium(
-                                    text: 'Retry',
+                                    text: context.tr('retry'),
                                     color: Appcolors.kprimarycolor,
                                   ),
                                 ),
@@ -771,7 +778,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                           final vehicles = state.vehicles;
                           return CustomDropdown(
                             value: selectedVehicle?.vehicleRegNumber,
-                            hint: 'Select Vehicle',
+                            hint: context.tr('select_vehicle_2'),
                             items: vehicles
                                 .map((e) => e.vehicleRegNumber)
                                 .toList(),
@@ -800,14 +807,14 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                   // ── KM Reading (conditional) ──
                   if (_requireFuel) ...[
                     TextStyles.caption(
-                      text: 'KM Reading *',
+                      text: context.tr('km_reading'),
                       color: Appcolors.kblackcolor,
                       weight: FontWeight.w600,
                     ),
                     ResponsiveSizedBox.height10,
                     CustomFormtextfield(
                       controller: fuelFillKmController,
-                      hintText: 'Please enter KM Reading',
+                      hintText: context.tr('please_enter_km_reading'),
                       keyboardType: TextInputType.number,
                       prefixIcon: const Icon(
                         Icons.speed,
@@ -828,14 +835,14 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
 
                   // ── Expense Amount ──
                   TextStyles.caption(
-                    text: 'Expense Amount *',
+                    text: context.tr('expense_amount'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
                   ResponsiveSizedBox.height10,
                   CustomFormtextfield(
                     controller: expenseAmountController,
-                    hintText: 'Enter Expense Amount',
+                    hintText: context.tr('enter_expense_amount'),
                     keyboardType: TextInputType.number,
                     prefixIcon: const Icon(
                       Icons.currency_rupee,
@@ -856,14 +863,14 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
 
                   // ── Remarks (Optional) ──
                   TextStyles.caption(
-                    text: 'Remarks (Optional)',
+                    text: context.tr('remarks_optional'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
                   ResponsiveSizedBox.height10,
                   CustomFormtextfield(
                     controller: remarksController,
-                    hintText: 'Enter any additional remarks',
+                    hintText: context.tr('enter_any_additional_remarks'),
                     maxLines: 4,
                   ),
 
@@ -871,7 +878,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
 
                   // ── Attachments section ──
                   TextStyles.caption(
-                    text: 'Attachments',
+                    text: context.tr('attachments'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
@@ -905,7 +912,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                           ),
                           ResponsiveSizedBox.width10,
                           TextStyles.body(
-                            text: 'Add Attachment',
+                            text: context.tr('add_attachment'),
                             color: Appcolors.kprimarycolor,
                             weight: FontWeight.w500,
                           ),
@@ -1009,7 +1016,7 @@ class _ScreenExpensePageState extends State<ScreenNewexpensepage> {
                                   ),
                                 )
                               : TextStyles.body(
-                                  text: 'Submit Expense',
+                                  text: context.tr('submit_expense'),
                                   color: Appcolors.kwhitecolor,
                                   weight: FontWeight.w600,
                                 ),

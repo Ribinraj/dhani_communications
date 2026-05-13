@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
   final LaborAttendanceModel? attendance;
@@ -63,7 +64,7 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Could not open maps'),
+              content: Text(context.tr('could_not_open_maps')),
               duration: Duration(milliseconds: 1500),
               behavior: SnackBarBehavior.floating,
               backgroundColor: Colors.red,
@@ -83,7 +84,9 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error opening maps: $e'),
+            content: Text(
+              context.trParams('error_opening_maps', {'error': e}),
+            ),
             duration: Duration(milliseconds: 1500),
             behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.red,
@@ -122,7 +125,7 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
             ),
           ),
           title: TextStyles.subheadline(
-            text: 'Attendance Details',
+            text: context.tr('attendance_details'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -139,7 +142,7 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
               ),
               ResponsiveSizedBox.height20,
               TextStyles.subheadline(
-                text: 'No attendance data available',
+                text: context.tr('no_attendance_data_available'),
                 color: Appcolors.kgreyColor,
               ),
             ],
@@ -175,7 +178,7 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
           ),
         ),
         title: TextStyles.title(
-          text: 'Attendance Details',
+          text: context.tr('attendance_details'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -204,7 +207,7 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextStyles.title(
-                    text: 'Attendance Images',
+                    text: context.tr('attendance_images'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -407,7 +410,7 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextStyles.title(
-                    text: 'Attendance Information',
+                    text: context.tr('attendance_information'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -634,7 +637,7 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextStyles.subheadline(
-                    text: 'Remarks',
+                    text: context.tr('remarks'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -697,7 +700,7 @@ class ScreenLabourAttendanceDetailsPage extends StatelessWidget {
                     ),
                     ResponsiveSizedBox.width(2),
                     TextStyles.body(
-                      text: 'Locate on Map',
+                      text: context.tr('locate_on_map'),
                       weight: FontWeight.bold,
                       color: Appcolors.kwhitecolor,
                     ),

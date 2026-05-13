@@ -3,6 +3,7 @@ import 'package:dhani_communications/core/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class CustomFilePicker extends StatelessWidget {
   final List<PlatformFile> attachedFiles;
@@ -35,15 +36,19 @@ class CustomFilePicker extends StatelessWidget {
         
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${result.files.length} file(s) attached successfully!'),
+            content: Text(
+              context.trParams('files_attached_successfully', {
+                'count': result.files.length,
+              }),
+            ),
             backgroundColor: Appcolors.ksecondarycolor,
           ),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error picking files'),
+        SnackBar(
+          content: Text(context.tr('error_picking_files')),
           backgroundColor: Appcolors.kredcolor,
         ),
       );
@@ -87,7 +92,9 @@ class CustomFilePicker extends StatelessWidget {
                 ),
                 ResponsiveSizedBox.width10,
                 TextStyles.body(
-                  text: buttonText,
+                  text: buttonText == 'Add Attachment'
+                      ? context.tr('add_attachment')
+                      : buttonText,
                   color: Appcolors.kprimarycolor,
                   weight: FontWeight.w500,
                 ),

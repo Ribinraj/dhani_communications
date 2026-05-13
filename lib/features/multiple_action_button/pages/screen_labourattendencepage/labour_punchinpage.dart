@@ -16,6 +16,7 @@ import 'package:dhani_communications/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 /// Labour type model
 class LaborType {
@@ -51,7 +52,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
   bool _isProcessing = false;
 
   // Labour type list
-  final List<LaborType> _labourTypes = const [
+  final List<LaborType> _labourTypes = [
     LaborType(label: "CASUAL - LABOUR HIRED", value: "CASUAL"),
     LaborType(label: "CONTRACT - LABOUR HAJRI", value: "CONTRACT"),
   ];
@@ -84,7 +85,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
       if (mounted) {
         CustomSnackbar.show(
           context: context,
-          message: 'Location services are disabled. Please enable them.',
+          message: context.tr('location_services_are_disabled_please_enable_the'),
           type: SnackBarType.error,
         );
       }
@@ -98,7 +99,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
         if (mounted) {
           CustomSnackbar.show(
             context: context,
-            message: 'Location permission denied.',
+            message: context.tr('location_permission_denied'),
             type: SnackBarType.error,
           );
         }
@@ -111,7 +112,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
         CustomSnackbar.show(
           context: context,
           message:
-              'Location permissions are permanently denied. Please enable them in settings.',
+              context.tr('location_permissions_are_permanently_denied_plea'),
           type: SnackBarType.error,
         );
       }
@@ -129,7 +130,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
       if (_selectedProject == null) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please select a project',
+          message: context.tr('please_select_a_project'),
           type: SnackBarType.error,
         );
         return;
@@ -139,7 +140,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
       if (_selectedLabourTypeValue == null) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please select a labour type',
+          message: context.tr('please_select_a_labour_type'),
           type: SnackBarType.error,
         );
         return;
@@ -150,7 +151,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
         if (_laborNameController.text.trim().isEmpty) {
           CustomSnackbar.show(
             context: context,
-            message: 'Please enter Labor Name',
+            message: context.tr('please_enter_labor_name'),
             type: SnackBarType.error,
           );
           return;
@@ -162,7 +163,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
         if (_contractorNameController.text.trim().isEmpty) {
           CustomSnackbar.show(
             context: context,
-            message: 'Please enter Contractor Name',
+            message: context.tr('please_enter_contractor_name'),
             type: SnackBarType.error,
           );
           return;
@@ -170,7 +171,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
         if (_totalLaboursController.text.trim().isEmpty) {
           CustomSnackbar.show(
             context: context,
-            message: 'Please enter Total Number of Labours',
+            message: context.tr('please_enter_total_number_of_labours'),
             type: SnackBarType.error,
           );
           return;
@@ -191,7 +192,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
           if (mounted) {
             CustomSnackbar.show(
               context: context,
-              message: 'Failed to capture image. Please try again.',
+              message: context.tr('failed_to_capture_image_please_try_again'),
               type: SnackBarType.error,
             );
           }
@@ -247,7 +248,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
         if (mounted) {
           CustomSnackbar.show(
             context: context,
-            message: 'Error: $e',
+            message: context.trParams('error_message', {'error': e}),
             type: SnackBarType.error,
           );
         }
@@ -289,7 +290,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
             ),
           ),
           title: TextStyles.title(
-            text: 'Labour Punch In',
+            text: context.tr('labour_punch_in'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -327,7 +328,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
                       if (state is ProjectsLoadingState) {
                         return CustomProjectDropdown(
                           selectedProject: _selectedProject,
-                          projects: const [],
+                          projects: [],
                           onChanged: (project) {
                             setState(() {
                               _selectedProject = project;
@@ -340,7 +341,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
                       if (state is ProjectsErrorState) {
                         return CustomProjectDropdown(
                           selectedProject: _selectedProject,
-                          projects: const [],
+                          projects: [],
                           onChanged: (project) {
                             setState(() {
                               _selectedProject = project;
@@ -364,7 +365,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
                               _selectedProject = project;
                             });
                           },
-                          hintText: 'Select Project',
+                          hintText: context.tr('select_project'),
                           showIcon: true,
                           showLocation: true,
                         );
@@ -379,7 +380,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
                   // Labour Type Dropdown
                   CustomDropdown(
                     value: _selectedLabourTypeLabel,
-                    hint: 'Select Labour Type',
+                    hint: context.tr('select_labour_type'),
                     items: _labourTypes.map((e) => e.label).toList(),
                     onChanged: (value) {
                       final selectedType = _labourTypes.firstWhere(
@@ -412,7 +413,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
                   if (_selectedLabourTypeValue == 'CASUAL') ...[
                     CustomFormtextfield(
                       controller: _laborNameController,
-                      hintText: 'Enter Labor Name',
+                      hintText: context.tr('enter_labor_name'),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return 'Please enter Labor Name';
@@ -423,7 +424,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
                     SizedBox(height: ResponsiveUtils.hp(3)),
                     CustomFormtextfield(
                       controller: _laborMobileController,
-                      hintText: 'Enter Labor Mobile (optional)',
+                      hintText: context.tr('enter_labor_mobile_optional'),
                       keyboardType: TextInputType.phone,
                     ),
                     SizedBox(height: ResponsiveUtils.hp(3)),
@@ -433,7 +434,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
                   if (_selectedLabourTypeValue == 'CONTRACT') ...[
                     CustomFormtextfield(
                       controller: _contractorNameController,
-                      hintText: 'Enter Contractor Name',
+                      hintText: context.tr('enter_contractor_name'),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return 'Please enter Contractor Name';
@@ -444,7 +445,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
                     SizedBox(height: ResponsiveUtils.hp(3)),
                     CustomFormtextfield(
                       controller: _totalLaboursController,
-                      hintText: 'Enter Total Number of Labours',
+                      hintText: context.tr('enter_total_number_of_labours'),
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
@@ -459,7 +460,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
                   // Remarks Field
                   CustomFormtextfield(
                     controller: _remarksController,
-                    hintText: 'Enter remarks (optional)',
+                    hintText: context.tr('enter_remarks_optional'),
                     maxLines: 4,
                   ),
 
@@ -497,8 +498,7 @@ class _LabourPunchInPageState extends State<LabourPunchInPage> {
                                     strokeWidth: 2.5,
                                   ),
                                 )
-                              : Text(
-                                  'Record Labour Attendance',
+                              : Text(context.tr('record_labour_attendance'),
                                   style: TextStyle(
                                     fontSize: ResponsiveUtils.sp(3.5),
                                     fontWeight: FontWeight.bold,

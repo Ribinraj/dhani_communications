@@ -14,6 +14,7 @@ import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenApprovelDprPage extends StatefulWidget {
   const ScreenApprovelDprPage({super.key});
@@ -37,7 +38,7 @@ class _ScreenApprovelDprPageState extends State<ScreenApprovelDprPage> {
   void _showFilterDialog() {
     DateFilterDialog.show(
       context: context,
-      title: 'Filter DPR',
+      title: context.tr('filter_dpr'),
       initialFromDate: _fromDate,
       initialToDate: _toDate,
       onApply: (fromDate, toDate) {
@@ -116,7 +117,7 @@ class _ScreenApprovelDprPageState extends State<ScreenApprovelDprPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextStyles.headline(
-                          text: 'Approve DPR',
+                          text: context.tr('approve_dpr'),
                           weight: FontWeight.bold,
                           color: Appcolors.kblackcolor,
                         ),
@@ -132,7 +133,7 @@ class _ScreenApprovelDprPageState extends State<ScreenApprovelDprPage> {
               ),
               ResponsiveSizedBox.height15,
               TextStyles.body(
-                text: 'Are you sure you want to approve this DPR progress?',
+                text: context.tr('are_you_sure_you_want_to_approve_this_dpr_progre'),
                 color: Appcolors.kgreyColor,
               ),
               ResponsiveSizedBox.height30,
@@ -154,7 +155,7 @@ class _ScreenApprovelDprPageState extends State<ScreenApprovelDprPage> {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Cancel',
+                        text: context.tr('cancel'),
                         weight: FontWeight.w600,
                         color: Appcolors.kgreyColor,
                       ),
@@ -179,7 +180,7 @@ class _ScreenApprovelDprPageState extends State<ScreenApprovelDprPage> {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Approve',
+                        text: context.tr('approve'),
                         weight: FontWeight.w600,
                         color: Appcolors.kwhitecolor,
                       ),
@@ -199,7 +200,7 @@ class _ScreenApprovelDprPageState extends State<ScreenApprovelDprPage> {
   void _showRejectConfirmation(BuildContext context, ApproveDprDataModel dpr) {
     RejectionBottomSheet.show(
       context: context,
-      title: 'Reject DPR',
+      title: context.tr('reject_dpr'),
       subtitle:
           'Please provide a reason for rejecting ${dpr.employeeName}\'s DPR progress.',
       onReject: (remarks) {
@@ -226,7 +227,7 @@ class _ScreenApprovelDprPageState extends State<ScreenApprovelDprPage> {
           ),
         ),
         title: TextStyles.title(
-          text: "Approve DPR",
+          text: context.tr('approve_dpr'),
           weight: FontWeight.bold,
         ),
         centerTitle: true,
@@ -294,7 +295,7 @@ class _ScreenApprovelDprPageState extends State<ScreenApprovelDprPage> {
             if (state is FetchApprovelDprLoaded) {
               final dprList = state.approveDprList;
               if (dprList.isEmpty) {
-                return NoDataWidget(title: 'No DPR records found', assetIcon:Appconstants.dprreport);
+                return NoDataWidget(title: context.tr('no_dpr_records_found'), assetIcon:Appconstants.dprreport);
               }
               return RefreshIndicator(
                 onRefresh: () async {
@@ -333,7 +334,7 @@ class _ScreenApprovelDprPageState extends State<ScreenApprovelDprPage> {
                                       ),
                                       ResponsiveSizedBox.height5,
                                       TextStyles.caption(
-                                        text: "Approve",
+                                        text: context.tr('approve'),
                                         color: Colors.white,
                                         weight: FontWeight.bold,
                                       ),
@@ -364,7 +365,7 @@ class _ScreenApprovelDprPageState extends State<ScreenApprovelDprPage> {
                                       ),
                                       ResponsiveSizedBox.height5,
                                       TextStyles.caption(
-                                        text: "Reject",
+                                        text: context.tr('reject'),
                                         color: Colors.white,
                                         weight: FontWeight.bold,
                                       ),

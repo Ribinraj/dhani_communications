@@ -10,6 +10,7 @@ import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenLeaveApprovelDetailpage extends StatelessWidget {
   final ApproveLeaveModel leave;
@@ -75,7 +76,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
         if (context.mounted) {
           CustomSnackbar.show(
             context: context,
-            message: 'Could not open document',
+            message: context.tr('could_not_open_document'),
             type: SnackBarType.error,
           );
         }
@@ -84,7 +85,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
       if (context.mounted) {
         CustomSnackbar.show(
           context: context,
-          message: 'Error opening document: $e',
+          message: context.trParams('error_opening_document', {'error': e}),
           type: SnackBarType.error,
         );
       }
@@ -174,7 +175,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
                   ),
                   ResponsiveSizedBox.width(3),
                   TextStyles.headline(
-                    text: 'Approve Leave',
+                    text: context.tr('approve_leave'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -182,7 +183,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
               ),
               ResponsiveSizedBox.height15,
               TextStyles.body(
-                text: 'Are you sure you want to approve this leave request?',
+                text: context.tr('are_you_sure_you_want_to_approve_this_leave_requ'),
                 color: Appcolors.kgreyColor,
               ),
               ResponsiveSizedBox.height30,
@@ -204,7 +205,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Cancel',
+                        text: context.tr('cancel'),
                         weight: FontWeight.w600,
                         color: Appcolors.kgreyColor,
                       ),
@@ -229,7 +230,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Approve',
+                        text: context.tr('approve'),
                         weight: FontWeight.w600,
                         color: Appcolors.kwhitecolor,
                       ),
@@ -248,8 +249,8 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
   void _rejectLeave(BuildContext context) {
     RejectionBottomSheet.show(
       context: context,
-      title: 'Reject Leave',
-      subtitle: 'Please provide a reason for rejecting this leave request.',
+      title: context.tr('reject_leave'),
+      subtitle: context.tr('please_provide_a_reason_for_rejecting_this_leave'),
       onReject: (remarks) {
         context.read<UpdateApprovelLeaveBloc>().add(
           RejectLeaveEvent(leaveId: leave.leaveId, approverRemarks: remarks),
@@ -321,7 +322,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
             ),
           ),
           title: TextStyles.subheadline(
-            text: 'Leave Approval Details',
+            text: context.tr('leave_approval_details'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -347,7 +348,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
                         onPressed: () => _rejectLeave(context),
                         icon: const Icon(Icons.cancel, color: Colors.white),
                         label: TextStyles.medium(
-                          text: 'Reject',
+                          text: context.tr('reject'),
                           weight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -371,7 +372,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
                           color: Colors.white,
                         ),
                         label: TextStyles.medium(
-                          text: 'Approve',
+                          text: context.tr('approve'),
                           weight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -497,7 +498,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
 
               // ─── Employee Info Card ───
               _buildSectionCard(
-                title: 'Employee Information',
+                title: context.tr('employee_information'),
                 children: [
                   _buildDetailRow(
                     icon: Icons.person_outline,
@@ -518,7 +519,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
 
               // ─── Leave Details Card ───
               _buildSectionCard(
-                title: 'Leave Details',
+                title: context.tr('leave_details'),
                 children: [
                   _buildDetailRow(
                     icon: Icons.badge_rounded,
@@ -548,7 +549,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextStyles.caption(
-                              text: 'Leave Category',
+                              text: context.tr('leave_category'),
                               color: Appcolors.kgreyColor,
                             ),
                             ResponsiveSizedBox.height5,
@@ -627,7 +628,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
               if (leave.leavesLatt.isNotEmpty &&
                   leave.leavesLong.isNotEmpty) ...[
                 _buildSectionCard(
-                  title: 'Location Details',
+                  title: context.tr('location_details'),
                   children: [
                     _buildDetailRow(
                       icon: Icons.my_location_rounded,
@@ -658,12 +659,12 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
 
               // ─── User Remarks ───
               _buildRemarksCard(
-                title: 'User Remarks',
+                title: context.tr('user_remarks'),
                 icon: Icons.comment,
                 iconColor: Colors.amber.shade700,
                 bgColor: Colors.amber.withOpacity(0.1),
                 remarks: leave.userRemarks,
-                emptyText: 'No remarks provided',
+                emptyText: context.tr('no_remarks_provided'),
               ),
 
               // ─── Approver Remarks ───
@@ -671,7 +672,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
                   leave.approverRemarks!.isNotEmpty) ...[
                 ResponsiveSizedBox.height(3),
                 _buildRemarksCard(
-                  title: 'Approver Remarks',
+                  title: context.tr('approver_remarks'),
                   icon: Icons.verified_user_rounded,
                   iconColor: Colors.green.shade700,
                   bgColor: Colors.green.withOpacity(0.1),
@@ -685,7 +686,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
                   leave.headquarterRemarks!.isNotEmpty) ...[
                 ResponsiveSizedBox.height(3),
                 _buildRemarksCard(
-                  title: 'HQ Remarks',
+                  title: context.tr('hq_remarks'),
                   icon: Icons.business,
                   iconColor: Colors.blue.shade700,
                   bgColor: Colors.blue.withOpacity(0.1),
@@ -730,7 +731,7 @@ class ScreenLeaveApprovelDetailpage extends StatelessWidget {
                           ),
                           ResponsiveSizedBox.width(2),
                           TextStyles.subheadline(
-                            text: 'Documents',
+                            text: context.tr('documents'),
                             weight: FontWeight.bold,
                             color: Appcolors.kblackcolor,
                           ),

@@ -5,6 +5,7 @@ import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenApprovalsPage extends StatefulWidget {
   const ScreenApprovalsPage({super.key});
@@ -18,42 +19,42 @@ class _ScreenApprovalsPageState extends State<ScreenApprovalsPage> {
   final List<Map<String, dynamic>> approvalOptions = [
     {
       'iconPath': Appconstants.approveEmployeeAttendance,
-      'label': 'Approve Employee Attendance',
+      'labelKey': 'approve_employee_attendance',
       'color': Color(0xFF9C27B0),
       'count': 12,
       'route': '/approveemployeeattenedencepage',
     },
     {
       'iconPath': Appconstants.approveLabourAttendance,
-      'label': 'Approve Labour Attendance',
+      'labelKey': 'approve_labour_attendance',
       'color': Color(0xFFFF6584),
       'count': 8,
       'route': '/contractlaboursattendenceapprovelpage',
     },
     {
       'iconPath': Appconstants.approveEmployeeExpense,
-      'label': 'Approve Employee Expenses',
+      'labelKey': 'approve_employee_expenses',
       'color': Color(0xFF607D8B),
       'count': 5,
       'route': '/expenseapprovelpage',
     },
     {
       'iconPath': Appconstants.approveEmployeeLeaves,
-      'label': 'Approve Employee Leaves',
+      'labelKey': 'approve_employee_leaves',
       'color': Color(0xFF00D9FF),
       'count': 3,
       'route': '/screenleaveapprovelpage',
     },
     {
       'iconPath': Appconstants.dprreport,
-      'label': 'Approve Employee DPR Report',
+      'labelKey': 'approve_employee_dpr_report',
       'color': Color(0xFF4CAF50),
       'count': 7,
       'route': '/screenapproveldprpage',
     },
     {
       'iconPath': Appconstants.machinery,
-      'label': 'Approve Machine Hire',
+      'labelKey': 'approve_machine_hire',
       'color': Color(0xFF795548),
       'count': 4,
       'route': '/screenapprovemachinerypage',
@@ -146,13 +147,13 @@ class _ScreenApprovalsPageState extends State<ScreenApprovalsPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextStyles.subheadline(
-                        text: 'Approvals',
+                        text: context.tr('approvals'),
                         weight: FontWeight.bold,
                         color: Appcolors.kblackcolor,
                         overflow: TextOverflow.ellipsis,
                       ),
                       TextStyles.caption(
-                        text: 'Pending requests',
+                        text: context.tr('pending_requests'),
                         color: Appcolors.kgreyColor.withOpacity(0.7),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -208,7 +209,7 @@ class _ScreenApprovalsPageState extends State<ScreenApprovalsPage> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: ResponsiveUtils.wp(2)),
               child: TextStyles.medium(
-                text: option['label'],
+                text: context.tr(option['labelKey']),
                 weight: FontWeight.w600,
                 color: Appcolors.kblackcolor,
                 textAlign: TextAlign.center,

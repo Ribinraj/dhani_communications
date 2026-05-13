@@ -6,6 +6,7 @@ import 'package:dhani_communications/features/dashboard/models/vehicle_model.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenVehicleDetailPage extends StatefulWidget {
   final VehicleModel vehicle;
@@ -142,7 +143,7 @@ class _ScreenVehicleDetailPageState extends State<ScreenVehicleDetailPage> {
                     ),
                     ResponsiveSizedBox.height20,
                     TextStyles.subheadline(
-                      text: 'Update Vehicle',
+                      text: context.tr('update_vehicle'),
                       weight: FontWeight.bold,
                       color: Appcolors.kblackcolor,
                     ),
@@ -243,7 +244,7 @@ class _ScreenVehicleDetailPageState extends State<ScreenVehicleDetailPage> {
                                               strokeWidth: 2),
                                         )
                                       : TextStyles.subheadline(
-                                          text: 'Update Vehicle',
+                                          text: context.tr('update_vehicle'),
                                           color: Colors.white,
                                           weight: FontWeight.bold,
                                         ),
@@ -337,7 +338,7 @@ class _ScreenVehicleDetailPageState extends State<ScreenVehicleDetailPage> {
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Vehicle Details',
+          text: context.tr('vehicle_details'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -413,7 +414,7 @@ class _ScreenVehicleDetailPageState extends State<ScreenVehicleDetailPage> {
 
             // ── Registration Details ──────────────────────────────
             _SectionCard(
-              title: 'Registration Details',
+              title: context.tr('registration_details'),
               icon: Icons.article_outlined,
               iconColor: Colors.blue,
               rows: [
@@ -425,7 +426,7 @@ class _ScreenVehicleDetailPageState extends State<ScreenVehicleDetailPage> {
 
             // ── PUC Details ───────────────────────────────────────
             _SectionCard(
-              title: 'PUC Details',
+              title: context.tr('puc_details'),
               icon: Icons.verified_outlined,
               iconColor: Colors.green,
               rows: [
@@ -437,7 +438,7 @@ class _ScreenVehicleDetailPageState extends State<ScreenVehicleDetailPage> {
 
             // ── Insurance Details ─────────────────────────────────
             _SectionCard(
-              title: 'Insurance Details',
+              title: context.tr('insurance_details'),
               icon: Icons.shield_outlined,
               iconColor: Colors.purple,
               rows: [
@@ -449,7 +450,7 @@ class _ScreenVehicleDetailPageState extends State<ScreenVehicleDetailPage> {
 
             // ── Service Details ───────────────────────────────────
             _SectionCard(
-              title: 'Service Details',
+              title: context.tr('service_details'),
               icon: Icons.build_circle_outlined,
               iconColor: Colors.orange,
               rows: [
@@ -475,7 +476,7 @@ class _ScreenVehicleDetailPageState extends State<ScreenVehicleDetailPage> {
                 ),
                 icon: const Icon(Icons.edit_outlined, color: Colors.white),
                 label: TextStyles.subheadline(
-                  text: 'Update Vehicle',
+                  text: context.tr('update_vehicle'),
                   color: Colors.white,
                   weight: FontWeight.bold,
                 ),

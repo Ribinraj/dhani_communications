@@ -15,6 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/mdi.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenDashboardpage extends StatefulWidget {
   const ScreenDashboardpage({super.key});
@@ -84,107 +85,118 @@ class _HomePageState extends State<ScreenDashboardpage>
   final List<Map<String, dynamic>> gridOptions = [
     {
       'iconPath': Appconstants.attenedence,
-      'label': 'Attendance',
+      'labelKey': 'attendance',
       'color': Color(0xFF6C63FF),
+      'route': '/employeeattendencepage',
     },
     {
       'iconPath': Appconstants.contractlabours,
-      'label': 'Contract Labors',
+      'labelKey': 'contract_labors',
       'color': Color(0xFF00D9FF),
+      'route': '/labourattendencepage',
     },
     {
       'iconPath': Appconstants.expenses,
-      'label': 'Expenses',
+      'labelKey': 'expenses',
       'color': Color(0xFFFF6584),
+      'route': '/expensespage',
     },
     {
       'iconPath': Appconstants.machinery,
-      'label': 'Machinery Hire',
+      'labelKey': 'machinery_hire',
       'color': Color(0xFF4CAF50),
+      'route': '/machinehiringpage',
     },
     {
       'iconPath': Appconstants.cashbalance,
-      'label': 'Cash Balance',
+      'labelKey': 'cash_balance',
       'color': Color(0xFFFF9800),
+      'route': '/cashbalancepage',
     },
     {
       'iconPath': Appconstants.leaves,
-      'label': 'Leaves',
+      'labelKey': 'leaves',
       'color': Color(0xFF9C27B0),
+      'route': '/leavespage',
     },
     {
       'iconPath': Appconstants.projectdpr,
-      'label': 'Project DPR',
+      'labelKey': 'project_dpr',
       'color': Color(0xFF00BCD4),
+      'route': '/projectdprpage',
     },
     {
       'iconPath': Appconstants.vehicles,
-      'label': 'Vehicles',
+      'labelKey': 'vehicles',
       'color': Color(0xFF795548),
+      'route': '/vehiclespage',
     },
     {
       'iconPath': Appconstants.assets,
-      'label': 'Company Assets',
+      'labelKey': 'company_assets',
       'color': Color(0xFFE91E63),
+      'route': '/assetspage',
     },
     {
       'iconPath': Appconstants.inventory,
-      'label': 'Project Inventory',
+      'labelKey': 'project_inventory',
       'color': Color(0xFF3F51B5),
+      'route': '/inventorypage',
     },
     {
       'iconPath': Appconstants.requests,
-      'label': 'Requests',
+      'labelKey': 'requests',
       'color': Color(0xFF607D8B),
+      'route': '/requestspage',
     },
   ];
 
   final List<Map<String, dynamic>> fabOptions = [
     {
       'iconify': Mdi.account_clock,
-      'label': 'Daily Attendance',
+      'labelKey': 'daily_attendance',
       'color': Color(0xFF6C63FF),
       'useIconify': true,
       'route': '/dailyattendencepage',
     },
     {
       'iconify': Mdi.account_group,
-      'label': 'Labour Attendance',
+      'labelKey': 'labour_attendance',
       'color': Color(0xFF00D9FF),
       'useIconify': true,
       'route': '/labourAttendencemarkingpage',
     },
     {
       'icon': Icons.precision_manufacturing_rounded,
-      'label': 'New Machinery Hire',
+      'labelKey': 'new_machinery_hire',
       'color': Color(0xFFFF6584),
       'useIconify': false,
       'route': '/newmachinehirepage',
     },
     {
       'iconify': Mdi.cash_register,
-      'label': 'Daily Expenditure',
+      'labelKey': 'daily_expenditure',
       'color': Color(0xFF4CAF50),
       'useIconify': true,
       'route': '/newexpensepage',
     },
     {
       'iconify': Mdi.calendar_remove,
-      'label': 'Leave Application',
+      'labelKey': 'leave_application',
       'color': Color(0xFFFF9800),
       'useIconify': true,
       'route': '/leaveapplicationpage',
     },
     {
       'iconify': Mdi.chart_line,
-      'label': 'Daily Progress (DPR)',
+      'labelKey': 'daily_progress_dpr',
       'color': Color(0xFF9C27B0),
       'useIconify': true,
       'route': '/dprprogress',
     },
     {
       'iconify': Mdi.file_document_edit,
-      'label': 'Request',
+      'labelKey': 'request',
       'color': Color(0xFFE91E63),
       'useIconify': true,
       'route': '/newrequestpage',
@@ -219,7 +231,7 @@ class _HomePageState extends State<ScreenDashboardpage>
                     overflow: TextOverflow.ellipsis,
                   ),
                   TextStyles.caption(
-                    text: 'Welcome back!',
+                    text: context.tr('welcome_back'),
                     color: Appcolors.kgreyColor.withAlpha(178),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -261,7 +273,7 @@ class _HomePageState extends State<ScreenDashboardpage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextStyles.subheadline(
-                        text: 'Quick Access',
+                        text: context.tr('quick_access'),
                         weight: FontWeight.bold,
                         color: Appcolors.kblackcolor,
                       ),
@@ -312,7 +324,7 @@ class _HomePageState extends State<ScreenDashboardpage>
                   child: _buildFabOption(
                     icon: option['icon'],
                     iconify: option['iconify'],
-                    label: option['label'],
+                    label: context.tr(option['labelKey']),
                     color: option['color'],
                     useIconify: option['useIconify'] ?? false,
                     route: option['route'],
@@ -486,7 +498,7 @@ class _HomePageState extends State<ScreenDashboardpage>
                 ),
                 ResponsiveSizedBox.height10,
                 TextStyles.caption(
-                  text: 'Failed to load updates',
+                  text: context.tr('failed_to_load_updates'),
                   color: Appcolors.kgreyColor,
                 ),
                 ResponsiveSizedBox.height10,
@@ -495,7 +507,7 @@ class _HomePageState extends State<ScreenDashboardpage>
                     context.read<UpdatesBloc>().add(FetchUpdatesEvent());
                   },
                   child: TextStyles.caption(
-                    text: 'Retry',
+                    text: context.tr('retry'),
                     color: Appcolors.kprimarycolor,
                     weight: FontWeight.bold,
                   ),
@@ -531,13 +543,13 @@ class _HomePageState extends State<ScreenDashboardpage>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextStyles.headline(
-                  text: 'Welcome to Dhani',
+                  text: context.tr('welcome_to_dhani'),
                   weight: FontWeight.bold,
                   color: Appcolors.kwhitecolor,
                 ),
                 ResponsiveSizedBox.height10,
                 TextStyles.medium(
-                  text: 'Your trusted communication partner',
+                  text: context.tr('your_trusted_communication_partner'),
                   color: Appcolors.kwhitecolor.withAlpha(229),
                 ),
               ],
@@ -699,29 +711,7 @@ class _HomePageState extends State<ScreenDashboardpage>
         final option = gridOptions[index];
         return GestureDetector(
           onTap: () {
-            if (option['label'] == 'Attendance') {
-              context.push('/employeeattendencepage');
-            } else if (option['label'] == 'Contract Labors') {
-              context.push('/labourattendencepage');
-            } else if (option['label'] == 'Expenses') {
-              context.push('/expensespage');
-            } else if (option['label'] == 'Machinery Hire') {
-              context.push('/machinehiringpage');
-            } else if (option['label'] == 'Cash Balance') {
-              context.push('/cashbalancepage');
-            } else if (option['label'] == 'Leaves') {
-              context.push('/leavespage');
-            } else if (option['label'] == 'Vehicles') {
-              context.push('/vehiclespage');
-            } else if (option['label'] == 'Company Assets') {
-              context.push('/assetspage');
-            } else if (option['label'] == 'Project Inventory') {
-              context.push('/inventorypage');
-            } else if (option['label'] == 'Requests') {
-              context.push('/requestspage');
-            } else if (option['label'] == 'Project DPR') {
-              context.push('/projectdprpage');
-            }
+            context.push(option['route']);
           },
           child: Container(
             decoration: BoxDecoration(
@@ -757,7 +747,7 @@ class _HomePageState extends State<ScreenDashboardpage>
                     horizontal: ResponsiveUtils.wp(1),
                   ),
                   child: TextStyles.caption(
-                    text: option['label'],
+                    text: context.tr(option['labelKey']),
                     weight: FontWeight.w600,
                     color: Appcolors.kblackcolor,
                     textAlign: TextAlign.center,

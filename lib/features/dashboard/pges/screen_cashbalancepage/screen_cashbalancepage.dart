@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenCashBalancePage extends StatefulWidget {
   const ScreenCashBalancePage({super.key});
@@ -64,7 +65,7 @@ class _ScreenCashBalancePageState extends State<ScreenCashBalancePage> {
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Cash Balance',
+          text: context.tr('cash_balance'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -105,7 +106,7 @@ class _ScreenCashBalancePageState extends State<ScreenCashBalancePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TextStyles.subheadline(
-                        text: 'Transactions',
+                        text: context.tr('transactions'),
                         weight: FontWeight.bold,
                         color: Appcolors.kblackcolor,
                       ),
@@ -120,7 +121,7 @@ class _ScreenCashBalancePageState extends State<ScreenCashBalancePage> {
                     Padding(
                       padding: EdgeInsets.only(top: ResponsiveUtils.hp(12)),
                       child: NoDataWidget(
-                        title: 'No cash transactions found',
+                        title: context.tr('no_cash_transactions_found'),
                         assetIcon: Appconstants.cashbalance,
                         onRefresh: _refreshCashBalance,
                       ),
@@ -133,7 +134,7 @@ class _ScreenCashBalancePageState extends State<ScreenCashBalancePage> {
           }
 
           return NoDataWidget(
-            title: 'No cash balance found',
+            title: context.tr('no_cash_balance_found'),
             assetIcon: Appconstants.cashbalance,
             onRefresh: _refreshCashBalance,
           );
@@ -183,7 +184,7 @@ class _ScreenCashBalancePageState extends State<ScreenCashBalancePage> {
               ),
               ResponsiveSizedBox.width(3),
               TextStyles.medium(
-                text: 'Available Balance',
+                text: context.tr('available_balance'),
                 color: Appcolors.kwhitecolor.withValues(alpha: 0.9),
                 weight: FontWeight.w600,
               ),

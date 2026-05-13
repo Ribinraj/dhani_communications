@@ -1,4 +1,3 @@
-
 // import 'dart:ui';
 // import 'package:dhani_communications/core/colors.dart';
 // import 'package:dhani_communications/core/responsiveutils.dart';
@@ -240,6 +239,7 @@
 //////////////////////////
 import 'dart:ui';
 import 'package:dhani_communications/core/colors.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:dhani_communications/features/dashboard/blocs/bottom_navigation_bloc/bottom_navigation_bloc.dart';
 import 'package:flutter/material.dart';
@@ -268,17 +268,17 @@ class _AnimatedBottomNavigationWidgetState
     NavItem(
       icon: MaterialSymbols.dashboard_outline,
       activeIcon: MaterialSymbols.dashboard,
-      label: "Dashboard",
+      labelKey: 'dashboard',
     ),
     NavItem(
       icon: Mdi.checkbox_marked_circle_outline,
       activeIcon: Mdi.checkbox_marked_circle,
-      label: "Approvals",
+      labelKey: 'approvals',
     ),
     NavItem(
       icon: MaterialSymbols.person_outline,
       activeIcon: MaterialSymbols.person,
-      label: "Profile",
+      labelKey: 'profile',
     ),
   ];
 
@@ -294,15 +294,17 @@ class _AnimatedBottomNavigationWidgetState
     );
 
     _iconAnimations = _iconControllers.map((controller) {
-      return Tween<double>(begin: 0, end: 1).animate(
-        CurvedAnimation(parent: controller, curve: Curves.easeInOut),
-      );
+      return Tween<double>(
+        begin: 0,
+        end: 1,
+      ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
     }).toList();
 
     _scaleAnimations = _iconControllers.map((controller) {
-      return Tween<double>(begin: 1, end: 1.2).animate(
-        CurvedAnimation(parent: controller, curve: Curves.elasticOut),
-      );
+      return Tween<double>(
+        begin: 1,
+        end: 1.2,
+      ).animate(CurvedAnimation(parent: controller, curve: Curves.elasticOut));
     }).toList();
   }
 
@@ -327,7 +329,6 @@ class _AnimatedBottomNavigationWidgetState
         final selectedIndex = state.currentPageIndex;
         return SafeArea(
           child: Container(
-        
             margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 7),
             decoration: BoxDecoration(
               color: Appcolors.kwhitecolor.withOpacity(0.95),
@@ -358,91 +359,87 @@ class _AnimatedBottomNavigationWidgetState
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: List.generate(
-                      _navItems.length,
-                      (index) {
-                        final navItem = _navItems[index];
-                        final isSelected = selectedIndex == index;
-                        return Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              _animateIcon(index);
-                              widget.onTap?.call(index);
+                    children: List.generate(_navItems.length, (index) {
+                      final navItem = _navItems[index];
+                      final isSelected = selectedIndex == index;
+                      return Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            _animateIcon(index);
+                            widget.onTap?.call(index);
+                          },
+                          child: AnimatedBuilder(
+                            animation: _scaleAnimations[index],
+                            builder: (context, child) {
+                              return Transform.scale(
+                                scale: _scaleAnimations[index].value,
+                                child: child,
+                              );
                             },
-                            child: AnimatedBuilder(
-                              animation: _scaleAnimations[index],
-                              builder: (context, child) {
-                                return Transform.scale(
-                                  scale: _scaleAnimations[index].value,
-                                  child: child,
-                                );
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  // Animated icon container
-                                  AnimatedContainer(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                    padding: EdgeInsets.all(
-                                      isSelected ? 6 : 3,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: isSelected
-                                          ? Appcolors.kprimarycolor
-                                              .withOpacity(0.1)
-                                          : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: AnimatedBuilder(
-                                      animation: _iconAnimations[index],
-                                      builder: (context, child) {
-                                        return Transform.rotate(
-                                          angle:
-                                              _iconAnimations[index].value * 0.5,
-                                          child: Iconify(
-                                            isSelected
-                                                ? navItem.activeIcon
-                                                : navItem.icon,
-                                            size: ResponsiveUtils.wp(7),
-                                            color: isSelected
-                                                ? Appcolors.kprimarycolor
-                                                : Appcolors.kgreyColor
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // Animated icon container
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                  padding: EdgeInsets.all(isSelected ? 6 : 3),
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? Appcolors.kprimarycolor.withOpacity(
+                                            0.1,
+                                          )
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: AnimatedBuilder(
+                                    animation: _iconAnimations[index],
+                                    builder: (context, child) {
+                                      return Transform.rotate(
+                                        angle:
+                                            _iconAnimations[index].value * 0.5,
+                                        child: Iconify(
+                                          isSelected
+                                              ? navItem.activeIcon
+                                              : navItem.icon,
+                                          size: ResponsiveUtils.wp(7),
+                                          color: isSelected
+                                              ? Appcolors.kprimarycolor
+                                              : Appcolors.kgreyColor
                                                     .withOpacity(0.6),
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                        ),
+                                      );
+                                    },
                                   ),
-                                  const SizedBox(height: 4),
-                                  // Animated label
-                                  AnimatedDefaultTextStyle(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                    style: TextStyle(
-                                      fontSize: isSelected ? 11 : 10,
-                                      fontWeight: isSelected
-                                          ? FontWeight.w600
-                                          : FontWeight.w500,
-                                      color: isSelected
-                                          ? Appcolors.kprimarycolor
-                                          : Appcolors.kgreyColor.withOpacity(0.6),
-                                      letterSpacing: 0.3,
-                                    ),
-                                    child: Text(
-                                      navItem.label,
-                                      textAlign: TextAlign.center,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                ),
+                                const SizedBox(height: 4),
+                                // Animated label
+                                AnimatedDefaultTextStyle(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                  style: TextStyle(
+                                    fontSize: isSelected ? 11 : 10,
+                                    fontWeight: isSelected
+                                        ? FontWeight.w600
+                                        : FontWeight.w500,
+                                    color: isSelected
+                                        ? Appcolors.kprimarycolor
+                                        : Appcolors.kgreyColor.withOpacity(0.6),
+                                    letterSpacing: 0.3,
                                   ),
-                                ],
-                              ),
+                                  child: Text(
+                                    context.tr(navItem.labelKey),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      );
+                    }),
                   ),
                 ),
               ),
@@ -457,11 +454,11 @@ class _AnimatedBottomNavigationWidgetState
 class NavItem {
   final String icon;
   final String activeIcon;
-  final String label;
+  final String labelKey;
 
   NavItem({
     required this.icon,
     required this.activeIcon,
-    required this.label,
+    required this.labelKey,
   });
 }

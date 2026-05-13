@@ -14,6 +14,7 @@ import 'package:dhani_communications/widgets/custom_project_dropdown.dart';
 import 'package:dhani_communications/widgets/custom_snackbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenNewmachineryhire extends StatefulWidget {
   const ScreenNewmachineryhire({super.key});
@@ -168,7 +169,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
             TextButton(
               onPressed: onRetry,
               child: TextStyles.medium(
-                text: 'Retry',
+                text: context.tr('retry'),
                 color: Appcolors.kprimarycolor,
               ),
             ),
@@ -182,7 +183,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
       if (selectedProject == null) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please select a project',
+          message: context.tr('please_select_a_project'),
           type: SnackBarType.error,
         );
         return;
@@ -191,7 +192,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
       if (selectedMachineType == null) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please select a machine type',
+          message: context.tr('please_select_a_machine_type'),
           type: SnackBarType.error,
         );
         return;
@@ -201,7 +202,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
       if (machineryId == null) {
         CustomSnackbar.show(
           context: context,
-          message: 'Invalid machine type selected',
+          message: context.tr('invalid_machine_type_selected'),
           type: SnackBarType.error,
         );
         return;
@@ -241,7 +242,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'New Machinery Hire',
+          text: context.tr('new_machinery_hire'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -280,7 +281,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
 
                   // Header text
                   TextStyles.body(
-                    text: 'Please fill the form to record machine hire request',
+                    text: context.tr('please_fill_the_form_to_record_machine_hire_requ'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w500,
                   ),
@@ -289,7 +290,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
 
                   // Project dropdown
                   TextStyles.caption(
-                    text: 'Project',
+                    text: context.tr('project'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
@@ -299,7 +300,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
                       if (state is ProjectsLoadingState) {
                         return CustomProjectDropdown(
                           selectedProject: selectedProject,
-                          projects: const [],
+                          projects: [],
                           onChanged: (project) {
                             setState(() {
                               selectedProject = project;
@@ -312,7 +313,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
                       if (state is ProjectsErrorState) {
                         return CustomProjectDropdown(
                           selectedProject: selectedProject,
-                          projects: const [],
+                          projects: [],
                           onChanged: (project) {
                             setState(() {
                               selectedProject = project;
@@ -336,7 +337,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
                               selectedProject = project;
                             });
                           },
-                          hintText: 'Select Project',
+                          hintText: context.tr('select_project'),
                           showIcon: true,
                           showLocation: true,
                         );
@@ -344,7 +345,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
 
                       return CustomProjectDropdown(
                         selectedProject: selectedProject,
-                        projects: const [],
+                        projects: [],
                         onChanged: (project) {
                           setState(() {
                             selectedProject = project;
@@ -358,7 +359,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
 
                   // Machine Type dropdown
                   TextStyles.caption(
-                    text: 'Machine Type',
+                    text: context.tr('machine_type'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
@@ -400,7 +401,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
 
                         return CustomDropdown(
                           value: selectedMachineName,
-                          hint: 'Select Machine Type',
+                          hint: context.tr('select_machine_type'),
                           items: machineNames,
                           onChanged: (value) {
                             setState(() {
@@ -424,8 +425,8 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
 
                       return CustomDropdown(
                         value: null,
-                        hint: 'Select Machine Type',
-                        items: const [],
+                        hint: context.tr('select_machine_type'),
+                        items: [],
                         onChanged: (_) {},
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -441,7 +442,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
 
                   // Hire Date
                   TextStyles.caption(
-                    text: 'Hire Date',
+                    text: context.tr('hire_date'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
@@ -451,7 +452,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
                     readOnly: true,
                     onTap: () => _selectDate(context),
                     decoration: InputDecoration(
-                      hintText: 'Select Hire Date',
+                      hintText: context.tr('select_hire_date'),
                       hintStyle: TextStyle(
                         color: Colors.grey[600],
                         fontSize: ResponsiveUtils.sp(3.5),
@@ -515,7 +516,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
 
                   // From Time
                   TextStyles.caption(
-                    text: 'From Time',
+                    text: context.tr('from_time'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
@@ -525,7 +526,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
                     readOnly: true,
                     onTap: () => _selectFromTime(context),
                     decoration: InputDecoration(
-                      hintText: 'Select From Time',
+                      hintText: context.tr('select_from_time'),
                       hintStyle: TextStyle(
                         color: Colors.grey[600],
                         fontSize: ResponsiveUtils.sp(3.5),
@@ -589,7 +590,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
 
                   // To Time
                   TextStyles.caption(
-                    text: 'To Time',
+                    text: context.tr('to_time'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
@@ -599,7 +600,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
                     readOnly: true,
                     onTap: () => _selectToTime(context),
                     decoration: InputDecoration(
-                      hintText: 'Select To Time',
+                      hintText: context.tr('select_to_time'),
                       hintStyle: TextStyle(
                         color: Colors.grey[600],
                         fontSize: ResponsiveUtils.sp(3.5),
@@ -663,7 +664,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
 
                   // Total Amount
                   TextStyles.caption(
-                    text: 'Total Amount',
+                    text: context.tr('total_amount'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
@@ -672,7 +673,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
                     controller: totalAmountController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      hintText: 'Enter Total Amount',
+                      hintText: context.tr('enter_total_amount'),
                       hintStyle: TextStyle(
                         color: Colors.grey[600],
                         fontSize: ResponsiveUtils.sp(3.5),
@@ -739,7 +740,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
 
                   // Remarks (Optional)
                   TextStyles.caption(
-                    text: 'Remarks (Optional)',
+                    text: context.tr('remarks_optional'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
@@ -748,7 +749,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
                     controller: remarksController,
                     maxLines: 4,
                     decoration: InputDecoration(
-                      hintText: 'Enter any additional remarks',
+                      hintText: context.tr('enter_any_additional_remarks'),
                       hintStyle: TextStyle(
                         color: Colors.grey[600],
                         fontSize: ResponsiveUtils.sp(3.5),
@@ -819,7 +820,7 @@ class _ScreenMachineHirePageState extends State<ScreenNewmachineryhire> {
                                   ),
                                 )
                               : TextStyles.body(
-                                  text: 'Submit Request',
+                                  text: context.tr('submit_request'),
                                   color: Appcolors.kwhitecolor,
                                   weight: FontWeight.w600,
                                 ),

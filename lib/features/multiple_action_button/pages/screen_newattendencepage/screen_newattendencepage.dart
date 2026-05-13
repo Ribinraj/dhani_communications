@@ -18,6 +18,7 @@ import 'package:dhani_communications/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class DailyAttendancePage extends StatefulWidget {
   const DailyAttendancePage({super.key});
@@ -64,7 +65,7 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
       if (mounted) {
         CustomSnackbar.show(
           context: context,
-          message: 'Location services are disabled. Please enable them.',
+          message: context.tr('location_services_are_disabled_please_enable_the'),
           type: SnackBarType.error,
         );
       }
@@ -79,7 +80,7 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
         if (mounted) {
           CustomSnackbar.show(
             context: context,
-            message: 'Location permission denied.',
+            message: context.tr('location_permission_denied'),
             type: SnackBarType.error,
           );
         }
@@ -92,7 +93,7 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
         CustomSnackbar.show(
           context: context,
           message:
-              'Location permissions are permanently denied. Please enable them in settings.',
+              context.tr('location_permissions_are_permanently_denied_plea'),
           type: SnackBarType.error,
         );
       }
@@ -111,7 +112,7 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
       if (_selectedProject == null) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please select a project',
+          message: context.tr('please_select_a_project'),
           type: SnackBarType.error,
         );
         return;
@@ -131,7 +132,7 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
           if (mounted) {
             CustomSnackbar.show(
               context: context,
-              message: 'Failed to capture image. Please try again.',
+              message: context.tr('failed_to_capture_image_please_try_again'),
               type: SnackBarType.error,
             );
           }
@@ -174,7 +175,7 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
         if (mounted) {
           CustomSnackbar.show(
             context: context,
-            message: 'Error: $e',
+            message: context.trParams('error_message', {'error': e}),
             type: SnackBarType.error,
           );
         }
@@ -246,7 +247,7 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
             ),
           ),
           title: TextStyles.title(
-            text: 'New Attendance',
+            text: context.tr('new_attendance'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -284,7 +285,7 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
                       if (state is ProjectsLoadingState) {
                         return CustomProjectDropdown(
                           selectedProject: _selectedProject,
-                          projects: const [],
+                          projects: [],
                           onChanged: (project) {
                             setState(() {
                               _selectedProject = project;
@@ -297,7 +298,7 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
                       if (state is ProjectsErrorState) {
                         return CustomProjectDropdown(
                           selectedProject: _selectedProject,
-                          projects: const [],
+                          projects: [],
                           onChanged: (project) {
                             setState(() {
                               _selectedProject = project;
@@ -321,7 +322,7 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
                               _selectedProject = project;
                             });
                           },
-                          hintText: 'Select Project',
+                          hintText: context.tr('select_project'),
                           showIcon: true,
                           showLocation: true,
                         );
@@ -336,7 +337,7 @@ class _DailyAttendancePageState extends State<DailyAttendancePage> {
                   // Remarks Field
                   CustomFormtextfield(
                     controller: _remarksController,
-                    hintText: 'Enter remarks (optional)',
+                    hintText: context.tr('enter_remarks_optional'),
                     maxLines: 4,
                   ),
 

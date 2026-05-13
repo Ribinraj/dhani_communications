@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenInventoryDetailPage extends StatefulWidget {
   final InventoryItem inventoryItem;
@@ -59,7 +60,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
     // Implement return logic here
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Return process started')));
+    ).showSnackBar(SnackBar(content: Text(context.tr('return_process_started'))));
   }
 
   @override
@@ -86,7 +87,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Inventory Details',
+          text: context.tr('inventory_details'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -116,7 +117,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextStyles.subheadline(
-                    text: 'Item Information',
+                    text: context.tr('item_information'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -177,7 +178,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextStyles.caption(
-                              text: 'Status',
+                              text: context.tr('status'),
                               color: Appcolors.kgreyColor,
                             ),
                             ResponsiveSizedBox.height5,
@@ -225,7 +226,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextStyles.subheadline(
-                    text: 'Location Information',
+                    text: context.tr('location_information'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -280,7 +281,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextStyles.subheadline(
-                    text: 'Transfer Information',
+                    text: context.tr('transfer_information'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -344,7 +345,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextStyles.subheadline(
-                    text: 'Actions',
+                    text: context.tr('actions'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -357,7 +358,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                       onPressed: _handleConsume,
                       icon: const Icon(Icons.check_circle_outline),
                       label: TextStyles.medium(
-                        text: 'Consume',
+                        text: context.tr('consume'),
                         weight: FontWeight.w600,
                         color: Appcolors.kwhitecolor,
                       ),
@@ -383,7 +384,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                       onPressed: _handleTransfer,
                       icon: const Icon(Icons.swap_horiz),
                       label: TextStyles.medium(
-                        text: 'Transfer',
+                        text: context.tr('transfer'),
                         weight: FontWeight.w600,
                         color: Appcolors.kwhitecolor,
                       ),
@@ -409,7 +410,7 @@ class _ScreenInventoryDetailPageState extends State<ScreenInventoryDetailPage> {
                       onPressed: _handleReturn,
                       icon: const Icon(Icons.assignment_return),
                       label: TextStyles.medium(
-                        text: 'Return',
+                        text: context.tr('return'),
                         weight: FontWeight.w600,
                         color: Appcolors.kwhitecolor,
                       ),

@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenrequestsPage extends StatefulWidget {
   const ScreenrequestsPage({super.key});
@@ -29,7 +30,7 @@ class _ScreenrequestsPageState extends State<ScreenrequestsPage> {
   void _showFilterDialog() {
     DateFilterDialog.show(
       context: context,
-      title: 'Filter Requests',
+      title: context.tr('filter_requests'),
       initialFromDate: _fromDate,
       initialToDate: _toDate,
       onApply: (fromDate, toDate) {
@@ -86,7 +87,7 @@ class _ScreenrequestsPageState extends State<ScreenrequestsPage> {
           ),
         ),
         title: TextStyles.title(
-          text: 'Requests',
+          text: context.tr('requests'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -148,7 +149,7 @@ class _ScreenrequestsPageState extends State<ScreenrequestsPage> {
                           .add(FetchRequestListEvent());
                     },
                     icon: const Icon(Icons.refresh),
-                    label: const Text('Retry'),
+                    label: Text(context.tr('retry')),
                   ),
                 ],
               ),
@@ -170,7 +171,7 @@ class _ScreenrequestsPageState extends State<ScreenrequestsPage> {
                     ),
                     ResponsiveSizedBox.height20,
                     TextStyles.subheadline(
-                      text: 'No request records found',
+                      text: context.tr('no_request_records_found'),
                       color: Appcolors.kgreyColor,
                     ),
                   ],

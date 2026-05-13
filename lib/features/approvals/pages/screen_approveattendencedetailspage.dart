@@ -4,6 +4,7 @@ import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dhani_communications/features/approvals/models/approvels_attendencemodel.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenApproveAttendanceDetailPage extends StatelessWidget {
   final ApprovelsAttendencemodel attendance;
@@ -33,7 +34,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Attendance Details',
+          text: context.tr('attendance_details'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -147,7 +148,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
             // Attendance Photo
             if (attendance.picture.isNotEmpty) ...[
               TextStyles.subheadline(
-                text: 'Attendance Photo',
+                text: context.tr('attendance_photo'),
                 weight: FontWeight.bold,
                 color: Appcolors.kblackcolor,
               ),
@@ -182,7 +183,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
                           ),
                           ResponsiveSizedBox.height10,
                           TextStyles.caption(
-                            text: 'Image not available',
+                            text: context.tr('image_not_available'),
                             color: Appcolors.kgreyColor,
                           ),
                         ],
@@ -208,7 +209,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
 
             // Attendance Info Section
             TextStyles.subheadline(
-              text: 'Attendance Info',
+              text: context.tr('attendance_info'),
               weight: FontWeight.bold,
               color: Appcolors.kblackcolor,
             ),
@@ -266,7 +267,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
 
             // Location Section
             TextStyles.subheadline(
-              text: 'Location Details',
+              text: context.tr('location_details'),
               weight: FontWeight.bold,
               color: Appcolors.kblackcolor,
             ),
@@ -306,7 +307,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
 
             // Remarks Section
             TextStyles.subheadline(
-              text: 'Remarks',
+              text: context.tr('remarks'),
               weight: FontWeight.bold,
               color: Appcolors.kblackcolor,
             ),
@@ -411,7 +412,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
                         color: Colors.red,
                       ),
                       label: TextStyles.medium(
-                        text: 'Reject',
+                        text: context.tr('reject'),
                         weight: FontWeight.w600,
                         color: Colors.red,
                       ),
@@ -437,7 +438,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
                         color: Colors.white,
                       ),
                       label: TextStyles.medium(
-                        text: 'Approve',
+                        text: context.tr('approve'),
                         weight: FontWeight.w600,
                         color: Appcolors.kwhitecolor,
                       ),
@@ -552,13 +553,13 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
               ),
               ResponsiveSizedBox.height10,
               TextStyles.headline(
-                text: 'Approve Attendance',
+                text: context.tr('approve_attendance'),
                 weight: FontWeight.bold,
                 color: Appcolors.kblackcolor,
               ),
               ResponsiveSizedBox.height5,
               TextStyles.caption(
-                text: 'Add remarks before approving (optional)',
+                text: context.tr('add_remarks_before_approving_optional'),
                 color: Appcolors.kgreyColor,
               ),
               ResponsiveSizedBox.height20,
@@ -566,7 +567,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
                 controller: remarksController,
                 maxLines: 3,
                 decoration: InputDecoration(
-                  hintText: 'Enter remarks...',
+                  hintText: context.tr('enter_remarks'),
                   hintStyle: TextStyle(color: Appcolors.kgreyColor),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadiusStyles.kradius10(),
@@ -596,7 +597,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Cancel',
+                        text: context.tr('cancel'),
                         weight: FontWeight.w600,
                         color: Appcolors.kgreyColor,
                       ),
@@ -611,8 +612,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
                         Navigator.pop(ctx);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: const Text(
-                              'Attendance approved successfully',
+                            content: Text(context.tr('attendance_approved_successfully'),
                             ),
                             backgroundColor: Colors.green,
                             behavior: SnackBarBehavior.floating,
@@ -638,7 +638,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Approve',
+                        text: context.tr('approve'),
                         weight: FontWeight.w600,
                         color: Appcolors.kwhitecolor,
                       ),
@@ -680,13 +680,13 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
               ),
               ResponsiveSizedBox.height10,
               TextStyles.headline(
-                text: 'Reject Attendance',
+                text: context.tr('reject_attendance'),
                 weight: FontWeight.bold,
                 color: Appcolors.kblackcolor,
               ),
               ResponsiveSizedBox.height5,
               TextStyles.caption(
-                text: 'Please provide a reason for rejection',
+                text: context.tr('please_provide_a_reason_for_rejection'),
                 color: Appcolors.kgreyColor,
               ),
               ResponsiveSizedBox.height20,
@@ -694,7 +694,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
                 controller: remarksController,
                 maxLines: 3,
                 decoration: InputDecoration(
-                  hintText: 'Enter reason for rejection...',
+                  hintText: context.tr('enter_reason_for_rejection'),
                   hintStyle: TextStyle(color: Appcolors.kgreyColor),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadiusStyles.kradius10(),
@@ -724,7 +724,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Cancel',
+                        text: context.tr('cancel'),
                         weight: FontWeight.w600,
                         color: Appcolors.kgreyColor,
                       ),
@@ -739,7 +739,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
                         Navigator.pop(ctx);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: const Text('Attendance rejected'),
+                            content: Text(context.tr('attendance_rejected')),
                             backgroundColor: Colors.red,
                             behavior: SnackBarBehavior.floating,
                             margin: EdgeInsets.only(
@@ -764,7 +764,7 @@ class ScreenApproveAttendanceDetailPage extends StatelessWidget {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Reject',
+                        text: context.tr('reject'),
                         weight: FontWeight.w600,
                         color: Appcolors.kwhitecolor,
                       ),

@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenEmployeeExpensesPage extends StatefulWidget {
   const ScreenEmployeeExpensesPage({super.key});
@@ -64,7 +65,7 @@ class _ScreenEmployeeExpensesPageState
   void _showFilterDialog() {
     DateFilterDialog.show(
       context: context,
-      title: 'Filter Expenses',
+      title: context.tr('filter_expenses'),
       initialFromDate: _fromDate,
       initialToDate: _toDate,
       onApply: (fromDate, toDate) {
@@ -135,7 +136,7 @@ class _ScreenEmployeeExpensesPageState
         ),
         
         title: TextStyles.title(
-          text: 'Employee Expenses',
+          text: context.tr('employee_expenses'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -201,7 +202,7 @@ class _ScreenEmployeeExpensesPageState
                         backgroundColor: Appcolors.kprimarycolor,
                       ),
                       child: TextStyles.medium(
-                        text: 'Retry',
+                        text: context.tr('retry'),
                         color: Appcolors.kwhitecolor,
                       ),
                     ),
@@ -215,7 +216,7 @@ class _ScreenEmployeeExpensesPageState
 
               if (expensesList.isEmpty) {
                 return NoDataWidget(
-                  title: "Expense List is Empty",
+                  title: context.tr('expense_list_is_empty'),
                   assetIcon: Appconstants.expenses,
                 );
               }
@@ -253,7 +254,7 @@ class _ScreenEmployeeExpensesPageState
                   ),
                   ResponsiveSizedBox.height20,
                   TextStyles.subheadline(
-                    text: 'No expense records found',
+                    text: context.tr('no_expense_records_found'),
                     color: Appcolors.kgreyColor,
                   ),
                 ],

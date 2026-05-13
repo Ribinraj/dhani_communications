@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenRequestDetailPage extends StatelessWidget {
   final RequestModel? request;
@@ -80,7 +81,7 @@ class ScreenRequestDetailPage extends StatelessWidget {
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Request Details',
+          text: context.tr('request_details'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -89,7 +90,7 @@ class ScreenRequestDetailPage extends StatelessWidget {
       body: request == null
           ? Center(
               child: TextStyles.subheadline(
-                text: 'No request data available',
+                text: context.tr('no_request_data_available'),
                 color: Appcolors.kgreyColor,
               ),
             )
@@ -117,7 +118,7 @@ class ScreenRequestDetailPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextStyles.subheadline(
-                          text: 'Request Information',
+                          text: context.tr('request_information'),
                           weight: FontWeight.bold,
                           color: Appcolors.kblackcolor,
                         ),
@@ -172,7 +173,7 @@ class ScreenRequestDetailPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   TextStyles.caption(
-                                    text: 'Status',
+                                    text: context.tr('status'),
                                     color: Appcolors.kgreyColor,
                                   ),
                                   ResponsiveSizedBox.height5,
@@ -262,7 +263,7 @@ class ScreenRequestDetailPage extends StatelessWidget {
                             ),
                             ResponsiveSizedBox.width(2),
                             TextStyles.subheadline(
-                              text: 'Notes',
+                              text: context.tr('notes'),
                               weight: FontWeight.bold,
                               color: Appcolors.kblackcolor,
                             ),

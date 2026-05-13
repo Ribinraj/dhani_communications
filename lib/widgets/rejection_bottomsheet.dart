@@ -4,6 +4,7 @@ import 'package:dhani_communications/core/constants.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:dhani_communications/widgets/custom_formtextfield.dart';
 import 'package:dhani_communications/widgets/custom_snackbar.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 /// A common bottom sheet for rejection remarks.
 ///
@@ -138,7 +139,7 @@ class _RejectionBottomSheetContentState
               // Remarks text field
               CustomFormtextfield(
                 controller: _remarksController,
-                hintText: 'Enter rejection remarks',
+                hintText: context.tr('enter_rejection_remarks'),
                 maxLines: 3,
                 prefixIcon: Padding(
                   padding: EdgeInsets.only(
@@ -174,7 +175,7 @@ class _RejectionBottomSheetContentState
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Cancel',
+                        text: context.tr('cancel'),
                         weight: FontWeight.w600,
                         color: Appcolors.kgreyColor,
                       ),
@@ -187,7 +188,7 @@ class _RejectionBottomSheetContentState
                         if (_remarksController.text.trim().isEmpty) {
                           CustomSnackbar.show(
                             context: context,
-                            message: 'Please enter rejection remarks',
+                            message: context.tr('please_enter_rejection_remarks'),
                             type: SnackBarType.info,
                           );
                           return;
@@ -206,7 +207,7 @@ class _RejectionBottomSheetContentState
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Reject',
+                        text: context.tr('reject'),
                         weight: FontWeight.w600,
                         color: Appcolors.kwhitecolor,
                       ),

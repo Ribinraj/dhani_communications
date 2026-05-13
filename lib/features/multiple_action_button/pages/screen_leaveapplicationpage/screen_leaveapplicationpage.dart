@@ -21,6 +21,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenLeaveApplicationPage extends StatefulWidget {
   const ScreenLeaveApplicationPage({super.key});
@@ -76,7 +77,7 @@ class _ScreenLeaveApplicationPageState
         if (mounted) {
           CustomSnackbar.show(
             context: context,
-            message: 'Location services are disabled. Please enable them.',
+            message: context.tr('location_services_are_disabled_please_enable_the'),
             type: SnackBarType.error,
           );
         }
@@ -90,7 +91,7 @@ class _ScreenLeaveApplicationPageState
           if (mounted) {
             CustomSnackbar.show(
               context: context,
-              message: 'Location permission denied.',
+              message: context.tr('location_permission_denied'),
               type: SnackBarType.error,
             );
           }
@@ -103,7 +104,7 @@ class _ScreenLeaveApplicationPageState
           CustomSnackbar.show(
             context: context,
             message:
-                'Location permissions are permanently denied. Please enable them in settings.',
+                context.tr('location_permissions_are_permanently_denied_plea'),
             type: SnackBarType.error,
           );
         }
@@ -162,7 +163,7 @@ class _ScreenLeaveApplicationPageState
     if (fromDate == null) {
       CustomSnackbar.show(
         context: context,
-        message: 'Please select From Date first',
+        message: context.tr('please_select_from_date_first'),
         type: SnackBarType.error,
       );
       return;
@@ -220,7 +221,7 @@ class _ScreenLeaveApplicationPageState
       if (selectedProject == null) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please select your Project',
+          message: context.tr('please_select_your_project'),
           type: SnackBarType.error,
         );
         return;
@@ -229,7 +230,7 @@ class _ScreenLeaveApplicationPageState
       if (selectedLeaveType == null) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please select Type of Leave',
+          message: context.tr('please_select_type_of_leave'),
           type: SnackBarType.error,
         );
         return;
@@ -238,7 +239,7 @@ class _ScreenLeaveApplicationPageState
       if (toDate != null && fromDate != null && toDate!.isBefore(fromDate!)) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please check the From & To Dates',
+          message: context.tr('please_check_the_from_and_to_dates'),
           type: SnackBarType.error,
         );
         return;
@@ -304,7 +305,7 @@ class _ScreenLeaveApplicationPageState
             ),
           ),
           title: TextStyles.title(
-            text: 'Leave Application',
+            text: context.tr('leave_application'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -323,7 +324,7 @@ class _ScreenLeaveApplicationPageState
                   // Header text
                   TextStyles.body(
                     text:
-                        'Please fill the form, attach your report (if any) and submit your leaves for approval',
+                        context.tr('please_fill_the_form_attach_your_report_if_any_a'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w500,
                     maxLines: 2,
@@ -333,7 +334,7 @@ class _ScreenLeaveApplicationPageState
 
                   // Project dropdown
                   TextStyles.caption(
-                    text: 'Project *',
+                    text: context.tr('project_2'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
@@ -343,7 +344,7 @@ class _ScreenLeaveApplicationPageState
                       if (state is ProjectsLoadingState) {
                         return CustomProjectDropdown(
                           selectedProject: selectedProject,
-                          projects: const [],
+                          projects: [],
                           onChanged: (project) {
                             setState(() {
                               selectedProject = project;
@@ -356,7 +357,7 @@ class _ScreenLeaveApplicationPageState
                       if (state is ProjectsErrorState) {
                         return CustomProjectDropdown(
                           selectedProject: selectedProject,
-                          projects: const [],
+                          projects: [],
                           onChanged: (project) {
                             setState(() {
                               selectedProject = project;
@@ -389,7 +390,7 @@ class _ScreenLeaveApplicationPageState
                               selectedProject = project;
                             });
                           },
-                          hintText: 'Select Project',
+                          hintText: context.tr('select_project'),
                           showIcon: true,
                           showLocation: true,
                         );
@@ -403,14 +404,14 @@ class _ScreenLeaveApplicationPageState
 
                   // From Date
                   TextStyles.caption(
-                    text: 'From Date *',
+                    text: context.tr('from_date'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
                   ResponsiveSizedBox.height10,
                   CustomFormtextfield(
                     controller: fromDateController,
-                    hintText: 'Select From Date',
+                    hintText: context.tr('select_from_date'),
                     readOnly: true,
                     onTap: () => _selectFromDate(context),
                     suffixIcon: const Icon(
@@ -429,14 +430,14 @@ class _ScreenLeaveApplicationPageState
 
                   // To Date
                   TextStyles.caption(
-                    text: 'To Date *',
+                    text: context.tr('to_date'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
                   ResponsiveSizedBox.height10,
                   CustomFormtextfield(
                     controller: toDateController,
-                    hintText: 'Select To Date',
+                    hintText: context.tr('select_to_date'),
                     readOnly: true,
                     onTap: () => _selectToDate(context),
                     suffixIcon: const Icon(
@@ -455,7 +456,7 @@ class _ScreenLeaveApplicationPageState
 
                   // Type of Leave dropdown
                   TextStyles.caption(
-                    text: 'Type of Leave *',
+                    text: context.tr('type_of_leave'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
@@ -486,7 +487,7 @@ class _ScreenLeaveApplicationPageState
                               ),
                               ResponsiveSizedBox.width(3),
                               TextStyles.medium(
-                                text: 'Loading leave types...',
+                                text: context.tr('loading_leave_types'),
                                 color: Appcolors.kgreyColor,
                               ),
                             ],
@@ -526,7 +527,7 @@ class _ScreenLeaveApplicationPageState
                                   );
                                 },
                                 child: TextStyles.medium(
-                                  text: 'Retry',
+                                  text: context.tr('retry'),
                                   color: Appcolors.kprimarycolor,
                                 ),
                               ),
@@ -539,7 +540,7 @@ class _ScreenLeaveApplicationPageState
                         final leaveCategories = state.leavecategories;
                         return CustomDropdown(
                           value: selectedLeaveType?.leaveCategory,
-                          hint: 'Select Type of Leave',
+                          hint: context.tr('select_type_of_leave'),
                           items: leaveCategories
                               .map((e) => e.leaveCategory ?? '')
                               .where((e) => e.isNotEmpty)
@@ -568,14 +569,14 @@ class _ScreenLeaveApplicationPageState
 
                   // Remarks (Optional)
                   TextStyles.caption(
-                    text: 'Remarks (Optional)',
+                    text: context.tr('remarks_optional'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w600,
                   ),
                   ResponsiveSizedBox.height10,
                   CustomFormtextfield(
                     controller: remarksController,
-                    hintText: 'Enter any additional remarks',
+                    hintText: context.tr('enter_any_additional_remarks'),
                     maxLines: 4,
                   ),
 
@@ -623,7 +624,7 @@ class _ScreenLeaveApplicationPageState
                                   ),
                                 )
                               : TextStyles.body(
-                                  text: 'Submit Leave',
+                                  text: context.tr('submit_leave'),
                                   color: Appcolors.kwhitecolor,
                                   weight: FontWeight.w600,
                                 ),

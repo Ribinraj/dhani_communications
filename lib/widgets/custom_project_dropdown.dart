@@ -3,6 +3,7 @@ import 'package:dhani_communications/core/constants.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:dhani_communications/features/dashboard/models/project_model.dart';
 import 'package:flutter/material.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class CustomProjectDropdown extends StatelessWidget {
   final ProjectModel? selectedProject;
@@ -51,7 +52,7 @@ class CustomProjectDropdown extends StatelessWidget {
             ),
             ResponsiveSizedBox.width(3),
             TextStyles.medium(
-              text: 'Loading projects...',
+              text: context.tr('loading_projects'),
               color: Appcolors.kgreyColor,
             ),
           ],
@@ -82,7 +83,7 @@ class CustomProjectDropdown extends StatelessWidget {
               TextButton(
                 onPressed: onRetry,
                 child: TextStyles.medium(
-                  text: 'Retry',
+                  text: context.tr('retry'),
                   color: Appcolors.kprimarycolor,
                 ),
               ),
@@ -110,7 +111,7 @@ class CustomProjectDropdown extends StatelessWidget {
               ResponsiveSizedBox.width(3),
             ],
             TextStyles.medium(
-              text: 'No projects available',
+              text: context.tr('no_projects_available'),
               color: Appcolors.kgreyColor,
             ),
           ],

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dhani_communications/core/colors.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 import 'package:dhani_communications/core/network_services.dart';
 import 'package:dhani_communications/core/pushnotification_controller.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
@@ -88,6 +89,7 @@ void main() async {
   // Initialize PushNotifications helper (this will request permissions, create channel, etc.)
   // It's okay to await this so notifications are ready by the time the app runs.
   await PushNotifications.instance.init();
+  await AppLocalization.instance.load();
 
   // Optional: request permissions again for iOS if you want explicit control here
   if (Platform.isIOS) {
@@ -253,26 +255,30 @@ class MyApp extends StatelessWidget {
               UpdateMachineHireApprovalBloc(repository: approvelreppo),
         ),
       ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          appBarTheme: AppBarTheme(
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              statusBarIconBrightness: Brightness.dark,
-              statusBarBrightness: Brightness.light,
+      child: AppLocalizationScope(
+        localization: AppLocalization.instance,
+        child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          title: 'Dhani Communications',
+          theme: ThemeData(
+            appBarTheme: AppBarTheme(
+              systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: Brightness.dark,
+                statusBarBrightness: Brightness.light,
+              ),
+              surfaceTintColor: Appcolors.kappbarbackgroundcolor,
+              elevation: 1,
+              shadowColor: Appcolors.kgreyColor.withValues(alpha: 0.1),
             ),
-            surfaceTintColor: Appcolors.kappbarbackgroundcolor,
-            elevation: 1,
-            shadowColor: Appcolors.kgreyColor.withValues(alpha: 0.1),
+            fontFamily: 'Helvetica',
+            fontFamilyFallback: const ['NotoSansDevanagari'],
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            scaffoldBackgroundColor: Appcolors.kwhitecolor,
           ),
-          fontFamily: 'Helvetica',
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          scaffoldBackgroundColor: Appcolors.kwhitecolor,
+          routerConfig: AppRouter.router,
         ),
-        routerConfig: AppRouter.router,
       ),
     );
   }

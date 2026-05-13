@@ -4,6 +4,7 @@ import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:dhani_communications/widgets/custom_snackbar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 /// A reusable gallery-only attachment picker widget.
 /// Supports images (jpg, jpeg, png, gif) and PDF files.
@@ -41,7 +42,9 @@ class CustomGalleryPicker extends StatelessWidget {
         if (context.mounted) {
           CustomSnackbar.show(
             context: context,
-            message: '${result.files.length} file(s) attached successfully!',
+            message: context.trParams('files_attached_successfully', {
+              'count': result.files.length,
+            }),
             type: SnackBarType.success,
           );
         }
@@ -50,7 +53,7 @@ class CustomGalleryPicker extends StatelessWidget {
       if (context.mounted) {
         CustomSnackbar.show(
           context: context,
-          message: 'Error picking files',
+          message: context.tr('error_picking_files'),
           type: SnackBarType.error,
         );
       }
@@ -83,7 +86,7 @@ class CustomGalleryPicker extends StatelessWidget {
             children: [
               Expanded(
                 child: TextStyles.medium(
-                  text: 'Attachments',
+                  text: context.tr('attachments'),
                   color: Appcolors.kprimarycolor,
                   weight: FontWeight.bold,
                 ),

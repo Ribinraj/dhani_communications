@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenEmployeeLeavesPage extends StatefulWidget {
   const ScreenEmployeeLeavesPage({super.key});
@@ -63,7 +64,7 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
   void _showFilterDialog() {
     DateFilterDialog.show(
       context: context,
-      title: 'Filter Leaves',
+      title: context.tr('filter_leaves'),
       initialFromDate: _fromDate,
       initialToDate: _toDate,
       lastDate: DateTime(2030),
@@ -156,7 +157,7 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
           ),
         ),
         title: TextStyles.title(
-          text: 'Employee Leaves',
+          text: context.tr('employee_leaves'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -222,7 +223,7 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
                         backgroundColor: Appcolors.kprimarycolor,
                       ),
                       child: TextStyles.medium(
-                        text: 'Retry',
+                        text: context.tr('retry'),
                         color: Appcolors.kwhitecolor,
                       ),
                     ),
@@ -236,7 +237,7 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
 
               if (leavesList.isEmpty) {
                 return NoDataWidget(
-                  title: "Leaves are Empty",
+                  title: context.tr('leaves_are_empty'),
                   assetIcon: Appconstants.leaves,
                 );
               }
@@ -274,7 +275,7 @@ class _ScreenEmployeeLeavesPageState extends State<ScreenEmployeeLeavesPage> {
                   ),
                   ResponsiveSizedBox.height20,
                   TextStyles.subheadline(
-                    text: 'No leave records found',
+                    text: context.tr('no_leave_records_found'),
                     color: Appcolors.kgreyColor,
                   ),
                 ],

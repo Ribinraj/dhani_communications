@@ -15,6 +15,7 @@ import 'package:dhani_communications/widgets/custom_project_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenProjectDprPage extends StatefulWidget {
   const ScreenProjectDprPage({super.key});
@@ -89,7 +90,7 @@ class _ScreenProjectDprPageState extends State<ScreenProjectDprPage> {
           ),
         ),
         title: TextStyles.title(
-          text: 'Project DPR',
+          text: context.tr('project_dpr'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -129,7 +130,7 @@ class _ScreenProjectDprPageState extends State<ScreenProjectDprPage> {
                 if (state is ProjectsLoadingState) {
                   return CustomProjectDropdown(
                     selectedProject: _selectedProject,
-                    projects: const [],
+                    projects: [],
                     onChanged: _onProjectSelected,
                     isLoading: true,
                   );
@@ -138,7 +139,7 @@ class _ScreenProjectDprPageState extends State<ScreenProjectDprPage> {
                 if (state is ProjectsErrorState) {
                   return CustomProjectDropdown(
                     selectedProject: _selectedProject,
-                    projects: const [],
+                    projects: [],
                     onChanged: _onProjectSelected,
                     errorMessage: state.message,
                     onRetry: () {
@@ -152,7 +153,7 @@ class _ScreenProjectDprPageState extends State<ScreenProjectDprPage> {
                     selectedProject: _selectedProject,
                     projects: state.projects,
                     onChanged: _onProjectSelected,
-                    hintText: 'Select a project',
+                    hintText: context.tr('select_a_project'),
                     showIcon: true,
                     showLocation: true,
                   );
@@ -170,7 +171,7 @@ class _ScreenProjectDprPageState extends State<ScreenProjectDprPage> {
               builder: (context, state) {
                 if (_selectedProject == null) {
                   return NoDataWidget(
-                    title: "Select a project to view DPR",
+                    title: context.tr('select_a_project_to_view_dpr'),
                     assetIcon: Appconstants.dprreport,
                   );
                 }
@@ -213,7 +214,7 @@ class _ScreenProjectDprPageState extends State<ScreenProjectDprPage> {
                             backgroundColor: Appcolors.kprimarycolor,
                           ),
                           child: TextStyles.medium(
-                            text: 'Retry',
+                            text: context.tr('retry'),
                             color: Appcolors.kwhitecolor,
                           ),
                         ),
@@ -227,7 +228,7 @@ class _ScreenProjectDprPageState extends State<ScreenProjectDprPage> {
 
                   if (dprList.isEmpty) {
                     return NoDataWidget(
-                      title: 'No DPR records found',
+                      title: context.tr('no_dpr_records_found'),
                       assetIcon: Appconstants.dprreport,
                     );
                   }

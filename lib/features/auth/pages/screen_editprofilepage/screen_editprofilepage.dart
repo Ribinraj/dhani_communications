@@ -13,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dhani_communications/core/appconstants.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenEditProfilePage extends StatefulWidget {
   final ProfileData? profileData;
@@ -256,6 +257,7 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
                   backgroundColor: Appcolors.kwhitecolor.withOpacity(0.95),
                   elevation: 2,
                   shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
+                   toolbarHeight: ResponsiveUtils.hp(8), 
                   flexibleSpace: _buildAppBar(),
                 ),
                 // Form Content
@@ -280,7 +282,7 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
                             horizontal: ResponsiveUtils.wp(4),
                           ),
                           child: TextStyles.caption(
-                            text: '* marked fields are mandatory',
+                            text: context.tr('marked_fields_are_mandatory'),
                             color: Appcolors.kgreyColor,
                             textAlign: TextAlign.center,
                           ),
@@ -314,7 +316,7 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
                         ),
                         ResponsiveSizedBox.height15,
                         TextStyles.medium(
-                          text: 'Updating profile...',
+                          text: context.tr('updating_profile'),
                           color: Appcolors.kblackcolor,
                         ),
                       ],
@@ -352,13 +354,13 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextStyles.subheadline(
-                        text: 'Edit Profile',
+                        text: context.tr('edit_profile'),
                         weight: FontWeight.bold,
                         color: Appcolors.kblackcolor,
                         overflow: TextOverflow.ellipsis,
                       ),
                       TextStyles.caption(
-                        text: 'Update your information',
+                        text: context.tr('update_your_information'),
                         color: Appcolors.kgreyColor.withOpacity(0.7),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -470,7 +472,7 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
 
   Widget _buildPersonalInfoSection() {
     return _buildSection(
-      title: 'Personal Information',
+      title: context.tr('personal_information_2'),
       icon: Icons.person_outline_rounded,
       children: [
         // Marital Status Dropdown
@@ -478,7 +480,7 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
           label: 'Marital Status*',
           value: _selectedMaritalStatus,
           items: _maritalStatusList,
-          hint: 'Select Marital Status',
+          hint: context.tr('select_marital_status'),
           onChanged: (value) {
             setState(() {
               _selectedMaritalStatus = value;
@@ -525,7 +527,7 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
 
   Widget _buildInsuranceSection() {
     return _buildSection(
-      title: 'Insurance Details',
+      title: context.tr('insurance_details'),
       icon: Icons.security_rounded,
       children: [
         _buildTextField(
@@ -782,7 +784,7 @@ class _ScreenEditProfilePageState extends State<ScreenEditProfilePage> {
             ),
             ResponsiveSizedBox.width(2),
             TextStyles.subheadline(
-              text: 'Update Profile',
+              text: context.tr('update_profile'),
               weight: FontWeight.bold,
               color: Appcolors.kwhitecolor,
             ),

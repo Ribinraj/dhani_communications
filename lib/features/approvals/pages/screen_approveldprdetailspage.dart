@@ -9,6 +9,7 @@ import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenApprovelDprDetailsPage extends StatelessWidget {
   final ApproveDprDataModel dpr;
@@ -92,7 +93,7 @@ class ScreenApprovelDprDetailsPage extends StatelessWidget {
                   ),
                   ResponsiveSizedBox.width(3),
                   TextStyles.headline(
-                    text: 'Approve DPR',
+                    text: context.tr('approve_dpr'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -100,7 +101,7 @@ class ScreenApprovelDprDetailsPage extends StatelessWidget {
               ),
               ResponsiveSizedBox.height15,
               TextStyles.body(
-                text: 'Are you sure you want to approve this DPR progress?',
+                text: context.tr('are_you_sure_you_want_to_approve_this_dpr_progre'),
                 color: Appcolors.kgreyColor,
               ),
               ResponsiveSizedBox.height30,
@@ -122,7 +123,7 @@ class ScreenApprovelDprDetailsPage extends StatelessWidget {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Cancel',
+                        text: context.tr('cancel'),
                         weight: FontWeight.w600,
                         color: Appcolors.kgreyColor,
                       ),
@@ -147,7 +148,7 @@ class ScreenApprovelDprDetailsPage extends StatelessWidget {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Approve',
+                        text: context.tr('approve'),
                         weight: FontWeight.w600,
                         color: Appcolors.kwhitecolor,
                       ),
@@ -166,8 +167,8 @@ class ScreenApprovelDprDetailsPage extends StatelessWidget {
   void _rejectDpr(BuildContext context) {
     RejectionBottomSheet.show(
       context: context,
-      title: 'Reject DPR',
-      subtitle: 'Please provide a reason for rejecting this DPR progress.',
+      title: context.tr('reject_dpr'),
+      subtitle: context.tr('please_provide_a_reason_for_rejecting_this_dpr_p'),
       onReject: (remarks) {
         context.read<UpdateApprovelDprBloc>().add(
           RejectDprEvent(progressId: dpr.progressId, approverRemarks: remarks),
@@ -235,7 +236,7 @@ class ScreenApprovelDprDetailsPage extends StatelessWidget {
             ),
           ),
           title: TextStyles.subheadline(
-            text: 'DPR Approval Details',
+            text: context.tr('dpr_approval_details'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -261,7 +262,7 @@ class ScreenApprovelDprDetailsPage extends StatelessWidget {
                         onPressed: () => _rejectDpr(context),
                         icon: const Icon(Icons.cancel, color: Colors.white),
                         label: TextStyles.medium(
-                          text: 'Reject',
+                          text: context.tr('reject'),
                           weight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -285,7 +286,7 @@ class ScreenApprovelDprDetailsPage extends StatelessWidget {
                           color: Colors.white,
                         ),
                         label: TextStyles.medium(
-                          text: 'Approve',
+                          text: context.tr('approve'),
                           weight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -335,7 +336,7 @@ class ScreenApprovelDprDetailsPage extends StatelessWidget {
                   children: [
                     // DPR Name
                     TextStyles.caption(
-                      text: 'DPR Progress',
+                      text: context.tr('dpr_progress'),
                       color: Appcolors.kwhitecolor.withOpacity(0.9),
                     ),
                     ResponsiveSizedBox.height10,
@@ -388,7 +389,7 @@ class ScreenApprovelDprDetailsPage extends StatelessWidget {
 
               // ─── Employee Info Card ───
               _buildSectionCard(
-                title: 'Employee Information',
+                title: context.tr('employee_information'),
                 children: [
                   _buildDetailRow(
                     icon: Icons.person_outline,
@@ -409,7 +410,7 @@ class ScreenApprovelDprDetailsPage extends StatelessWidget {
 
               // ─── DPR Details Card ───
               _buildSectionCard(
-                title: 'DPR Information',
+                title: context.tr('dpr_information'),
                 children: [
                   _buildDetailRow(
                     icon: Icons.badge_rounded,
@@ -480,12 +481,12 @@ class ScreenApprovelDprDetailsPage extends StatelessWidget {
 
               // ─── User Remarks ───
               _buildRemarksCard(
-                title: 'User Remarks',
+                title: context.tr('user_remarks'),
                 icon: Icons.comment,
                 iconColor: Colors.amber.shade700,
                 bgColor: Colors.amber.withOpacity(0.1),
                 remarks: dpr.userRemarks,
-                emptyText: 'No remarks provided',
+                emptyText: context.tr('no_remarks_provided'),
               ),
 
               // ─── Approver Remarks ───
@@ -493,7 +494,7 @@ class ScreenApprovelDprDetailsPage extends StatelessWidget {
                   dpr.approverRemarks!.isNotEmpty) ...[
                 ResponsiveSizedBox.height(3),
                 _buildRemarksCard(
-                  title: 'Approver Remarks',
+                  title: context.tr('approver_remarks'),
                   icon: Icons.verified_user_rounded,
                   iconColor: Colors.green.shade700,
                   bgColor: Colors.green.withOpacity(0.1),
@@ -507,7 +508,7 @@ class ScreenApprovelDprDetailsPage extends StatelessWidget {
                   dpr.headquarterRemarks!.isNotEmpty) ...[
                 ResponsiveSizedBox.height(3),
                 _buildRemarksCard(
-                  title: 'HQ Remarks',
+                  title: context.tr('hq_remarks'),
                   icon: Icons.business,
                   iconColor: Colors.blue.shade700,
                   bgColor: Colors.blue.withOpacity(0.1),

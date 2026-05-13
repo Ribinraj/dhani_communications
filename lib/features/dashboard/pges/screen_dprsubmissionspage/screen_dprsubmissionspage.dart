@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenDprSubmissionsPage extends StatefulWidget {
   const ScreenDprSubmissionsPage({super.key});
@@ -60,7 +61,7 @@ class _ScreenDprSubmissionsPageState extends State<ScreenDprSubmissionsPage> {
   void _showFilterDialog() {
     DateFilterDialog.show(
       context: context,
-      title: 'Filter Submissions',
+      title: context.tr('filter_submissions'),
       initialFromDate: _fromDate,
       initialToDate: _toDate,
       onApply: (fromDate, toDate) {
@@ -150,7 +151,7 @@ class _ScreenDprSubmissionsPageState extends State<ScreenDprSubmissionsPage> {
             ),
           ),
           title: TextStyles.subheadline(
-            text: 'My DPR Submissions',
+            text: context.tr('my_dpr_submissions'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -217,7 +218,7 @@ class _ScreenDprSubmissionsPageState extends State<ScreenDprSubmissionsPage> {
                         backgroundColor: Appcolors.kprimarycolor,
                       ),
                       child: TextStyles.medium(
-                        text: 'Retry',
+                        text: context.tr('retry'),
                         color: Appcolors.kwhitecolor,
                       ),
                     ),
@@ -241,7 +242,7 @@ class _ScreenDprSubmissionsPageState extends State<ScreenDprSubmissionsPage> {
                       ),
                       ResponsiveSizedBox.height20,
                       TextStyles.subheadline(
-                        text: 'No DPR submissions found',
+                        text: context.tr('no_dpr_submissions_found'),
                         color: Appcolors.kgreyColor,
                       ),
                     ],
@@ -276,7 +277,7 @@ class _ScreenDprSubmissionsPageState extends State<ScreenDprSubmissionsPage> {
                   ),
                   ResponsiveSizedBox.height20,
                   TextStyles.subheadline(
-                    text: 'No DPR submissions found',
+                    text: context.tr('no_dpr_submissions_found'),
                     color: Appcolors.kgreyColor,
                   ),
                 ],

@@ -16,6 +16,7 @@ import 'package:intl/intl.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 extension TimeFormatExtension on String? {
   String to12Hour() {
@@ -81,7 +82,7 @@ class _ScreenLabourAttendancePageState
   void _showFilterDialog() {
     DateFilterDialog.show(
       context: context,
-      title: 'Filter Attendance',
+      title: context.tr('filter_attendance'),
       initialFromDate: _fromDate,
       initialToDate: _toDate,
       onApply: (fromDate, toDate) {
@@ -138,7 +139,7 @@ class _ScreenLabourAttendancePageState
           ),
         ),
         title: TextStyles.title(
-          text: 'Labour Attendance',
+          text: context.tr('labour_attendance'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -206,7 +207,7 @@ class _ScreenLabourAttendancePageState
                         backgroundColor: Appcolors.kprimarycolor,
                       ),
                       child: TextStyles.medium(
-                        text: 'Retry',
+                        text: context.tr('retry'),
                         color: Appcolors.kwhitecolor,
                       ),
                     ),
@@ -221,7 +222,7 @@ class _ScreenLabourAttendancePageState
               if (attendanceList.isEmpty) {
                 return NoDataWidget(
                   assetIcon: Appconstants.contractlabours,
-                  title: "Attendance list is Empty",
+                  title: context.tr('attendance_list_is_empty'),
                 );
               }
 
@@ -259,7 +260,7 @@ class _ScreenLabourAttendancePageState
                   ),
                   ResponsiveSizedBox.height20,
                   TextStyles.subheadline(
-                    text: 'No attendance records found',
+                    text: context.tr('no_attendance_records_found'),
                     color: Appcolors.kgreyColor,
                   ),
                 ],

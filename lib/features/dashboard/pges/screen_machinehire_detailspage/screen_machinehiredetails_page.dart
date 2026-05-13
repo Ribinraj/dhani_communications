@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenMachineHireDetailPage extends StatefulWidget {
   final MachineHireModel? machineHire;
@@ -98,7 +99,7 @@ class _ScreenMachineHireDetailPageState
             ),
           ),
           title: TextStyles.subheadline(
-            text: 'Machine Hire Details',
+            text: context.tr('machine_hire_details'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -115,7 +116,7 @@ class _ScreenMachineHireDetailPageState
               ),
               ResponsiveSizedBox.height20,
               TextStyles.subheadline(
-                text: 'No machine hire data available',
+                text: context.tr('no_machine_hire_data_available'),
                 color: Appcolors.kgreyColor,
               ),
             ],
@@ -161,7 +162,7 @@ class _ScreenMachineHireDetailPageState
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Machine Hire Details',
+          text: context.tr('machine_hire_details'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -191,7 +192,7 @@ class _ScreenMachineHireDetailPageState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextStyles.subheadline(
-                    text: 'Hire Information',
+                    text: context.tr('hire_information'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -297,7 +298,7 @@ class _ScreenMachineHireDetailPageState
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextStyles.caption(
-                              text: 'Status',
+                              text: context.tr('status'),
                               color: Appcolors.kgreyColor,
                             ),
                             ResponsiveSizedBox.height5,
@@ -369,7 +370,7 @@ class _ScreenMachineHireDetailPageState
                       ),
                       ResponsiveSizedBox.width(2),
                       TextStyles.subheadline(
-                        text: 'Remarks',
+                        text: context.tr('remarks'),
                         weight: FontWeight.bold,
                         color: Appcolors.kblackcolor,
                       ),
@@ -404,7 +405,7 @@ class _ScreenMachineHireDetailPageState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextStyles.subheadline(
-                    text: 'Approver Information',
+                    text: context.tr('approver_information'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -441,7 +442,7 @@ class _ScreenMachineHireDetailPageState
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextStyles.caption(
-                              text: 'Approver Remarks',
+                              text: context.tr('approver_remarks'),
                               color: Appcolors.kgreyColor,
                             ),
                             ResponsiveSizedBox.height5,

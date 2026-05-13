@@ -9,6 +9,7 @@ import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dhani_communications/features/approvals/models/approvels_labourattendencemodel.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
   final ApprovelsLabourattendencemodel attendance;
@@ -34,7 +35,7 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
           ),
         ),
         title: TextStyles.title(
-          text: 'Labour Attendance Details',
+          text: context.tr('labour_attendance_details'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -199,7 +200,7 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
                   // Attendance Photo
                   if (attendance.picture.isNotEmpty) ...[
                     TextStyles.title(
-                      text: 'Attendance Photo',
+                      text: context.tr('attendance_photo'),
                       weight: FontWeight.bold,
                       color: Appcolors.kblackcolor,
                     ),
@@ -235,7 +236,7 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
                                     ),
                                     ResponsiveSizedBox.height10,
                                     TextStyles.caption(
-                                      text: 'Image not available',
+                                      text: context.tr('image_not_available'),
                                       color: Appcolors.kgreyColor,
                                     ),
                                   ],
@@ -264,7 +265,7 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
                   if (attendance.punchOutPicture != null &&
                       attendance.punchOutPicture!.isNotEmpty) ...[
                     TextStyles.title(
-                      text: 'Punch Out Photo',
+                      text: context.tr('punch_out_photo'),
                       weight: FontWeight.bold,
                       color: Appcolors.kblackcolor,
                     ),
@@ -300,7 +301,7 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
                                     ),
                                     ResponsiveSizedBox.height10,
                                     TextStyles.caption(
-                                      text: 'Image not available',
+                                      text: context.tr('image_not_available'),
                                       color: Appcolors.kgreyColor,
                                     ),
                                   ],
@@ -327,7 +328,7 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
 
                   // Labour Info Section
                   TextStyles.title(
-                    text: 'Labour Info',
+                    text: context.tr('labour_info'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -417,7 +418,7 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
 
                   // Punch In / Punch Out Section
                   TextStyles.title(
-                    text: 'Punch Details',
+                    text: context.tr('punch_details'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -467,7 +468,7 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
 
                   // Location Section
                   TextStyles.title(
-                    text: 'Location Details',
+                    text: context.tr('location_details'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -507,7 +508,7 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
 
                   // Remarks Section
                   TextStyles.title(
-                    text: 'Remarks',
+                    text: context.tr('remarks'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -617,7 +618,7 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
                               color: Colors.red,
                             ),
                             label: TextStyles.medium(
-                              text: 'Reject',
+                              text: context.tr('reject'),
                               weight: FontWeight.w600,
                               color: Colors.red,
                             ),
@@ -646,7 +647,7 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
                               color: Colors.white,
                             ),
                             label: TextStyles.medium(
-                              text: 'Approve',
+                              text: context.tr('approve'),
                               weight: FontWeight.w600,
                               color: Appcolors.kwhitecolor,
                             ),
@@ -781,7 +782,7 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
                   ),
                   ResponsiveSizedBox.width(3),
                   TextStyles.headline(
-                    text: 'Approve Attendance',
+                    text: context.tr('approve_attendance'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -790,7 +791,7 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
               ResponsiveSizedBox.height15,
               TextStyles.body(
                 text:
-                    'Are you sure you want to approve this labour attendance?',
+                    context.tr('are_you_sure_you_want_to_approve_this_labour_att'),
                 color: Appcolors.kgreyColor,
               ),
               ResponsiveSizedBox.height30,
@@ -812,7 +813,7 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Cancel',
+                        text: context.tr('cancel'),
                         weight: FontWeight.w600,
                         color: Appcolors.kgreyColor,
                       ),
@@ -839,7 +840,7 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Approve',
+                        text: context.tr('approve'),
                         weight: FontWeight.w600,
                         color: Appcolors.kwhitecolor,
                       ),
@@ -858,8 +859,8 @@ class ScreenApproveLabourAttendanceDetailPage extends StatelessWidget {
   void _showRejectBottomSheet(BuildContext context) {
     RejectionBottomSheet.show(
       context: context,
-      title: 'Reject Labour Attendance',
-      subtitle: 'Please provide a reason for rejecting this attendance record.',
+      title: context.tr('reject_labour_attendance'),
+      subtitle: context.tr('please_provide_a_reason_for_rejecting_this_atten'),
       onReject: (remarks) {
         context.read<UpdateLabourApprovelAttendenceBloc>().add(
           RejectLabourAttendanceEvent(

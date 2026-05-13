@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenDprProgressPage extends StatefulWidget {
   const ScreenDprProgressPage({super.key});
@@ -108,8 +109,8 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
     // Validate project selection
     if (selectedProject == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a project'),
+        SnackBar(
+          content: Text(context.tr('please_select_a_project')),
           backgroundColor: Appcolors.kredcolor,
         ),
       );
@@ -119,8 +120,8 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
     // Validate DPR selection
     if (selectedDpr == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a project DPR'),
+        SnackBar(
+          content: Text(context.tr('please_select_a_project_dpr')),
           backgroundColor: Appcolors.kredcolor,
         ),
       );
@@ -130,8 +131,8 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
     // Validate date selection
     if (selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select progress date'),
+        SnackBar(
+          content: Text(context.tr('please_select_progress_date')),
           backgroundColor: Appcolors.kredcolor,
         ),
       );
@@ -142,8 +143,8 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
     final quantity = double.tryParse(progressQuantityController.text.trim());
     if (quantity == null || quantity <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a valid progress quantity'),
+        SnackBar(
+          content: Text(context.tr('please_enter_a_valid_progress_quantity')),
           backgroundColor: Appcolors.kredcolor,
         ),
       );
@@ -193,7 +194,7 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
           ),
         ),
         title: TextStyles.title(
-          text: 'DPR Progress Submission',
+          text: context.tr('dpr_progress_submission'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -237,7 +238,7 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
                   /// Header
                   TextStyles.body(
                     text:
-                        'Please fill the form and submit your DPR progress for approval',
+                        context.tr('please_fill_the_form_and_submit_your_dpr_progres'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w500,
                     maxLines: 2,
@@ -246,14 +247,14 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
                   ResponsiveSizedBox.height30,
 
                   /// Project
-                  TextStyles.caption(text: 'Project', weight: FontWeight.w600),
+                  TextStyles.caption(text: context.tr('project'), weight: FontWeight.w600),
                   ResponsiveSizedBox.height10,
                   BlocBuilder<ProjectsBloc, ProjectsState>(
                     builder: (context, state) {
                       if (state is ProjectsLoadingState) {
                         return CustomProjectDropdown(
                           selectedProject: selectedProject,
-                          projects: const [],
+                          projects: [],
                           onChanged: _onProjectSelected,
                           isLoading: true,
                         );
@@ -262,7 +263,7 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
                       if (state is ProjectsErrorState) {
                         return CustomProjectDropdown(
                           selectedProject: selectedProject,
-                          projects: const [],
+                          projects: [],
                           onChanged: _onProjectSelected,
                           errorMessage: state.message,
                           onRetry: () {
@@ -285,7 +286,7 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
                           selectedProject: selectedProject,
                           projects: state.projects,
                           onChanged: _onProjectSelected,
-                          hintText: 'Select Project',
+                          hintText: context.tr('select_project'),
                           showIcon: true,
                           showLocation: true,
                         );
@@ -299,7 +300,7 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
 
                   /// Project DPR
                   TextStyles.caption(
-                    text: 'Project DPR',
+                    text: context.tr('project_dpr'),
                     weight: FontWeight.w600,
                   ),
                   ResponsiveSizedBox.height10,
@@ -310,7 +311,7 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
                       // No project selected — show disabled/inactive dropdown
                       if (!isProjectSelected) {
                         return _buildInactiveDprDropdown(
-                          hint: 'Select a project first',
+                          hint: context.tr('select_a_project_first'),
                         );
                       }
 
@@ -340,7 +341,7 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
                               ),
                               ResponsiveSizedBox.width(3),
                               TextStyles.medium(
-                                text: 'Loading DPR list...',
+                                text: context.tr('loading_dpr_list'),
                                 color: Appcolors.kgreyColor,
                               ),
                             ],
@@ -385,7 +386,7 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
                                   }
                                 },
                                 child: TextStyles.medium(
-                                  text: 'Retry',
+                                  text: context.tr('retry'),
                                   color: Appcolors.kprimarycolor,
                                 ),
                               ),
@@ -400,13 +401,13 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
 
                         if (dprList.isEmpty) {
                           return _buildInactiveDprDropdown(
-                            hint: 'No DPR records found for this project',
+                            hint: context.tr('no_dpr_records_found_for_this_project'),
                           );
                         }
 
                         return CustomDropdown(
                           value: selectedDpr?.description,
-                          hint: 'Select Project DPR',
+                          hint: context.tr('select_project_dpr'),
                           items: dprList
                               .map((e) => e.description)
                               .where((e) => e.isNotEmpty)
@@ -428,7 +429,7 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
                       }
 
                       return _buildInactiveDprDropdown(
-                        hint: 'Select a project first',
+                        hint: context.tr('select_a_project_first'),
                       );
                     },
                   ),
@@ -443,13 +444,13 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
 
                   /// Progress Date
                   TextStyles.caption(
-                    text: 'Progress Date',
+                    text: context.tr('progress_date'),
                     weight: FontWeight.w600,
                   ),
                   ResponsiveSizedBox.height10,
                   CustomFormtextfield(
                     controller: progressDateController,
-                    hintText: 'Select Progress Date',
+                    hintText: context.tr('select_progress_date'),
                     readOnly: true,
                     onTap: () => _selectDate(context),
                     suffixIcon: const Icon(
@@ -468,13 +469,13 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
 
                   /// Progress Quantity
                   TextStyles.caption(
-                    text: 'Progress Quantity',
+                    text: context.tr('progress_quantity'),
                     weight: FontWeight.w600,
                   ),
                   ResponsiveSizedBox.height10,
                   CustomFormtextfield(
                     controller: progressQuantityController,
-                    hintText: 'Enter Progress Quantity',
+                    hintText: context.tr('enter_progress_quantity'),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -495,13 +496,13 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
 
                   /// Remarks
                   TextStyles.caption(
-                    text: 'Remarks (Optional)',
+                    text: context.tr('remarks_optional'),
                     weight: FontWeight.w600,
                   ),
                   ResponsiveSizedBox.height10,
                   CustomFormtextfield(
                     controller: remarksController,
-                    hintText: 'Enter remarks',
+                    hintText: context.tr('enter_remarks_2'),
                     maxLines: 4,
                   ),
 
@@ -537,7 +538,7 @@ class _ScreenDprProgressPageState extends State<ScreenDprProgressPage> {
                                   ),
                                 )
                               : TextStyles.body(
-                                  text: 'Submit DPR Progress',
+                                  text: context.tr('submit_dpr_progress'),
                                   color: Appcolors.kwhitecolor,
                                   weight: FontWeight.w600,
                                 ),

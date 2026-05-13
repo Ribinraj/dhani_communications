@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenInventorypage extends StatefulWidget {
   const ScreenInventorypage({super.key});
@@ -42,7 +43,7 @@ class _ScreenAssetsPageState extends State<ScreenInventorypage> {
           ),
         ),
         title: TextStyles.title(
-          text: 'Inventory',
+          text: context.tr('inventory'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -68,7 +69,7 @@ class _ScreenAssetsPageState extends State<ScreenInventorypage> {
 
             if (assetsList.isEmpty) {
               return NoDataWidget(
-                title: "Inventory is Empty",
+                title: context.tr('inventory_is_empty'),
                 assetIcon: Appconstants.inventory,
               );
             }
@@ -89,7 +90,7 @@ class _ScreenAssetsPageState extends State<ScreenInventorypage> {
           }
 
           return NoDataWidget(
-            title: "No Inventory Found",
+            title: context.tr('no_inventory_found'),
             assetIcon: Appconstants.inventory,
           );
         },

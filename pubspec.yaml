@@ -82,6 +82,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/languages/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -103,6 +104,9 @@ flutter:
           weight: 700
         - asset: assets/fonts/helvetica-light-587ebe5a59211.ttf
           weight: 300
+    - family: NotoSansDevanagari
+      fonts:
+        - asset: assets/fonts/NotoSansDevanagari.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

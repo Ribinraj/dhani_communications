@@ -13,6 +13,7 @@ import 'package:dhani_communications/widgets/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenAssetTransferPage extends StatefulWidget {
   final CompanyAssetModel asset;
@@ -80,7 +81,7 @@ class _ScreenAssetTransferPageState extends State<ScreenAssetTransferPage> {
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Transfer Asset',
+          text: context.tr('transfer_asset_2'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -180,7 +181,7 @@ class _ScreenAssetTransferPageState extends State<ScreenAssetTransferPage> {
 
                 // Transfer To Dropdown
                 TextStyles.medium(
-                  text: 'Transfer To',
+                  text: context.tr('transfer_to'),
                   weight: FontWeight.w600,
                   color: Appcolors.kblackcolor,
                 ),
@@ -211,7 +212,7 @@ class _ScreenAssetTransferPageState extends State<ScreenAssetTransferPage> {
                             ),
                             SizedBox(width: ResponsiveUtils.wp(3)),
                             TextStyles.caption(
-                              text: 'Loading employees...',
+                              text: context.tr('loading_employees'),
                               color: Appcolors.kgreyColor,
                             ),
                           ],
@@ -242,7 +243,7 @@ class _ScreenAssetTransferPageState extends State<ScreenAssetTransferPage> {
                             SizedBox(width: ResponsiveUtils.wp(3)),
                             Expanded(
                               child: TextStyles.caption(
-                                text: 'No employees available',
+                                text: context.tr('no_employees_available'),
                                 color: Colors.red,
                               ),
                             ),
@@ -253,7 +254,7 @@ class _ScreenAssetTransferPageState extends State<ScreenAssetTransferPage> {
 
                     return CustomDropdown(
                       value: _selectedEmployeeName,
-                      hint: 'Select employee',
+                      hint: context.tr('select_employee'),
                       items: _employees.map((e) => e.employeeName).toList(),
                       onChanged: (value) {
                         setState(() {
@@ -276,14 +277,14 @@ class _ScreenAssetTransferPageState extends State<ScreenAssetTransferPage> {
 
                 // Remarks Field
                 TextStyles.medium(
-                  text: 'Remarks',
+                  text: context.tr('remarks'),
                   weight: FontWeight.w600,
                   color: Appcolors.kblackcolor,
                 ),
                 ResponsiveSizedBox.height10,
                 CustomTextField(
                   controller: _remarksController,
-                  hintText: 'Enter remarks (optional)',
+                  hintText: context.tr('enter_remarks_optional'),
                   prefixIcon: Icons.notes,
                   keyboardType: TextInputType.multiline,
                 ),
@@ -325,7 +326,7 @@ class _ScreenAssetTransferPageState extends State<ScreenAssetTransferPage> {
                                   const Icon(Icons.swap_horiz_rounded),
                                   SizedBox(width: ResponsiveUtils.wp(2)),
                                   TextStyles.medium(
-                                    text: 'Transfer Asset',
+                                    text: context.tr('transfer_asset_2'),
                                     weight: FontWeight.w600,
                                     color: Appcolors.kwhitecolor,
                                   ),

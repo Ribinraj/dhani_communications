@@ -2,6 +2,7 @@ import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/constants.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:flutter/material.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 /// A reusable date range filter dialog widget.
 ///
@@ -154,7 +155,7 @@ class DateFilterDialog {
                               ),
                             ),
                             child: TextStyles.medium(
-                              text: 'Clear',
+                              text: context.tr('clear'),
                               weight: FontWeight.w600,
                               color: Appcolors.kgreyColor,
                             ),
@@ -177,7 +178,7 @@ class DateFilterDialog {
                               ),
                             ),
                             child: TextStyles.medium(
-                              text: 'Apply',
+                              text: context.tr('apply'),
                               weight: FontWeight.w600,
                               color: Appcolors.kwhitecolor,
                             ),

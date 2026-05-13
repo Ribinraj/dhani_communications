@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenMachineHiringPage extends StatefulWidget {
   const ScreenMachineHiringPage({super.key});
@@ -47,7 +48,7 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
   void _showFilterDialog() {
     DateFilterDialog.show(
       context: context,
-      title: 'Filter Hiring',
+      title: context.tr('filter_hiring'),
       initialFromDate: _fromDate,
       initialToDate: _toDate,
       onApply: (fromDate, toDate) {
@@ -121,7 +122,7 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Machine Hiring',
+          text: context.tr('machine_hiring'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -172,7 +173,7 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
 
             if (hiringList.isEmpty) {
               return NoDataWidget(
-                title: 'No hiring records found',
+                title: context.tr('no_hiring_records_found'),
                 assetIcon: Appconstants.machinery,
               );
             }
@@ -193,7 +194,7 @@ class _ScreenMachineHiringPageState extends State<ScreenMachineHiringPage> {
           }
 
           return NoDataWidget(
-            title: 'No hiring records found',
+            title: context.tr('no_hiring_records_found'),
             assetIcon: Appconstants.machinery,
           );
         },

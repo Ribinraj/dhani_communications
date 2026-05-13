@@ -15,6 +15,7 @@ import 'package:dhani_communications/widgets/custom_nondatawidget.dart';
 import 'package:dhani_communications/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class LabourPunchOutPage extends StatefulWidget {
   const LabourPunchOutPage({super.key});
@@ -51,7 +52,7 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
       if (_selectedLabour == null) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please select a punched in labour',
+          message: context.tr('please_select_a_punched_in_labour'),
           type: SnackBarType.error,
         );
         return;
@@ -62,7 +63,7 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
           _wagesController.text.trim().isEmpty) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please enter total wages paid',
+          message: context.tr('please_enter_total_wages_paid'),
           type: SnackBarType.error,
         );
         return;
@@ -82,7 +83,7 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
           if (mounted) {
             CustomSnackbar.show(
               context: context,
-              message: 'Failed to capture image. Please try again.',
+              message: context.tr('failed_to_capture_image_please_try_again'),
               type: SnackBarType.error,
             );
           }
@@ -114,7 +115,7 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
         if (mounted) {
           CustomSnackbar.show(
             context: context,
-            message: 'Error: $e',
+            message: context.trParams('error_message', {'error': e}),
             type: SnackBarType.error,
           );
         }
@@ -158,7 +159,7 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
             ),
           ),
           title: TextStyles.title(
-            text: 'Labour Punch Out',
+            text: context.tr('labour_punch_out'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -217,7 +218,7 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
                               ),
                               ResponsiveSizedBox.width(3),
                               TextStyles.medium(
-                                text: 'Loading punched in labours...',
+                                text: context.tr('loading_punched_in_labours'),
                                 color: Appcolors.kgreyColor,
                               ),
                             ],
@@ -278,7 +279,7 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
 
                         if (punchInList.isEmpty) {
                           return NoDataWidget(
-                            title: "No Punched-In Attendence available",
+                            title: context.tr('no_punched_in_attendence_available'),
                             assetIcon: Appconstants.attenedence,
                           );
                         }
@@ -308,7 +309,7 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
                                     ),
                                     ResponsiveSizedBox.width(3),
                                     TextStyles.medium(
-                                      text: 'Select Punched In Labour',
+                                      text: context.tr('select_punched_in_labour'),
                                       color: Appcolors.kgreyColor,
                                     ),
                                   ],
@@ -393,7 +394,7 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
                       _selectedLabour!.laborType == 'CASUAL') ...[
                     CustomFormtextfield(
                       controller: _wagesController,
-                      hintText: 'Please enter total wages paid',
+                      hintText: context.tr('please_enter_total_wages_paid'),
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
@@ -439,8 +440,7 @@ class _LabourPunchOutPageState extends State<LabourPunchOutPage> {
                                     strokeWidth: 2.5,
                                   ),
                                 )
-                              : Text(
-                                  'Punch Out',
+                              : Text(context.tr('punch_out'),
                                   style: TextStyle(
                                     fontSize: ResponsiveUtils.sp(3.5),
                                     fontWeight: FontWeight.bold,

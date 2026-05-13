@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenAttendanceDetailsPage extends StatelessWidget {
   final AttendanceModel? attendance;
@@ -72,7 +73,7 @@ class ScreenAttendanceDetailsPage extends StatelessWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Could not open maps'),
+              content: Text(context.tr('could_not_open_maps')),
               duration: Duration(milliseconds: 1500),
               behavior: SnackBarBehavior.floating,
               backgroundColor: Colors.red,
@@ -92,7 +93,9 @@ class ScreenAttendanceDetailsPage extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error opening maps: $e'),
+            content: Text(
+              context.trParams('error_opening_maps', {'error': e}),
+            ),
             duration: Duration(milliseconds: 1500),
             behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.red,
@@ -132,7 +135,7 @@ class ScreenAttendanceDetailsPage extends StatelessWidget {
             ),
           ),
           title: TextStyles.title(
-            text: 'Attendance Details',
+            text: context.tr('attendance_details'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -149,7 +152,7 @@ class ScreenAttendanceDetailsPage extends StatelessWidget {
               ),
               ResponsiveSizedBox.height20,
               TextStyles.subheadline(
-                text: 'No attendance data available',
+                text: context.tr('no_attendance_data_available'),
                 color: Appcolors.kgreyColor,
               ),
             ],
@@ -180,7 +183,7 @@ class ScreenAttendanceDetailsPage extends StatelessWidget {
           ),
         ),
         title: TextStyles.title(
-          text: 'Attendance Details',
+          text: context.tr('attendance_details'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -240,7 +243,7 @@ class ScreenAttendanceDetailsPage extends StatelessWidget {
                   ResponsiveSizedBox.height20,
                   // Attendance ID
                   TextStyles.title(
-                    text: 'Attendance Record',
+                    text: context.tr('attendance_record'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -315,7 +318,7 @@ class ScreenAttendanceDetailsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextStyles.title(
-                    text: 'Attendance Information',
+                    text: context.tr('attendance_information'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -473,7 +476,7 @@ class ScreenAttendanceDetailsPage extends StatelessWidget {
                     ),
                     ResponsiveSizedBox.width(2),
                     TextStyles.body(
-                      text: 'Locate on Map',
+                      text: context.tr('locate_on_map'),
                       weight: FontWeight.bold,
                       color: Appcolors.kwhitecolor,
                     ),

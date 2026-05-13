@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenApproveMachineryPage extends StatefulWidget {
   const ScreenApproveMachineryPage({super.key});
@@ -52,7 +53,7 @@ class _ScreenApproveMachineryPageState
   void _showFilterDialog() {
     DateFilterDialog.show(
       context: context,
-      title: 'Filter Machinery',
+      title: context.tr('filter_machinery'),
       initialFromDate: _fromDate,
       initialToDate: _toDate,
       onApply: (fromDate, toDate) {
@@ -123,7 +124,7 @@ class _ScreenApproveMachineryPageState
           ),
         ),
         title: TextStyles.subheadline(
-          text: "Approve Machinery",
+          text: context.tr('approve_machinery'),
           weight: FontWeight.bold,
         ),
         centerTitle: true,
@@ -174,7 +175,7 @@ class _ScreenApproveMachineryPageState
 
                 if (hiringList.isEmpty) {
                   return NoDataWidget(
-                    title: 'No machinery approvals found',
+                    title: context.tr('no_machinery_approvals_found'),
                     assetIcon: Appconstants.machinery,
                     onRefresh: _fetchMachineHires,
                   );
@@ -208,7 +209,7 @@ class _ScreenApproveMachineryPageState
                                   ),
                                   ResponsiveSizedBox.height5,
                                   TextStyles.caption(
-                                    text: "Approve",
+                                    text: context.tr('approve'),
                                     color: Colors.white,
                                     weight: FontWeight.bold,
                                   ),
@@ -235,7 +236,7 @@ class _ScreenApproveMachineryPageState
                                   ),
                                   ResponsiveSizedBox.height5,
                                   TextStyles.caption(
-                                    text: "Reject",
+                                    text: context.tr('reject'),
                                     color: Colors.white,
                                     weight: FontWeight.bold,
                                   ),
@@ -258,7 +259,7 @@ class _ScreenApproveMachineryPageState
               }
 
               return NoDataWidget(
-                title: 'No machinery approvals found',
+                title: context.tr('no_machinery_approvals_found'),
                 assetIcon: Appconstants.machinery,
                 onRefresh: _fetchMachineHires,
               );

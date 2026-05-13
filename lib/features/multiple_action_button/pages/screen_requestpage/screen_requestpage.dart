@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenNewRequestPage extends StatefulWidget {
   const ScreenNewRequestPage({super.key});
@@ -44,7 +45,7 @@ class _ScreenNewRequestPageState extends State<ScreenNewRequestPage> {
       if (selectedRequestCategory == null) {
         CustomSnackbar.show(
           context: context,
-          message: 'Please select request category',
+          message: context.tr('please_select_request_category'),
           type: SnackBarType.error,
         );
         return;
@@ -56,7 +57,7 @@ class _ScreenNewRequestPageState extends State<ScreenNewRequestPage> {
       if (requestCategoryId == null) {
         CustomSnackbar.show(
           context: context,
-          message: 'Invalid request category selected',
+          message: context.tr('invalid_request_category_selected'),
           type: SnackBarType.error,
         );
         return;
@@ -92,7 +93,7 @@ class _ScreenNewRequestPageState extends State<ScreenNewRequestPage> {
             TextButton(
               onPressed: onRetry,
               child: TextStyles.medium(
-                text: 'Retry',
+                text: context.tr('retry'),
                 color: Appcolors.kprimarycolor,
               ),
             ),
@@ -114,7 +115,7 @@ class _ScreenNewRequestPageState extends State<ScreenNewRequestPage> {
           ),
         ),
         title: TextStyles.title(
-          text: 'New Request',
+          text: context.tr('new_request'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -154,7 +155,7 @@ class _ScreenNewRequestPageState extends State<ScreenNewRequestPage> {
                   /// Header text
                   TextStyles.body(
                     text:
-                        'Please fill the form and submit your request for approval',
+                        context.tr('please_fill_the_form_and_submit_your_request_for'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w500,
                     maxLines: 2,
@@ -164,7 +165,7 @@ class _ScreenNewRequestPageState extends State<ScreenNewRequestPage> {
 
                   /// Request Category
                   TextStyles.caption(
-                    text: 'Request Category',
+                    text: context.tr('request_category'),
                     weight: FontWeight.w600,
                   ),
                   ResponsiveSizedBox.height10,
@@ -207,7 +208,7 @@ class _ScreenNewRequestPageState extends State<ScreenNewRequestPage> {
 
                         return CustomDropdown(
                           value: selectedCategoryName,
-                          hint: 'Select Request Category',
+                          hint: context.tr('select_request_category'),
                           items: categoryNames,
                           onChanged: (value) {
                             setState(() {
@@ -231,8 +232,8 @@ class _ScreenNewRequestPageState extends State<ScreenNewRequestPage> {
 
                       return CustomDropdown(
                         value: null,
-                        hint: 'Select Request Category',
-                        items: const [],
+                        hint: context.tr('select_request_category'),
+                        items: [],
                         onChanged: (_) {},
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -248,13 +249,13 @@ class _ScreenNewRequestPageState extends State<ScreenNewRequestPage> {
 
                   /// Remarks (Optional)
                   TextStyles.caption(
-                    text: 'Remarks (Optional)',
+                    text: context.tr('remarks_optional'),
                     weight: FontWeight.w600,
                   ),
                   ResponsiveSizedBox.height10,
                   CustomFormtextfield(
                     controller: remarksController,
-                    hintText: 'Enter remarks',
+                    hintText: context.tr('enter_remarks_2'),
                     maxLines: 4,
                   ),
 
@@ -288,7 +289,7 @@ class _ScreenNewRequestPageState extends State<ScreenNewRequestPage> {
                                   ),
                                 )
                               : TextStyles.body(
-                                  text: 'Submit Request',
+                                  text: context.tr('submit_request'),
                                   color: Appcolors.kwhitecolor,
                                   weight: FontWeight.w600,
                                 ),

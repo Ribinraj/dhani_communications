@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenMachineHireApproveDetailPage extends StatelessWidget {
   final ApprovelsMachineHireModel machineHire;
@@ -110,7 +111,7 @@ class ScreenMachineHireApproveDetailPage extends StatelessWidget {
                   ),
                   ResponsiveSizedBox.width(3),
                   TextStyles.headline(
-                    text: 'Approve Machine Hire',
+                    text: context.tr('approve_machine_hire'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -119,7 +120,7 @@ class ScreenMachineHireApproveDetailPage extends StatelessWidget {
               ResponsiveSizedBox.height15,
               TextStyles.body(
                 text:
-                    'Are you sure you want to approve this machine hire request?',
+                    context.tr('are_you_sure_you_want_to_approve_this_machine_hi'),
                 color: Appcolors.kgreyColor,
               ),
               ResponsiveSizedBox.height30,
@@ -141,7 +142,7 @@ class ScreenMachineHireApproveDetailPage extends StatelessWidget {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Cancel',
+                        text: context.tr('cancel'),
                         weight: FontWeight.w600,
                         color: Appcolors.kgreyColor,
                       ),
@@ -166,7 +167,7 @@ class ScreenMachineHireApproveDetailPage extends StatelessWidget {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Approve',
+                        text: context.tr('approve'),
                         weight: FontWeight.w600,
                         color: Appcolors.kwhitecolor,
                       ),
@@ -185,8 +186,8 @@ class ScreenMachineHireApproveDetailPage extends StatelessWidget {
   void _rejectMachineHire(BuildContext context) {
     RejectionBottomSheet.show(
       context: context,
-      title: 'Reject Machine Hire',
-      subtitle: 'Please provide a reason for rejecting this machine hire.',
+      title: context.tr('reject_machine_hire'),
+      subtitle: context.tr('please_provide_a_reason_for_rejecting_this_machi'),
       onReject: (remarks) {
         context.read<UpdateMachineHireApprovalBloc>().add(
           RejectMachineHireEvent(
@@ -251,7 +252,7 @@ class ScreenMachineHireApproveDetailPage extends StatelessWidget {
             ),
           ),
           title: TextStyles.subheadline(
-            text: 'Machine Hire Approval',
+            text: context.tr('machine_hire_approval'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -277,7 +278,7 @@ class ScreenMachineHireApproveDetailPage extends StatelessWidget {
                         onPressed: () => _rejectMachineHire(context),
                         icon: const Icon(Icons.cancel, color: Colors.white),
                         label: TextStyles.medium(
-                          text: 'Reject',
+                          text: context.tr('reject'),
                           weight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -301,7 +302,7 @@ class ScreenMachineHireApproveDetailPage extends StatelessWidget {
                           color: Colors.white,
                         ),
                         label: TextStyles.medium(
-                          text: 'Approve',
+                          text: context.tr('approve'),
                           weight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -349,7 +350,7 @@ class ScreenMachineHireApproveDetailPage extends StatelessWidget {
                 child: Column(
                   children: [
                     TextStyles.caption(
-                      text: 'Machine Hire',
+                      text: context.tr('machine_hire'),
                       color: Appcolors.kwhitecolor.withValues(alpha: 0.9),
                     ),
                     ResponsiveSizedBox.height10,
@@ -401,7 +402,7 @@ class ScreenMachineHireApproveDetailPage extends StatelessWidget {
               ),
               ResponsiveSizedBox.height(3),
               _buildSectionCard(
-                title: 'Hire Information',
+                title: context.tr('hire_information'),
                 children: [
                   _buildDetailRow(
                     icon: Icons.tag,
@@ -488,18 +489,18 @@ class ScreenMachineHireApproveDetailPage extends StatelessWidget {
               ),
               ResponsiveSizedBox.height(3),
               _buildRemarksCard(
-                title: 'User Notes',
+                title: context.tr('user_notes'),
                 icon: Icons.comment,
                 iconColor: Colors.amber.shade700,
                 bgColor: Colors.amber.withValues(alpha: 0.1),
                 remarks: machineHire.notes,
-                emptyText: 'No notes provided',
+                emptyText: context.tr('no_notes_provided'),
               ),
               if (machineHire.approverRemarks != null &&
                   machineHire.approverRemarks!.isNotEmpty) ...[
                 ResponsiveSizedBox.height(3),
                 _buildRemarksCard(
-                  title: 'Approver Remarks',
+                  title: context.tr('approver_remarks'),
                   icon: Icons.verified_user_rounded,
                   iconColor: Colors.green.shade700,
                   bgColor: Colors.green.withValues(alpha: 0.1),

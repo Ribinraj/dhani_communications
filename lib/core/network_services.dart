@@ -3,6 +3,7 @@ import 'package:dhani_communications/core/local_storages.dart';
 import 'package:dhani_communications/core/urls.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class DioClient {
   static Dio create(BuildContext context) {
@@ -49,7 +50,7 @@ class DioClient {
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
-        title: const Text('Session Expired'),
+        title: Text(context.tr('session_expired')),
         content: Text(
           e.response?.data['message'] ??
               'Your session has expired. Please login again.',

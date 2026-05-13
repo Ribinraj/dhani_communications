@@ -6,6 +6,7 @@ import 'package:dhani_communications/features/dashboard/blocs/notifications_bloc
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
@@ -46,7 +47,7 @@ class _NotificationPageState extends State<NotificationPage> {
           ),
         ),
         title: TextStyles.subheadline(
-          text: 'Notifications',
+          text: context.tr('notifications'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -106,7 +107,7 @@ class _NotificationPageState extends State<NotificationPage> {
           ),
           ResponsiveSizedBox.height20,
           TextStyles.headline(
-            text: 'Failed to load notifications',
+            text: context.tr('failed_to_load_notifications'),
             color: Appcolors.kgreyColor,
           ),
           ResponsiveSizedBox.height10,
@@ -121,7 +122,7 @@ class _NotificationPageState extends State<NotificationPage> {
               context.read<NotificationsBloc>().add(FetchNotificationsEvent());
             },
             child: TextStyles.body(
-              text: 'Retry',
+              text: context.tr('retry'),
               color: Appcolors.kprimarycolor,
               weight: FontWeight.bold,
             ),
@@ -307,12 +308,12 @@ class _NotificationPageState extends State<NotificationPage> {
           ),
           ResponsiveSizedBox.height20,
           TextStyles.headline(
-            text: 'No Notifications',
+            text: context.tr('no_notifications'),
             color: Appcolors.kgreyColor,
           ),
           ResponsiveSizedBox.height10,
           TextStyles.body(
-            text: 'You\'re all caught up!',
+            text: context.tr('you_re_all_caught_up'),
             color: Appcolors.kgreyColor,
           ),
         ],

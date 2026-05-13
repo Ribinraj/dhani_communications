@@ -14,6 +14,7 @@ import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenExpenseApprovalPage extends StatefulWidget {
   const ScreenExpenseApprovalPage({super.key});
@@ -82,7 +83,7 @@ class _ScreenExpenseApprovalPageState extends State<ScreenExpenseApprovalPage> {
                   ),
                   ResponsiveSizedBox.width(3),
                   TextStyles.headline(
-                    text: 'Approve Expense',
+                    text: context.tr('approve_expense'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -90,7 +91,7 @@ class _ScreenExpenseApprovalPageState extends State<ScreenExpenseApprovalPage> {
               ),
               ResponsiveSizedBox.height15,
               TextStyles.body(
-                text: 'Are you sure you want to approve this expense?',
+                text: context.tr('are_you_sure_you_want_to_approve_this_expense'),
                 color: Appcolors.kgreyColor,
               ),
               ResponsiveSizedBox.height30,
@@ -112,7 +113,7 @@ class _ScreenExpenseApprovalPageState extends State<ScreenExpenseApprovalPage> {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Cancel',
+                        text: context.tr('cancel'),
                         weight: FontWeight.w600,
                         color: Appcolors.kgreyColor,
                       ),
@@ -137,7 +138,7 @@ class _ScreenExpenseApprovalPageState extends State<ScreenExpenseApprovalPage> {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Approve',
+                        text: context.tr('approve'),
                         weight: FontWeight.w600,
                         color: Appcolors.kwhitecolor,
                       ),
@@ -157,8 +158,8 @@ class _ScreenExpenseApprovalPageState extends State<ScreenExpenseApprovalPage> {
   void _rejectExpense(String expenseId) {
     RejectionBottomSheet.show(
       context: context,
-      title: 'Reject Expense',
-      subtitle: 'Please provide a reason for rejecting this expense.',
+      title: context.tr('reject_expense'),
+      subtitle: context.tr('please_provide_a_reason_for_rejecting_this_expen'),
       onReject: (remarks) {
         context.read<UpdateApprovelExpenseBloc>().add(
           RejectExpenseEvent(expenseId: expenseId, approverRemarks: remarks),
@@ -171,7 +172,7 @@ class _ScreenExpenseApprovalPageState extends State<ScreenExpenseApprovalPage> {
   void _showFilterDialog() {
     DateFilterDialog.show(
       context: context,
-      title: 'Filter Expenses',
+      title: context.tr('filter_expenses'),
       initialFromDate: _fromDate,
       initialToDate: _toDate,
       onApply: (fromDate, toDate) {
@@ -226,7 +227,7 @@ class _ScreenExpenseApprovalPageState extends State<ScreenExpenseApprovalPage> {
           ),
         ),
         title: TextStyles.title(
-          text: 'Approve Expenses',
+          text: context.tr('approve_expenses'),
           weight: FontWeight.bold,
         ),
         centerTitle: true,
@@ -301,7 +302,7 @@ class _ScreenExpenseApprovalPageState extends State<ScreenExpenseApprovalPage> {
 
               if (expenses.isEmpty) {
                 return NoDataWidget(
-                  title: "Expenses is Empty",
+                  title: context.tr('expenses_is_empty'),
                   assetIcon: Appconstants.expenses,
                 );
               }
@@ -336,7 +337,7 @@ class _ScreenExpenseApprovalPageState extends State<ScreenExpenseApprovalPage> {
                                     ),
                                     ResponsiveSizedBox.height5,
                                     TextStyles.caption(
-                                      text: 'Approve',
+                                      text: context.tr('approve'),
                                       color: Colors.white,
                                       weight: FontWeight.bold,
                                     ),
@@ -366,7 +367,7 @@ class _ScreenExpenseApprovalPageState extends State<ScreenExpenseApprovalPage> {
                                     ),
                                     ResponsiveSizedBox.height5,
                                     TextStyles.caption(
-                                      text: 'Reject',
+                                      text: context.tr('reject'),
                                       color: Colors.white,
                                       weight: FontWeight.bold,
                                     ),

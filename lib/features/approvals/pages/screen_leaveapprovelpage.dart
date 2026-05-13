@@ -14,6 +14,7 @@ import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenLeaveApprovalPage extends StatefulWidget {
   const ScreenLeaveApprovalPage({super.key});
@@ -39,7 +40,7 @@ class _ScreenLeaveApprovalPageState extends State<ScreenLeaveApprovalPage> {
   void _showFilterDialog() {
     DateFilterDialog.show(
       context: context,
-      title: 'Filter Leaves',
+      title: context.tr('filter_leaves'),
       initialFromDate: _fromDate,
       initialToDate: _toDate,
       onApply: (fromDate, toDate) {
@@ -137,7 +138,7 @@ class _ScreenLeaveApprovalPageState extends State<ScreenLeaveApprovalPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextStyles.headline(
-                          text: 'Approve Leave',
+                          text: context.tr('approve_leave'),
                           weight: FontWeight.bold,
                           color: Appcolors.kblackcolor,
                         ),
@@ -153,7 +154,7 @@ class _ScreenLeaveApprovalPageState extends State<ScreenLeaveApprovalPage> {
               ),
               ResponsiveSizedBox.height15,
               TextStyles.body(
-                text: 'Are you sure you want to approve this leave request?',
+                text: context.tr('are_you_sure_you_want_to_approve_this_leave_requ'),
                 color: Appcolors.kgreyColor,
               ),
               ResponsiveSizedBox.height30,
@@ -175,7 +176,7 @@ class _ScreenLeaveApprovalPageState extends State<ScreenLeaveApprovalPage> {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Cancel',
+                        text: context.tr('cancel'),
                         weight: FontWeight.w600,
                         color: Appcolors.kgreyColor,
                       ),
@@ -200,7 +201,7 @@ class _ScreenLeaveApprovalPageState extends State<ScreenLeaveApprovalPage> {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Approve',
+                        text: context.tr('approve'),
                         weight: FontWeight.w600,
                         color: Appcolors.kwhitecolor,
                       ),
@@ -220,7 +221,7 @@ class _ScreenLeaveApprovalPageState extends State<ScreenLeaveApprovalPage> {
   void _showRejectConfirmation(BuildContext context, ApproveLeaveModel leave) {
     RejectionBottomSheet.show(
       context: context,
-      title: 'Reject Leave',
+      title: context.tr('reject_leave'),
       subtitle:
           'Please provide a reason for rejecting ${leave.employeeName}\'s leave request.',
       onReject: (remarks) {
@@ -247,7 +248,7 @@ class _ScreenLeaveApprovalPageState extends State<ScreenLeaveApprovalPage> {
           ),
         ),
         title: TextStyles.title(
-          text: "Approve Leaves",
+          text: context.tr('approve_leaves'),
           weight: FontWeight.bold,
         ),
         centerTitle: true,
@@ -319,7 +320,7 @@ class _ScreenLeaveApprovalPageState extends State<ScreenLeaveApprovalPage> {
             if (state is FetchApprovelLeaveSuccessState) {
               final leavesList = state.leaves;
               if (leavesList.isEmpty) {
-                return NoDataWidget(title: 'No leave requests found', assetIcon: Appconstants.leaves);
+                return NoDataWidget(title: context.tr('no_leave_requests_found'), assetIcon: Appconstants.leaves);
               }
               return RefreshIndicator(
                 onRefresh: () async {
@@ -360,7 +361,7 @@ class _ScreenLeaveApprovalPageState extends State<ScreenLeaveApprovalPage> {
                                       ),
                                       ResponsiveSizedBox.height5,
                                       TextStyles.caption(
-                                        text: "Approve",
+                                        text: context.tr('approve'),
                                         color: Colors.white,
                                         weight: FontWeight.bold,
                                       ),
@@ -391,7 +392,7 @@ class _ScreenLeaveApprovalPageState extends State<ScreenLeaveApprovalPage> {
                                       ),
                                       ResponsiveSizedBox.height5,
                                       TextStyles.caption(
-                                        text: "Reject",
+                                        text: context.tr('reject'),
                                         color: Colors.white,
                                         weight: FontWeight.bold,
                                       ),

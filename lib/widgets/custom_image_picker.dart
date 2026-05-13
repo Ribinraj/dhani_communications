@@ -6,6 +6,7 @@ import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 /// A reusable image picker that shows a bottom sheet with
 /// Camera and Gallery options. Works for profile photos and
@@ -41,13 +42,13 @@ class CustomImagePicker {
                 ),
                 ResponsiveSizedBox.height20,
                 TextStyles.subheadline(
-                  text: 'Choose Photo',
+                  text: context.tr('choose_photo'),
                   weight: FontWeight.bold,
                   color: Appcolors.kblackcolor,
                 ),
                 ResponsiveSizedBox.height5,
                 TextStyles.caption(
-                  text: 'Select an option to update your photo',
+                  text: context.tr('select_an_option_to_update_your_photo'),
                   color: Appcolors.kgreyColor,
                 ),
                 ResponsiveSizedBox.height20,
@@ -66,12 +67,12 @@ class CustomImagePicker {
                     ),
                   ),
                   title: TextStyles.body(
-                    text: 'Take a Photo',
+                    text: context.tr('take_a_photo'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w500,
                   ),
                   subtitle: TextStyles.medium(
-                    text: 'Use camera to capture image',
+                    text: context.tr('use_camera_to_capture_image'),
                     color: Appcolors.kgreyColor,
                   ),
                   onTap: () {
@@ -94,12 +95,12 @@ class CustomImagePicker {
                     ),
                   ),
                   title: TextStyles.body(
-                    text: 'Choose from Gallery',
+                    text: context.tr('choose_from_gallery'),
                     color: Appcolors.kblackcolor,
                     weight: FontWeight.w500,
                   ),
                   subtitle: TextStyles.medium(
-                    text: 'Pick an image from your gallery',
+                    text: context.tr('pick_an_image_from_your_gallery'),
                     color: Appcolors.kgreyColor,
                   ),
                   onTap: () {

@@ -6,6 +6,7 @@ import 'package:dhani_communications/features/dashboard/models/vehicle_model.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenVehiclesPage extends StatefulWidget {
   const ScreenVehiclesPage({super.key});
@@ -36,7 +37,7 @@ class _ScreenVehiclesPageState extends State<ScreenVehiclesPage> {
           ),
         ),
         title: TextStyles.title(
-          text: 'My Vehicles',
+          text: context.tr('my_vehicles'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -68,7 +69,7 @@ class _ScreenVehiclesPageState extends State<ScreenVehiclesPage> {
                     onPressed: () =>
                         context.read<VehiclesBloc>().add(FetchVehiclesEvent()),
                     icon: const Icon(Icons.refresh),
-                    label: const Text('Retry'),
+                    label: Text(context.tr('retry')),
                   ),
                 ],
               ),
@@ -89,7 +90,7 @@ class _ScreenVehiclesPageState extends State<ScreenVehiclesPage> {
                     ),
                     ResponsiveSizedBox.height20,
                     TextStyles.subheadline(
-                      text: 'No vehicles found',
+                      text: context.tr('no_vehicles_found'),
                       color: Appcolors.kgreyColor,
                     ),
                   ],
@@ -226,7 +227,7 @@ class _VehicleCard extends StatelessWidget {
                                   size: ResponsiveUtils.sp(3.5)),
                               ResponsiveSizedBox.width(1),
                               TextStyles.caption(
-                                text: 'PUC Expiring',
+                                text: context.tr('puc_expiring'),
                                 color: Colors.red,
                                 weight: FontWeight.w600,
                               ),

@@ -35,7 +35,7 @@
 //         context.read<ProfileBloc>().add(FetchProfileEvent());
 //         ScaffoldMessenger.of(context).showSnackBar(
 //           SnackBar(
-//             content: Text('Profile updated successfully'),
+//             content: Text(context.tr('profile_updated_successfully')),
 //             duration: Duration(milliseconds: 1500),
 //             behavior: SnackBarBehavior.floating,
 //             backgroundColor: Colors.green,
@@ -405,15 +405,15 @@
 //       title: 'Personal Information',
 //       icon: Icons.person_outline_rounded,
 //       children: [
-//         _buildInfoRow('Mobile Number', profileData.mobileNumber),
-//         _buildInfoRow('Date of Birth', profile?.dateOfBirth ?? '-'),
-//         _buildInfoRow('Date of Joining', profile?.dateOfJoining ?? '-'),
-//         _buildInfoRow('Blood Group', profile?.bloodGroup ?? '-'),
-//         _buildInfoRow('Mother\'s Name', profile?.motherName ?? '-'),
-//         _buildInfoRow('Father\'s Name', profile?.fatherName ?? '-'),
-//         _buildInfoRow('Qualification', profile?.highestQualification ?? '-'),
-//         _buildInfoRow('Marital Status', profile?.martialStatus ?? '-'),
-//         _buildInfoRow('Number of Children', profile?.noOfChildren ?? '-'),
+//         _buildInfoRow(context.tr('mobile_number'), profileData.mobileNumber),
+//         _buildInfoRow(context.tr('date_of_birth'), profile?.dateOfBirth ?? '-'),
+//         _buildInfoRow(context.tr('date_of_joining'), profile?.dateOfJoining ?? '-'),
+//         _buildInfoRow(context.tr('blood_group'), profile?.bloodGroup ?? '-'),
+//         _buildInfoRow(context.tr('mothers_name'), profile?.motherName ?? '-'),
+//         _buildInfoRow(context.tr('fathers_name'), profile?.fatherName ?? '-'),
+//         _buildInfoRow(context.tr('qualification'), profile?.highestQualification ?? '-'),
+//         _buildInfoRow(context.tr('marital_status'), profile?.martialStatus ?? '-'),
+//         _buildInfoRow(context.tr('number_of_children'), profile?.noOfChildren ?? '-'),
 //         _buildInfoRow(
 //           'Height',
 //           profile?.height != null ? '${profile!.height} cm' : '-',
@@ -432,12 +432,12 @@
 //       title: 'Identification Details',
 //       icon: Icons.badge_rounded,
 //       children: [
-//         _buildInfoRow('Aadhar Number', profile?.adhaarNumber ?? '-'),
-//         _buildInfoRow('PAN Number', profile?.panNumber ?? '-'),
-//         _buildInfoRow('Passport Number', profile?.passportNumber ?? '-'),
-//         _buildInfoRow('UAN/EPF Number', profile?.uanEpf ?? '-'),
-//         _buildInfoRow('DL Number', profile?.drivingLicenseNumber ?? '-'),
-//         _buildInfoRow('ESIC Number', profile?.esicNumber ?? '-'),
+//         _buildInfoRow(context.tr('aadhar_number'), profile?.adhaarNumber ?? '-'),
+//         _buildInfoRow(context.tr('pan_number'), profile?.panNumber ?? '-'),
+//         _buildInfoRow(context.tr('passport_number'), profile?.passportNumber ?? '-'),
+//         _buildInfoRow(context.tr('uan_epf_number'), profile?.uanEpf ?? '-'),
+//         _buildInfoRow(context.tr('dl_number'), profile?.drivingLicenseNumber ?? '-'),
+//         _buildInfoRow(context.tr('esic_number'), profile?.esicNumber ?? '-'),
 //       ],
 //     );
 //   }
@@ -448,8 +448,8 @@
 //       title: 'Insurance Details',
 //       icon: Icons.security_rounded,
 //       children: [
-//         _buildInfoRow('Personal Insurance', profile?.personalInsurance ?? '-'),
-//         _buildInfoRow('Health Insurance', profile?.healthInsurance ?? '-'),
+//         _buildInfoRow(context.tr('personal_insurance'), profile?.personalInsurance ?? '-'),
+//         _buildInfoRow(context.tr('health_insurance'), profile?.healthInsurance ?? '-'),
 //         _buildInfoRow(
 //           'Accidental Insurance',
 //           profile?.accidentalInsurance ?? '-',
@@ -468,8 +468,8 @@
 //       title: 'Other Details',
 //       icon: Icons.info_outline_rounded,
 //       children: [
-//         _buildInfoRow('Headquarters', profile?.headQuarterName ?? '-'),
-//         _buildInfoRow('Leave Balance', profile?.leaveBalance ?? '-'),
+//         _buildInfoRow(context.tr('headquarters'), profile?.headQuarterName ?? '-'),
+//         _buildInfoRow(context.tr('leave_balance'), profile?.leaveBalance ?? '-'),
 //       ],
 //     );
 //   }
@@ -604,6 +604,7 @@ import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dhani_communications/features/dashboard/blocs/bottom_navigation_bloc/bottom_navigation_bloc.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenProfilePage extends StatefulWidget {
   const ScreenProfilePage({super.key});
@@ -629,7 +630,7 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
         context.read<ProfileBloc>().add(FetchProfileEvent());
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Profile updated successfully'),
+            content: Text(context.tr('profile_updated_successfully')),
             duration: Duration(milliseconds: 1500),
             behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.green,
@@ -672,21 +673,21 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
               ),
               ResponsiveSizedBox.width(3),
               TextStyles.subheadline(
-                text: 'Logout',
+                text: context.tr('logout'),
                 weight: FontWeight.bold,
                 color: Appcolors.kblackcolor,
               ),
             ],
           ),
           content: TextStyles.body(
-            text: 'Are you sure you want to logout?',
+            text: context.tr('are_you_sure_you_want_to_logout'),
             color: Appcolors.kgreyColor,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: TextStyles.medium(
-                text: 'Cancel',
+                text: context.tr('cancel'),
                 weight: FontWeight.w600,
                 color: Appcolors.kgreyColor,
               ),
@@ -703,7 +704,7 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
                 ),
               ),
               child: TextStyles.medium(
-                text: 'Logout',
+                text: context.tr('logout'),
                 weight: FontWeight.w600,
                 color: Appcolors.kwhitecolor,
               ),
@@ -724,7 +725,9 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
 
     if (mounted) {
       // 3) Reset bottom navigation index to 0 (Dashboard) before logout
-      context.read<BottomNavigationBloc>().add(NavigateToPageEvent(pageIndex: 0));
+      context.read<BottomNavigationBloc>().add(
+        NavigateToPageEvent(pageIndex: 0),
+      );
       // 4) Navigate to login and clear navigation stack
       context.go('/login');
     }
@@ -754,6 +757,11 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
                     floating: false,
                     pinned: true,
                     automaticallyImplyLeading: false,
+                    toolbarHeight:
+                        MediaQuery.of(context).padding.top +
+                        ResponsiveUtils.hp(.5) +
+                        ResponsiveUtils.hp(3) +
+                        ResponsiveUtils.hp(.6),
                     backgroundColor: Appcolors.kwhitecolor.withOpacity(0.95),
                     elevation: 2,
                     shadowColor: Appcolors.kgreyColor.withOpacity(0.1),
@@ -806,7 +814,7 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
           ),
           ResponsiveSizedBox.height20,
           TextStyles.subheadline(
-            text: 'Failed to load profile',
+            text: context.tr('failed_to_load_profile'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -824,7 +832,7 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
               ),
             ),
             child: TextStyles.medium(
-              text: 'Retry',
+              text: context.tr('retry'),
               color: Appcolors.kwhitecolor,
               weight: FontWeight.bold,
             ),
@@ -851,6 +859,8 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
         _buildOtherDetailsSection(profileData),
         ResponsiveSizedBox.height20,
         _buildAddressSection(profileData),
+        ResponsiveSizedBox.height20,
+        _buildLanguageSection(),
         ResponsiveSizedBox.height20,
         // Logout Button Section
         _buildLogoutSection(),
@@ -883,13 +893,13 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextStyles.subheadline(
-                        text: 'My Profile',
+                        text: context.tr('my_profile'),
                         weight: FontWeight.bold,
                         color: Appcolors.kblackcolor,
                         overflow: TextOverflow.ellipsis,
                       ),
                       TextStyles.caption(
-                        text: 'Personal information',
+                        text: context.tr('personal_information'),
                         color: Appcolors.kgreyColor.withOpacity(0.7),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -1004,24 +1014,36 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
   Widget _buildPersonalInfoSection(ProfileData profileData) {
     final profile = profileData.profile;
     return _buildSection(
-      title: 'Personal Information',
+      title: context.tr('personal_information_2'),
       icon: Icons.person_outline_rounded,
       children: [
-        _buildInfoRow('Mobile Number', profileData.mobileNumber),
-        _buildInfoRow('Date of Birth', profile?.dateOfBirth ?? '-'),
-        _buildInfoRow('Date of Joining', profile?.dateOfJoining ?? '-'),
-        _buildInfoRow('Blood Group', profile?.bloodGroup ?? '-'),
-        _buildInfoRow('Mother\'s Name', profile?.motherName ?? '-'),
-        _buildInfoRow('Father\'s Name', profile?.fatherName ?? '-'),
-        _buildInfoRow('Qualification', profile?.highestQualification ?? '-'),
-        _buildInfoRow('Marital Status', profile?.martialStatus ?? '-'),
-        _buildInfoRow('Number of Children', profile?.noOfChildren ?? '-'),
+        _buildInfoRow(context.tr('mobile_number'), profileData.mobileNumber),
+        _buildInfoRow(context.tr('date_of_birth'), profile?.dateOfBirth ?? '-'),
         _buildInfoRow(
-          'Height',
+          context.tr('date_of_joining'),
+          profile?.dateOfJoining ?? '-',
+        ),
+        _buildInfoRow(context.tr('blood_group'), profile?.bloodGroup ?? '-'),
+        _buildInfoRow(context.tr('mothers_name'), profile?.motherName ?? '-'),
+        _buildInfoRow(context.tr('fathers_name'), profile?.fatherName ?? '-'),
+        _buildInfoRow(
+          context.tr('qualification'),
+          profile?.highestQualification ?? '-',
+        ),
+        _buildInfoRow(
+          context.tr('marital_status'),
+          profile?.martialStatus ?? '-',
+        ),
+        _buildInfoRow(
+          context.tr('number_of_children'),
+          profile?.noOfChildren ?? '-',
+        ),
+        _buildInfoRow(
+          context.tr('height'),
           profile?.height != null ? '${profile!.height} cm' : '-',
         ),
         _buildInfoRow(
-          'Weight',
+          context.tr('weight'),
           profile?.weight != null ? '${profile!.weight} kg' : '-',
         ),
       ],
@@ -1031,15 +1053,24 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
   Widget _buildIdentificationSection(ProfileData profileData) {
     final profile = profileData.profile;
     return _buildSection(
-      title: 'Identification Details',
+      title: context.tr('identification_details'),
       icon: Icons.badge_rounded,
       children: [
-        _buildInfoRow('Aadhar Number', profile?.adhaarNumber ?? '-'),
-        _buildInfoRow('PAN Number', profile?.panNumber ?? '-'),
-        _buildInfoRow('Passport Number', profile?.passportNumber ?? '-'),
-        _buildInfoRow('UAN/EPF Number', profile?.uanEpf ?? '-'),
-        _buildInfoRow('DL Number', profile?.drivingLicenseNumber ?? '-'),
-        _buildInfoRow('ESIC Number', profile?.esicNumber ?? '-'),
+        _buildInfoRow(
+          context.tr('aadhar_number'),
+          profile?.adhaarNumber ?? '-',
+        ),
+        _buildInfoRow(context.tr('pan_number'), profile?.panNumber ?? '-'),
+        _buildInfoRow(
+          context.tr('passport_number'),
+          profile?.passportNumber ?? '-',
+        ),
+        _buildInfoRow(context.tr('uan_epf_number'), profile?.uanEpf ?? '-'),
+        _buildInfoRow(
+          context.tr('dl_number'),
+          profile?.drivingLicenseNumber ?? '-',
+        ),
+        _buildInfoRow(context.tr('esic_number'), profile?.esicNumber ?? '-'),
       ],
     );
   }
@@ -1047,19 +1078,25 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
   Widget _buildInsuranceSection(ProfileData profileData) {
     final profile = profileData.profile;
     return _buildSection(
-      title: 'Insurance Details',
+      title: context.tr('insurance_details'),
       icon: Icons.security_rounded,
       children: [
-        _buildInfoRow('Personal Insurance', profile?.personalInsurance ?? '-'),
-        _buildInfoRow('Health Insurance', profile?.healthInsurance ?? '-'),
         _buildInfoRow(
-          'Accidental Insurance',
+          context.tr('personal_insurance'),
+          profile?.personalInsurance ?? '-',
+        ),
+        _buildInfoRow(
+          context.tr('health_insurance'),
+          profile?.healthInsurance ?? '-',
+        ),
+        _buildInfoRow(
+          context.tr('accidental_insurance'),
           profile?.accidentalInsurance ?? '-',
         ),
-        _buildInfoRow('PMJJBY @₹436', profile?.pmjjby436 ?? '-'),
-        _buildInfoRow('PMSBI @₹20', profile?.pmsbi20 ?? '-'),
-        _buildInfoRow('PAI_SBI @₹1000', profile?.paiSbi1000 ?? '-'),
-        _buildInfoRow('PAI_SBI @₹500', profile?.paiSbi500 ?? '-'),
+        _buildInfoRow(context.tr('pmjjby_436'), profile?.pmjjby436 ?? '-'),
+        _buildInfoRow(context.tr('pmsbi_20'), profile?.pmsbi20 ?? '-'),
+        _buildInfoRow(context.tr('pai_sbi_1000'), profile?.paiSbi1000 ?? '-'),
+        _buildInfoRow(context.tr('pai_sbi_500'), profile?.paiSbi500 ?? '-'),
       ],
     );
   }
@@ -1067,11 +1104,17 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
   Widget _buildOtherDetailsSection(ProfileData profileData) {
     final profile = profileData.profile;
     return _buildSection(
-      title: 'Other Details',
+      title: context.tr('other_details'),
       icon: Icons.info_outline_rounded,
       children: [
-        _buildInfoRow('Headquarters', profile?.headQuarterName ?? '-'),
-        _buildInfoRow('Leave Balance', profile?.leaveBalance ?? '-'),
+        _buildInfoRow(
+          context.tr('headquarters'),
+          profile?.headQuarterName ?? '-',
+        ),
+        _buildInfoRow(
+          context.tr('leave_balance'),
+          profile?.leaveBalance ?? '-',
+        ),
       ],
     );
   }
@@ -1079,16 +1122,16 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
   Widget _buildAddressSection(ProfileData profileData) {
     final profile = profileData.profile;
     return _buildSection(
-      title: 'Address Information',
+      title: context.tr('address_information'),
       icon: Icons.location_on_outlined,
       children: [
         _buildInfoRow(
-          'Present Address',
+          context.tr('present_address'),
           profile?.presentAddress ?? '-',
           isMultiline: true,
         ),
         _buildInfoRow(
-          'Permanent Address',
+          context.tr('permanent_address'),
           profile?.permanentAddess ?? '-',
           isMultiline: true,
         ),
@@ -1137,13 +1180,13 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextStyles.subheadline(
-                        text: 'Logout',
+                        text: context.tr('logout'),
                         weight: FontWeight.bold,
                         color: Appcolors.kblackcolor,
                       ),
                       ResponsiveSizedBox.height5,
                       TextStyles.caption(
-                        text: 'Sign out from your account',
+                        text: context.tr('sign_out_from_your_account'),
                         color: Appcolors.kgreyColor,
                       ),
                     ],
@@ -1157,6 +1200,155 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageSection() {
+    final currentLanguageCode = AppLocalization.instance.languageCode;
+    final currentLanguageName = currentLanguageCode == 'hi'
+        ? context.tr('hindi')
+        : context.tr('english');
+
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: ResponsiveUtils.wp(4)),
+      decoration: BoxDecoration(
+        color: Appcolors.kwhitecolor,
+        borderRadius: BorderRadiusStyles.kradius15(),
+        boxShadow: [
+          BoxShadow(
+            color: Appcolors.kgreyColor.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: _showLanguageDialog,
+          borderRadius: BorderRadiusStyles.kradius15(),
+          child: Padding(
+            padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(ResponsiveUtils.wp(3)),
+                  decoration: BoxDecoration(
+                    color: Appcolors.kprimarycolor.withOpacity(0.1),
+                    borderRadius: BorderRadiusStyles.kradius10(),
+                  ),
+                  child: Icon(
+                    Icons.language_rounded,
+                    color: Appcolors.kprimarycolor,
+                    size: ResponsiveUtils.sp(6),
+                  ),
+                ),
+                ResponsiveSizedBox.width(4),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextStyles.subheadline(
+                        text: context.tr('language'),
+                        weight: FontWeight.bold,
+                        color: Appcolors.kblackcolor,
+                      ),
+                      ResponsiveSizedBox.height5,
+                      TextStyles.caption(
+                        text: currentLanguageName,
+                        color: Appcolors.kgreyColor,
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: Appcolors.kgreyColor,
+                  size: ResponsiveUtils.sp(5),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showLanguageDialog() {
+    final currentLanguageCode = AppLocalization.instance.languageCode;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Appcolors.kwhitecolor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(ResponsiveUtils.borderRadius(5)),
+          topRight: Radius.circular(ResponsiveUtils.borderRadius(5)),
+        ),
+      ),
+      builder: (bottomSheetContext) {
+        return Padding(
+          padding: EdgeInsets.all(ResponsiveUtils.wp(4)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextStyles.subheadline(
+                text: context.tr('select_language'),
+                weight: FontWeight.bold,
+                color: Appcolors.kblackcolor,
+              ),
+              ResponsiveSizedBox.height20,
+              _buildLanguageOption(
+                languageCode: 'en',
+                title: context.tr('english'),
+                isSelected: currentLanguageCode == 'en',
+              ),
+              _buildLanguageOption(
+                languageCode: 'hi',
+                title: context.tr('hindi'),
+                isSelected: currentLanguageCode == 'hi',
+              ),
+              ResponsiveSizedBox.height20,
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildLanguageOption({
+    required String languageCode,
+    required String title,
+    required bool isSelected,
+  }) {
+    return InkWell(
+      onTap: () async {
+        Navigator.pop(context);
+        await AppLocalization.instance.changeLanguage(languageCode);
+      },
+      borderRadius: BorderRadiusStyles.kradius10(),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: ResponsiveUtils.hp(1.5)),
+        child: Row(
+          children: [
+            Icon(
+              isSelected
+                  ? Icons.radio_button_checked_rounded
+                  : Icons.radio_button_off_rounded,
+              color: isSelected
+                  ? Appcolors.kprimarycolor
+                  : Appcolors.kgreyColor,
+            ),
+            ResponsiveSizedBox.width(3),
+            TextStyles.medium(
+              text: title,
+              weight: isSelected ? FontWeight.bold : FontWeight.w500,
+              color: Appcolors.kblackcolor,
+            ),
+          ],
         ),
       ),
     );

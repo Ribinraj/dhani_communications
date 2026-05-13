@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenExpenseDetailPage extends StatelessWidget {
   final ExpenseModel? expense;
@@ -53,7 +54,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Could not open document'),
+              content: Text(context.tr('could_not_open_document')),
               duration: Duration(milliseconds: 1500),
               behavior: SnackBarBehavior.floating,
               backgroundColor: Colors.red,
@@ -73,7 +74,9 @@ class ScreenExpenseDetailPage extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error opening document: $e'),
+            content: Text(
+              context.trParams('error_opening_document', {'error': e}),
+            ),
             duration: Duration(milliseconds: 1500),
             behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.red,
@@ -150,7 +153,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
             ),
           ),
           title: TextStyles.title(
-            text: 'Expense Details',
+            text: context.tr('expense_details'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -167,7 +170,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
               ),
               ResponsiveSizedBox.height20,
               TextStyles.title(
-                text: 'No expense data available',
+                text: context.tr('no_expense_data_available'),
                 color: Appcolors.kgreyColor,
               ),
             ],
@@ -210,7 +213,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
         ),
         //elevation: 0,
         title: TextStyles.title(
-          text: 'Expense Details',
+          text: context.tr('expense_details'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -246,7 +249,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
               child: Column(
                 children: [
                   TextStyles.caption(
-                    text: 'Total Amount',
+                    text: context.tr('total_amount'),
                     color: Appcolors.kwhitecolor.withValues(alpha: 0.9),
                   ),
                   ResponsiveSizedBox.height10,
@@ -310,7 +313,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextStyles.title(
-                    text: 'Expense Information',
+                    text: context.tr('expense_information'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -359,7 +362,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   TextStyles.caption(
-                                    text: 'Category',
+                                    text: context.tr('category'),
                                     color: Appcolors.kgreyColor,
                                   ),
                                   ResponsiveSizedBox.height5,
@@ -450,7 +453,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
                       ),
                       ResponsiveSizedBox.width(2),
                       TextStyles.title(
-                        text: 'User Remarks',
+                        text: context.tr('user_remarks'),
                         weight: FontWeight.bold,
                         color: Appcolors.kblackcolor,
                       ),
@@ -504,7 +507,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
                         ),
                         ResponsiveSizedBox.width(2),
                         TextStyles.title(
-                          text: 'Approver Remarks',
+                          text: context.tr('approver_remarks'),
                           weight: FontWeight.bold,
                           color: Appcolors.kblackcolor,
                         ),
@@ -556,7 +559,7 @@ class ScreenExpenseDetailPage extends StatelessWidget {
                         ),
                         ResponsiveSizedBox.width(2),
                         TextStyles.title(
-                          text: 'Documents',
+                          text: context.tr('documents'),
                           weight: FontWeight.bold,
                           color: Appcolors.kblackcolor,
                         ),

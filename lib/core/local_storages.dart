@@ -19,9 +19,13 @@ class LocalStorage {
     final prefs = await SharedPreferences.getInstance();
     // Preserve the FCM token across logouts — it's device-level, not session-level
     final fcmToken = prefs.getString(StorageKeys.fcmToken);
+    final languageCode = prefs.getString(StorageKeys.languageCode);
     await prefs.clear();
     if (fcmToken != null) {
       await prefs.setString(StorageKeys.fcmToken, fcmToken);
+    }
+    if (languageCode != null) {
+      await prefs.setString(StorageKeys.languageCode, languageCode);
     }
   }
 
@@ -51,6 +55,16 @@ class LocalStorage {
   static Future<void> removeFcmToken() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(StorageKeys.fcmToken);
+  }
+
+  static Future<void> saveLanguageCode(String languageCode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(StorageKeys.languageCode, languageCode);
+  }
+
+  static Future<String> getLanguageCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(StorageKeys.languageCode) ?? '';
   }
 }
 

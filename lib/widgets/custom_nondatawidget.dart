@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class NoDataWidget extends StatelessWidget {
   final String title;
@@ -106,8 +107,7 @@ class NoDataWidget extends StatelessWidget {
                 children: [
                   const Icon(Icons.refresh, size: 18, color: primaryColor),
                   const SizedBox(width: 8),
-                  const Text(
-                    'Pull down to refresh',
+                  Text(context.tr('pull_down_to_refresh'),
                     style: TextStyle(
                       fontSize: 13,
                       color: primaryColor,

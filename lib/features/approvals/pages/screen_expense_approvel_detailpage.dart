@@ -10,6 +10,7 @@ import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
   final ApprovelsExpensemodel expense;
@@ -57,7 +58,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
         if (context.mounted) {
           CustomSnackbar.show(
             context: context,
-            message: 'Could not open document',
+            message: context.tr('could_not_open_document'),
             type: SnackBarType.error,
           );
         }
@@ -66,7 +67,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
       if (context.mounted) {
         CustomSnackbar.show(
           context: context,
-          message: 'Error opening document: $e',
+          message: context.trParams('error_opening_document', {'error': e}),
           type: SnackBarType.error,
         );
       }
@@ -156,7 +157,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
                   ),
                   ResponsiveSizedBox.width(3),
                   TextStyles.headline(
-                    text: 'Approve Expense',
+                    text: context.tr('approve_expense'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -164,7 +165,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
               ),
               ResponsiveSizedBox.height15,
               TextStyles.body(
-                text: 'Are you sure you want to approve this expense?',
+                text: context.tr('are_you_sure_you_want_to_approve_this_expense'),
                 color: Appcolors.kgreyColor,
               ),
               ResponsiveSizedBox.height30,
@@ -186,7 +187,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Cancel',
+                        text: context.tr('cancel'),
                         weight: FontWeight.w600,
                         color: Appcolors.kgreyColor,
                       ),
@@ -211,7 +212,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
                         ),
                       ),
                       child: TextStyles.medium(
-                        text: 'Approve',
+                        text: context.tr('approve'),
                         weight: FontWeight.w600,
                         color: Appcolors.kwhitecolor,
                       ),
@@ -230,8 +231,8 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
   void _rejectExpense(BuildContext context) {
     RejectionBottomSheet.show(
       context: context,
-      title: 'Reject Expense',
-      subtitle: 'Please provide a reason for rejecting this expense.',
+      title: context.tr('reject_expense'),
+      subtitle: context.tr('please_provide_a_reason_for_rejecting_this_expen'),
       onReject: (remarks) {
         context.read<UpdateApprovelExpenseBloc>().add(
           RejectExpenseEvent(
@@ -305,7 +306,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
             ),
           ),
           title: TextStyles.subheadline(
-            text: 'Expense Approval Details',
+            text: context.tr('expense_approval_details'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -331,7 +332,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
                         onPressed: () => _rejectExpense(context),
                         icon: const Icon(Icons.cancel, color: Colors.white),
                         label: TextStyles.medium(
-                          text: 'Reject',
+                          text: context.tr('reject'),
                           weight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -355,7 +356,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
                           color: Colors.white,
                         ),
                         label: TextStyles.medium(
-                          text: 'Approve',
+                          text: context.tr('approve'),
                           weight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -404,7 +405,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
                 child: Column(
                   children: [
                     TextStyles.caption(
-                      text: 'Total Amount',
+                      text: context.tr('total_amount'),
                       color: Appcolors.kwhitecolor.withOpacity(0.9),
                     ),
                     ResponsiveSizedBox.height10,
@@ -451,7 +452,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
 
               // ─── Employee Info Card ───
               _buildSectionCard(
-                title: 'Employee Information',
+                title: context.tr('employee_information'),
                 children: [
                   _buildDetailRow(
                     icon: Icons.person_outline,
@@ -472,7 +473,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
 
               // ─── Expense Details Card ───
               _buildSectionCard(
-                title: 'Expense Information',
+                title: context.tr('expense_information'),
                 children: [
                   _buildDetailRow(
                     icon: Icons.badge_rounded,
@@ -511,7 +512,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextStyles.caption(
-                                text: 'Category',
+                                text: context.tr('category'),
                                 color: Appcolors.kgreyColor,
                               ),
                               ResponsiveSizedBox.height5,
@@ -607,12 +608,12 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
 
               // ─── User Remarks ───
               _buildRemarksCard(
-                title: 'User Remarks',
+                title: context.tr('user_remarks'),
                 icon: Icons.comment,
                 iconColor: Colors.amber.shade700,
                 bgColor: Colors.amber.withOpacity(0.1),
                 remarks: expense.userRemarks,
-                emptyText: 'No remarks provided',
+                emptyText: context.tr('no_remarks_provided'),
               ),
 
               // ─── Approver Remarks ───
@@ -620,7 +621,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
                   expense.approverRemarks!.isNotEmpty) ...[
                 ResponsiveSizedBox.height(3),
                 _buildRemarksCard(
-                  title: 'Approver Remarks',
+                  title: context.tr('approver_remarks'),
                   icon: Icons.verified_user_rounded,
                   iconColor: Colors.green.shade700,
                   bgColor: Colors.green.withOpacity(0.1),
@@ -634,7 +635,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
                   expense.headquarterRemarks!.isNotEmpty) ...[
                 ResponsiveSizedBox.height(3),
                 _buildRemarksCard(
-                  title: 'HQ Remarks',
+                  title: context.tr('hq_remarks'),
                   icon: Icons.business,
                   iconColor: Colors.blue.shade700,
                   bgColor: Colors.blue.withOpacity(0.1),
@@ -679,7 +680,7 @@ class ScreenExpenseAprvelsDetailpage extends StatelessWidget {
                           ),
                           ResponsiveSizedBox.width(2),
                           TextStyles.subheadline(
-                            text: 'Documents',
+                            text: context.tr('documents'),
                             weight: FontWeight.bold,
                             color: Appcolors.kblackcolor,
                           ),

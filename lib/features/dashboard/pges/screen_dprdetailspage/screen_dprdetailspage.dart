@@ -8,6 +8,7 @@ import 'package:dhani_communications/features/dashboard/blocs/dpr_details_bloc/d
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenDprDetailsPage extends StatefulWidget {
   final int dprId;
@@ -57,7 +58,7 @@ class _ScreenDprDetailsPageState extends State<ScreenDprDetailsPage> {
           ),
         ),
         title: TextStyles.title(
-          text: 'DPR Details',
+          text: context.tr('dpr_details'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -103,7 +104,7 @@ class _ScreenDprDetailsPageState extends State<ScreenDprDetailsPage> {
                       backgroundColor: Appcolors.kprimarycolor,
                     ),
                     child: TextStyles.medium(
-                      text: 'Retry',
+                      text: context.tr('retry'),
                       color: Appcolors.kwhitecolor,
                     ),
                   ),
@@ -337,7 +338,7 @@ class _ScreenDprDetailsPageState extends State<ScreenDprDetailsPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               TextStyles.title(
-                text: 'Progress History',
+                text: context.tr('progress_history'),
                 weight: FontWeight.bold,
                 color: Appcolors.kblackcolor,
               ),
@@ -371,7 +372,7 @@ class _ScreenDprDetailsPageState extends State<ScreenDprDetailsPage> {
                   ),
                   ResponsiveSizedBox.height10,
                   TextStyles.medium(
-                    text: 'No progress entries yet',
+                    text: context.tr('no_progress_entries_yet'),
                     color: Appcolors.kgreyColor,
                   ),
                   ResponsiveSizedBox.height20,
@@ -536,7 +537,7 @@ class _ScreenDprDetailsPageState extends State<ScreenDprDetailsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TextStyles.caption(
-                      text: 'Remarks:',
+                      text: context.tr('remarks_2'),
                       weight: FontWeight.w600,
                       color: Appcolors.kgreyColor,
                     ),

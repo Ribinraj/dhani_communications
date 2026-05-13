@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenEmployeeAttendancePage extends StatefulWidget {
   const ScreenEmployeeAttendancePage({super.key});
@@ -64,7 +65,7 @@ class _ScreenEmployeeAttendancePageState
   void _showFilterDialog() {
     DateFilterDialog.show(
       context: context,
-      title: 'Filter Attendance',
+      title: context.tr('filter_attendance'),
       initialFromDate: _fromDate,
       initialToDate: _toDate,
       onApply: (fromDate, toDate) {
@@ -141,7 +142,7 @@ class _ScreenEmployeeAttendancePageState
             ),
           ),
           title: TextStyles.title(
-            text: 'Employee Attendance',
+            text: context.tr('employee_attendance'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -204,7 +205,7 @@ class _ScreenEmployeeAttendancePageState
                         backgroundColor: Appcolors.kprimarycolor,
                       ),
                       child: TextStyles.medium(
-                        text: 'Retry',
+                        text: context.tr('retry'),
                         color: Appcolors.kwhitecolor,
                       ),
                     ),
@@ -218,7 +219,7 @@ class _ScreenEmployeeAttendancePageState
 
               if (attendanceList.isEmpty) {
                 return NoDataWidget(
-                  title: "Attendence List is Empty",
+                  title: context.tr('attendence_list_is_empty'),
                   assetIcon: Appconstants.attenedence,
                 );
               }
@@ -258,7 +259,7 @@ class _ScreenEmployeeAttendancePageState
                   ),
                   ResponsiveSizedBox.height20,
                   TextStyles.subheadline(
-                    text: 'No attendance records found',
+                    text: context.tr('no_attendance_records_found'),
                     color: Appcolors.kgreyColor,
                   ),
                 ],

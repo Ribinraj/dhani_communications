@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:dhani_communications/core/colors.dart';
 import 'package:dhani_communications/core/responsiveutils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dhani_communications/core/localization/app_localization.dart';
 
 class ScreenLeaveDetailPage extends StatelessWidget {
   final LeaveModel? leave;
@@ -86,7 +87,7 @@ class ScreenLeaveDetailPage extends StatelessWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Could not open maps'),
+              content: Text(context.tr('could_not_open_maps')),
               duration: Duration(milliseconds: 1500),
               behavior: SnackBarBehavior.floating,
               backgroundColor: Colors.red,
@@ -106,7 +107,9 @@ class ScreenLeaveDetailPage extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error opening maps: $e'),
+            content: Text(
+              context.trParams('error_opening_maps', {'error': e}),
+            ),
             duration: Duration(milliseconds: 1500),
             behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.red,
@@ -133,7 +136,7 @@ class ScreenLeaveDetailPage extends StatelessWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Could not open document'),
+              content: Text(context.tr('could_not_open_document')),
               duration: Duration(milliseconds: 1500),
               behavior: SnackBarBehavior.floating,
               backgroundColor: Colors.red,
@@ -153,7 +156,9 @@ class ScreenLeaveDetailPage extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error opening document: $e'),
+            content: Text(
+              context.trParams('error_opening_document', {'error': e}),
+            ),
             duration: Duration(milliseconds: 1500),
             behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.red,
@@ -228,7 +233,7 @@ class ScreenLeaveDetailPage extends StatelessWidget {
             ),
           ),
           title: TextStyles.title(
-            text: 'Leave Details',
+            text: context.tr('leave_details'),
             weight: FontWeight.bold,
             color: Appcolors.kblackcolor,
           ),
@@ -245,7 +250,7 @@ class ScreenLeaveDetailPage extends StatelessWidget {
               ),
               ResponsiveSizedBox.height20,
               TextStyles.title(
-                text: 'No leave data available',
+                text: context.tr('no_leave_data_available'),
                 color: Appcolors.kgreyColor,
               ),
             ],
@@ -289,7 +294,7 @@ class ScreenLeaveDetailPage extends StatelessWidget {
           ),
         ),
         title: TextStyles.title(
-          text: 'Leave Details',
+          text: context.tr('leave_details'),
           weight: FontWeight.bold,
           color: Appcolors.kblackcolor,
         ),
@@ -398,7 +403,7 @@ class ScreenLeaveDetailPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextStyles.title(
-                    text: 'Leave Period',
+                    text: context.tr('leave_period'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -448,7 +453,7 @@ class ScreenLeaveDetailPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextStyles.title(
-                    text: 'Leave Information',
+                    text: context.tr('leave_information'),
                     weight: FontWeight.bold,
                     color: Appcolors.kblackcolor,
                   ),
@@ -531,7 +536,7 @@ class ScreenLeaveDetailPage extends StatelessWidget {
                         ),
                         ResponsiveSizedBox.width(2),
                         TextStyles.title(
-                          text: 'User Remarks',
+                          text: context.tr('user_remarks'),
                           weight: FontWeight.bold,
                           color: Appcolors.kblackcolor,
                         ),
@@ -584,7 +589,7 @@ class ScreenLeaveDetailPage extends StatelessWidget {
                         ),
                         ResponsiveSizedBox.width(2),
                         TextStyles.title(
-                          text: 'Approver Remarks',
+                          text: context.tr('approver_remarks'),
                           weight: FontWeight.bold,
                           color: Appcolors.kblackcolor,
                         ),
@@ -636,7 +641,7 @@ class ScreenLeaveDetailPage extends StatelessWidget {
                         ),
                         ResponsiveSizedBox.width(2),
                         TextStyles.title(
-                          text: 'Documents',
+                          text: context.tr('documents'),
                           weight: FontWeight.bold,
                           color: Appcolors.kblackcolor,
                         ),
@@ -708,7 +713,7 @@ class ScreenLeaveDetailPage extends StatelessWidget {
                     ),
                     ResponsiveSizedBox.width(2),
                     TextStyles.body(
-                      text: 'Locate on Map',
+                      text: context.tr('locate_on_map'),
                       weight: FontWeight.bold,
                       color: Appcolors.kwhitecolor,
                     ),
