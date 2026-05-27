@@ -25,7 +25,7 @@ class UpdateApprovelDprBloc
     final response = await repository.updateDprApproval(
       progressId: event.progressId,
       status: 'APPROVED',
-      approverRemarks: null,
+      approverRemarks: event.approverRemarks,
     );
     if (!response.error && response.status == 200) {
       emit(UpdateApprovelDprSuccessState(message: response.message));

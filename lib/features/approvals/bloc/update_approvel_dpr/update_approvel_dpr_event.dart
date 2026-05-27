@@ -5,7 +5,12 @@ sealed class UpdateApprovelDprEvent {}
 
 final class ApproveDprEvent extends UpdateApprovelDprEvent {
   final String progressId;
-  ApproveDprEvent({required this.progressId});
+  final String approverRemarks;
+
+  ApproveDprEvent({
+    required this.progressId,
+    this.approverRemarks = 'Approved.',
+  });
 }
 
 final class RejectDprEvent extends UpdateApprovelDprEvent {

@@ -35,6 +35,12 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs camera access for attendance</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Dhani Communications uses your location to record attendance and leave request details while you are using the app.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Dhani Communications uses your location to record attendance and leave request details when required by attendance workflows.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Dhani Communications needs photo library access so you can select profile photos and attach expense documents.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

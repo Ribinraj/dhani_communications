@@ -1207,9 +1207,11 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
 
   Widget _buildLanguageSection() {
     final currentLanguageCode = AppLocalization.instance.languageCode;
-    final currentLanguageName = currentLanguageCode == 'hi'
-        ? context.tr('hindi')
-        : context.tr('english');
+    final currentLanguageName = switch (currentLanguageCode) {
+      'hi' => context.tr('hindi'),
+      'gu' => context.tr('gujarati'),
+      _ => context.tr('english'),
+    };
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: ResponsiveUtils.wp(4)),
@@ -1310,6 +1312,11 @@ class _ScreenProfilePageState extends State<ScreenProfilePage> {
                 languageCode: 'hi',
                 title: context.tr('hindi'),
                 isSelected: currentLanguageCode == 'hi',
+              ),
+              _buildLanguageOption(
+                languageCode: 'gu',
+                title: context.tr('gujarati'),
+                isSelected: currentLanguageCode == 'gu',
               ),
               ResponsiveSizedBox.height20,
             ],

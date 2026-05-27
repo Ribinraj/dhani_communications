@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dhani_communications/core/constants.dart';
 import 'package:dhani_communications/core/local_storages.dart';
+import 'package:dhani_communications/features/auth/blocs/profile_bloc/profile_bloc.dart';
 import 'package:dhani_communications/features/dashboard/models/update_model.dart';
 import 'package:dhani_communications/features/dashboard/blocs/updates_bloc/updates_bloc.dart';
 import 'package:dhani_communications/features/dashboard/pges/screen_dashboard.dart/widgets/paint.dart';
@@ -38,6 +39,7 @@ class _HomePageState extends State<ScreenDashboardpage>
   void initState() {
     super.initState();
     context.read<UpdatesBloc>().add(FetchUpdatesEvent());
+    context.read<ProfileBloc>().add(FetchProfileEvent());
     _loadUserName();
 
     _fabAnimationController = AnimationController(
@@ -208,159 +210,175 @@ class _HomePageState extends State<ScreenDashboardpage>
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: Appcolors.kwhitecolor,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
+    return BlocListener<ProfileBloc, ProfileState>(
+      listener: (context, state) {
+        if (state is ProfileSuccessState) {
+          final name = state.profile.employeeName.trim();
+          if (name.isNotEmpty && name != _userName) {
+            setState(() {
+              _userName = name;
+            });
+          }
+        }
+      },
+      child: Scaffold(
         backgroundColor: Appcolors.kwhitecolor,
-        elevation: 2,
-        shadowColor: Appcolors.kgreyColor.withAlpha(25),
-        title: Row(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Appcolors.kwhitecolor,
+          elevation: 2,
+          shadowColor: Appcolors.kgreyColor.withAlpha(25),
+          title: Row(
+            children: [
+              Image.asset(Appconstants.applogo, height: ResponsiveUtils.hp(5)),
+              ResponsiveSizedBox.width(3),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextStyles.subheadline(
+                      text: 'Hello, $_userName',
+                      weight: FontWeight.bold,
+                      color: Appcolors.kblackcolor,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    TextStyles.caption(
+                      text: context.tr('welcome_back'),
+                      color: Appcolors.kgreyColor.withAlpha(178),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            IconButton(
+              onPressed: () {
+                context.push('/notificationpage');
+              },
+              icon: const Icon(Icons.notifications_outlined),
+              color: Appcolors.kprimarycolor,
+              iconSize: ResponsiveUtils.sp(6.5),
+            ),
+          ],
+        ),
+        body: Stack(
           children: [
-            Image.asset(Appconstants.applogo, height: ResponsiveUtils.hp(5)),
-            ResponsiveSizedBox.width(3),
-            Flexible(
+            // Custom Paint Background
+            CustomPaint(
+              painter: HomeBackgroundPainter(),
+              size: Size(screenWidth, screenHeight),
+            ),
+            // Main Scrollable Content
+            SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  TextStyles.subheadline(
-                    text: 'Hello, $_userName',
-                    weight: FontWeight.bold,
-                    color: Appcolors.kblackcolor,
-                    overflow: TextOverflow.ellipsis,
+                  ResponsiveSizedBox.height20,
+                  _buildCarouselSlider(),
+                  ResponsiveSizedBox.height(2.5),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: ResponsiveUtils.wp(4),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextStyles.subheadline(
+                          text: context.tr('quick_access'),
+                          weight: FontWeight.bold,
+                          color: Appcolors.kblackcolor,
+                        ),
+                        ResponsiveSizedBox.height15,
+                        _buildGridView(),
+                      ],
+                    ),
                   ),
-                  TextStyles.caption(
-                    text: context.tr('welcome_back'),
-                    color: Appcolors.kgreyColor.withAlpha(178),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  ResponsiveSizedBox.height(15),
                 ],
+              ),
+            ),
+            // Backdrop with blur when FAB is open
+            if (_isFabOpen)
+              AnimatedOpacity(
+                opacity: _isFabOpen ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 250),
+                child: GestureDetector(
+                  onTap: _toggleFab,
+                  child: Container(
+                    color: Colors.black.withAlpha(153),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                      child: Container(color: Colors.transparent),
+                    ),
+                  ),
+                ),
+              ),
+            // Multi-Action FAB Options
+            ...List.generate(fabOptions.length, (index) {
+              final option = fabOptions[index];
+              final reversedIndex = fabOptions.length - 1 - index;
+              return AnimatedPositioned(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeOutCubic,
+                right: ResponsiveUtils.wp(4),
+                bottom: _isFabOpen
+                    ? ResponsiveUtils.hp(22.5) +
+                          (reversedIndex * ResponsiveUtils.hp(9))
+                    : ResponsiveUtils.hp(11.5),
+                child: ScaleTransition(
+                  scale: CurvedAnimation(
+                    parent: _fabAnimation,
+                    curve: Interval(
+                      index * 0.15,
+                      1.0,
+                      curve: Curves.elasticOut,
+                    ),
+                  ),
+                  child: FadeTransition(
+                    opacity: _fabAnimation,
+                    child: _buildFabOption(
+                      icon: option['icon'],
+                      iconify: option['iconify'],
+                      label: context.tr(option['labelKey']),
+                      color: option['color'],
+                      useIconify: option['useIconify'] ?? false,
+                      route: option['route'],
+                    ),
+                  ),
+                ),
+              );
+            }),
+            // Main FAB
+            Positioned(
+              right: ResponsiveUtils.wp(4),
+              bottom: ResponsiveUtils.hp(15.4),
+              child: ScaleTransition(
+                scale: _fabScaleAnimation,
+                child: FloatingActionButton(
+                  heroTag: 'main_fab',
+                  onPressed: _toggleFab,
+                  backgroundColor: Appcolors.kprimarycolor,
+                  elevation: 8,
+                  child: AnimatedBuilder(
+                    animation: _fabRotationAnimation,
+                    builder: (context, child) {
+                      return Transform.rotate(
+                        angle: _fabRotationAnimation.value * 2 * math.pi,
+                        child: Icon(
+                          _isFabOpen ? Icons.close_rounded : Icons.add_rounded,
+                          color: Colors.white,
+                          size: ResponsiveUtils.sp(5),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.push('/notificationpage');
-            },
-            icon: const Icon(Icons.notifications_outlined),
-            color: Appcolors.kprimarycolor,
-            iconSize: ResponsiveUtils.sp(6.5),
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          // Custom Paint Background
-          CustomPaint(
-            painter: HomeBackgroundPainter(),
-            size: Size(screenWidth, screenHeight),
-          ),
-          // Main Scrollable Content
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                ResponsiveSizedBox.height20,
-                _buildCarouselSlider(),
-                ResponsiveSizedBox.height(2.5),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: ResponsiveUtils.wp(4),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextStyles.subheadline(
-                        text: context.tr('quick_access'),
-                        weight: FontWeight.bold,
-                        color: Appcolors.kblackcolor,
-                      ),
-                      ResponsiveSizedBox.height15,
-                      _buildGridView(),
-                    ],
-                  ),
-                ),
-                ResponsiveSizedBox.height(15),
-              ],
-            ),
-          ),
-          // Backdrop with blur when FAB is open
-          if (_isFabOpen)
-            AnimatedOpacity(
-              opacity: _isFabOpen ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 250),
-              child: GestureDetector(
-                onTap: _toggleFab,
-                child: Container(
-                  color: Colors.black.withAlpha(153),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                    child: Container(color: Colors.transparent),
-                  ),
-                ),
-              ),
-            ),
-          // Multi-Action FAB Options
-          ...List.generate(fabOptions.length, (index) {
-            final option = fabOptions[index];
-            final reversedIndex = fabOptions.length - 1 - index;
-            return AnimatedPositioned(
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeOutCubic,
-              right: ResponsiveUtils.wp(4),
-              bottom: _isFabOpen
-                  ? ResponsiveUtils.hp(22.5) +
-                        (reversedIndex * ResponsiveUtils.hp(9))
-                  : ResponsiveUtils.hp(11.5),
-              child: ScaleTransition(
-                scale: CurvedAnimation(
-                  parent: _fabAnimation,
-                  curve: Interval(index * 0.15, 1.0, curve: Curves.elasticOut),
-                ),
-                child: FadeTransition(
-                  opacity: _fabAnimation,
-                  child: _buildFabOption(
-                    icon: option['icon'],
-                    iconify: option['iconify'],
-                    label: context.tr(option['labelKey']),
-                    color: option['color'],
-                    useIconify: option['useIconify'] ?? false,
-                    route: option['route'],
-                  ),
-                ),
-              ),
-            );
-          }),
-          // Main FAB
-          Positioned(
-            right: ResponsiveUtils.wp(4),
-            bottom: ResponsiveUtils.hp(15.4),
-            child: ScaleTransition(
-              scale: _fabScaleAnimation,
-              child: FloatingActionButton(
-                heroTag: 'main_fab',
-                onPressed: _toggleFab,
-                backgroundColor: Appcolors.kprimarycolor,
-                elevation: 8,
-                child: AnimatedBuilder(
-                  animation: _fabRotationAnimation,
-                  builder: (context, child) {
-                    return Transform.rotate(
-                      angle: _fabRotationAnimation.value * 2 * math.pi,
-                      child: Icon(
-                        _isFabOpen ? Icons.close_rounded : Icons.add_rounded,
-                        color: Colors.white,
-                        size: ResponsiveUtils.sp(5),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

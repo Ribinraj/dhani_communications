@@ -80,7 +80,7 @@ class ApprovelsRepo {
   }) async {
     try {
       final submitData = {
-        'attendanceId': attendanceId,
+        'attendanceId': int.tryParse(attendanceId) ?? attendanceId,
         'status': status,
         'approverRemarks': approverRemarks,
       };
@@ -479,7 +479,7 @@ class ApprovelsRepo {
   }) async {
     try {
       final submitData = {
-        'progressId': progressId,
+        'progressId': int.tryParse(progressId) ?? progressId,
         'status': status,
         'approverRemarks': approverRemarks,
       };
